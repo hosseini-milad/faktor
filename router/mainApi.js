@@ -43,7 +43,7 @@ router.post('/sepidar-product', async (req,res)=>{
                 if(createResult)
                 successItem.push(createResult)
         }
-        res.json({sepidar:successItem,failure:failure})
+        res.json({sepidar:sepidarResult,failure:failure})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -67,7 +67,7 @@ router.post('/sepidar-price', async (req,res)=>{
                 date:new Date()})
                 
         }
-        res.json({sepidar:"All Done",failure:"failure"})
+        res.json({sepidar:sepidarPriceResult,failure:"failure"})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -89,7 +89,7 @@ router.post('/sepidar-quantity', async (req,res)=>{
             date:new Date()})
                 
         }
-        res.json({sepidar:"All Done",failure:"failure"})
+        res.json({sepidar:sepidarQuantityResult,failure:"failure"})
     }
     catch(error){
         res.status(500).json({message: error.message})
