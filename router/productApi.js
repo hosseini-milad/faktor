@@ -24,9 +24,20 @@ router.post('/find-products', async (req,res)=>{
     const search = req.body.search
     try{ 
         const searchProducts = await productSchema.
-        find({$or:[{sku:{$regex: search, $options : 'i'}},
-            {title:{$regex: search, $options : 'i'}}]})
-
+        aggregate([{$match:
+            {$or:[
+                {sku:{$regex: search, $options : 'i'}},
+                {title:{$regex: search, $options : 'i'}}
+            ]}
+        },
+        {$lookup:{
+            from : "productprices", 
+            localField: "ItemID", 
+            foreignField: "ItemID", 
+            as : "priceData"
+        }},
+        {$limit:6}])
+            
         //logger.warn("main done")
         res.json({products:searchProducts})
     }
@@ -103,14 +114,24 @@ router.post('/cart', async (req,res)=>{
     const userId =req.body.userId?req.body.userId:req.headers['userid'];
     try{
         const cartData = await cart.findOne({userId:userId}).sort({"date":1})
-
-        //logger.warn("main done")
-        res.json({cart:cartData})
+        var cartDetail = ''
+        if(cartData) cartDetail =findCartSum(cartData.cartItems)
+        res.json({cart:cartData,...cartDetail})
     }
     catch(error){
         res.status(500).json({message: error.message})
     }
 })
+const findCartSum=(cartItems)=>{
+    var cartSum=0;
+    var cartCount=0;
+    for (var i=0;i<cartItems.length;i++){
+        cartSum+= parseInt(cartItems[i].price.toString().replace( /^\D+/g, ''))*
+        parseInt(cartItems[i].count.toString().replace( /^\D+/g, ''))
+        cartCount+=parseInt(cartItems[i].count.toString().replace( /^\D+/g, ''))
+    }
+    return({totalPrice:cartSum,totalCount:cartCount})
+}
 router.post('/update-cart',jsonParser, async (req,res)=>{
     const data={
         userId:req.body.userId?req.body.userId:req.headers['userid'],
@@ -132,8 +153,11 @@ router.post('/update-cart',jsonParser, async (req,res)=>{
                 {userId:data.userId},{$set:data})
             status = "update cart"
         }
+        var cartDetail = ''
+        if(cartData) cartDetail =findCartSum(cartData.cartItems)
+        
         const cartNewData = await cart.findOne({userId:data.userId}).sort({"date":1})
-        res.json({cart:cartNewData,status:status,data:data})
+        res.json({cart:cartNewData,status:status,data:data,...cartDetail})
     }
     catch(error){
         res.status(500).json({message: error.message})

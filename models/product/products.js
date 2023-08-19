@@ -3,11 +3,11 @@ const mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 const ProductSchema = new Schema({
-    title:  String, // String is shorthand for {type: String}
-    sku: String,
+    title:  { type: String},
+    sku: { type: String , unique: true},
     enTitle:String,
     description:String,
-    fullDesc:String,
+    ItemID:{ type: String , unique: true},
     
     config:String,
     uploadImage:String,
