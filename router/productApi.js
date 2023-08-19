@@ -198,7 +198,9 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         //if(!cartData){
             const faktorNo= await createfaktorNo("F","02","21")
             data.faktorNo=faktorNo
-            const addFaktorResult = await FaktorSchema.create(data)
+            const faktorDetail = findCartSum(data.faktorItems)
+            
+            const addFaktorResult = await FaktorSchema.create({...data,...faktorDetail})
             status = "new Faktor"
             await cart.deleteOne({userId:data.userId})
         //}

@@ -9,6 +9,7 @@ const FaktorSchema = new Schema({
     progressDate: { type: Date },
     userId:{ type: String },
 
-    totalPrice:{ type: String }
+    totalPrice:{ type: String },
+    totalCount:{ type: String }
 })
 module.exports = mongoose.model('faktor',FaktorSchema);
