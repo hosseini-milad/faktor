@@ -36,6 +36,12 @@ router.post('/find-products', async (req,res)=>{
             foreignField: "ItemID", 
             as : "priceData"
         }},
+        {$lookup:{
+            from : "productcounts", 
+            localField: "ItemID", 
+            foreignField: "ItemID", 
+            as : "countData"
+        }},
         {$limit:6}])
             
         //logger.warn("main done")
@@ -144,6 +150,7 @@ router.post('/update-cart',jsonParser, async (req,res)=>{
         const cartData = await cart.findOne({userId:data.userId})
         const cartItems = createCart(cartData,req.body.cartItem)
         data.cartItems =(cartItems)
+        //console.log(req.body.cartItem)
         if(!cartData){
             await cart.create(data)
             status = "new Cart"
@@ -163,13 +170,96 @@ router.post('/update-cart',jsonParser, async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
+router.post('/edit-cart',jsonParser, async (req,res)=>{
+    const data={
+        userId:req.body.userId?req.body.userId:req.headers['userid'],
+
+        date:req.body.date,
+        progressDate:Date.now()
+    }
+    try{
+        var status = "";
+        const cartData = await cart.findOne({userId:data.userId})
+        const cartItems = editCart(cartData,req.body.cartItem)
+        data.cartItems =(cartItems)
+            await cart.updateOne(
+                {userId:data.userId},{$set:data})
+            status = "update cart"
+        var cartDetail = ''
+        if(cartData) cartDetail =findCartSum(cartData.cartItems)
+        
+        const cartNewData = await cart.findOne({userId:data.userId}).sort({"date":1})
+        res.json({cart:cartNewData,status:status,data:data,...cartDetail})
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
 const createCart=(cartData,cartItem)=>{
-    var cartItemTemp=(cartData&&cartData.cartItems)?cartData.cartItems:[]
-    cartItemTemp.push({...cartItem,date:Date.now()})
-    
+    if(!cartData||!cartData.cartItems)return([])
+var cartItemTemp=cartData.cartItems
+    var repeat = 0
+    for(var i=0;i<cartItemTemp.length;i++){
+        if(cartItemTemp[i].id===cartItem.id){
+            cartItemTemp[i].count=parseInt(cartItemTemp[i].count)+
+                                  parseInt(cartItem.count)
+            repeat=1
+            break
+        }
+    }
+    !repeat&&cartItemTemp.push({...cartItem,date:Date.now()})
     return(cartItemTemp)
 
 }
+const removeCart=(cartData,cartID)=>{
+    if(!cartData||!cartData.cartItems)return([])
+var cartItemTemp=cartData.cartItems
+    for(var i=0;i<cartItemTemp.length;i++){
+        if(cartItemTemp[i].id===cartID){
+            cartItemTemp.splice(i,1)
+            return(cartItemTemp)
+        }
+    }
+}
+const editCart=(cartData,cartItem)=>{
+    if(!cartData||!cartData.cartItems)return([])
+var cartItemTemp=cartData.cartItems
+    for(var i=0;i<cartItemTemp.length;i++){
+        if(cartItemTemp[i].id===cartItem.id){
+            cartItemTemp[i].count = cartItem.count
+            return(cartItemTemp)
+        }
+    }
+}
+
+
+router.post('/remove-cart',jsonParser, async (req,res)=>{
+    const data={
+        userId:req.body.userId?req.body.userId:req.headers['userid'],
+
+        date:req.body.date,
+        progressDate:Date.now()
+    }
+    try{
+        var status = "";
+        const cartData = await cart.findOne({userId:data.userId})
+        const cartItems = removeCart(cartData,req.body.cartID)
+        data.cartItems =(cartItems)
+        //console.log(req.body.cartItem)
+        
+            await cart.updateOne(
+                {userId:data.userId},{$set:data})
+            status = "update cart"
+        var cartDetail = ''
+        if(cartData) cartDetail =findCartSum(cartData.cartItems)
+        
+        const cartNewData = await cart.findOne({userId:data.userId}).sort({"date":1})
+        res.json({cart:cartNewData,status:status,data:data,...cartDetail})
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
 
 router.post('/faktor', async (req,res)=>{
     const userId =req.body.userId?req.body.userId:req.headers['userid'];
