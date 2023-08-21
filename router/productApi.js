@@ -273,6 +273,18 @@ router.post('/faktor', async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
+router.post('/faktor-find', async (req,res)=>{
+    const faktorId =req.body.faktorId;
+    try{
+        const faktorData = await FaktorSchema.findOne({faktorNo:faktorId})
+
+        //logger.warn("main done")
+        res.json({faktor:faktorData})
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
 router.post('/update-faktor',jsonParser, async (req,res)=>{
     const data={
         userId:req.body.userId?req.body.userId:req.headers['userid'],
