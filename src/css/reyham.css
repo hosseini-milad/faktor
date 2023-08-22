@@ -1,0 +1,531 @@
+:root{
+	--main-color:#002A54;
+	--main-dark:rgb(48, 127, 226);
+    
+}
+
+@font-face {
+    font-family: 'Vazir';
+    src:  url('/fonts/Vazir-Regular.eot');
+    src:  url('/fonts/Vazir-Regular.eot') format('embedded-opentype'),
+      url('/fonts/Vazir-Regular.ttf') format('truetype'),
+      url('/fonts/Vazir-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+@font-face {
+    font-family: 'iran';
+    src:  url('/fonts/Vazir-Regular.eot');
+    src:  url('/fonts/Vazir-Regular.eot') format('embedded-opentype'),
+      url('/fonts/Vazir-Regular.ttf') format('truetype'),
+      url('/fonts/Vazir-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+html{
+    scroll-behavior: smooth;
+}
+body{
+    font-family: Vazir;
+}
+.reyhamForm{
+    width: 70%;
+}
+
+.errorSmall{
+    color:brown;
+    float:right;
+}
+.hidden{
+    display: none;
+}
+.lang{
+    display: grid;
+
+}
+.lang li{
+    cursor: pointer;
+    color:#fff;
+}
+.filterIcon{
+    position: absolute;
+    bottom: 15px;
+    font-size: 22px;
+    font-weight: bold;
+    color: var(--blue);
+    right: 20px;
+    cursor: pointer;
+}
+.rev{
+    flex-direction: row-reverse;
+}
+
+.form-field-fiin .icon-edit {
+    position: absolute;
+    bottom: 18px;
+    right: -30px;
+    cursor: pointer;
+}
+.form-field-fiin:hover {
+    color:var(--blue)
+}
+.email-form-fiin{
+    margin-top: 35px;
+
+}
+.btn-fiin{
+    min-width: 180px;
+}
+.btn-email {
+    background: var(--main-dark);
+    border: 1px solid var(--main-dark);
+    border-radius: 4px;
+    font-size: 13px;
+    color: #fff;
+    padding: 15px;
+    transition: 0.3s;
+    width: 90%;
+}
+
+.btn-email:hover {
+    background-color: transparent;
+    color: var(--main-dark);
+}
+.change-email{
+    display: flex;
+    width: 100%;
+}
+/*Board*/
+.toDoHolder{
+    margin:8px;
+    display: flex;
+}
+.columnHolder{
+    display: flex;
+    flex-direction: column;
+    width: 220px;
+}
+.taskList{
+    flex-direction: column;
+    border:1px solid var(--blue);
+    border-radius: 2px;
+    padding: 18px 8px;
+    margin:8px;
+    flex-grow: 1;
+    
+}
+.taskPlace{
+    border:1px solid gray;
+    border-radius: 2px;
+    padding: 8px;
+    background-color: #fff;
+    margin-bottom: 8px;
+    display: flex;
+}
+.dragTask{
+    background-color: lightgreen;
+}
+.dragCol{
+    background-color: lightblue;
+}
+.handler{
+    background-color: var(--blue);
+    width: 25px;
+    height: 25px;
+    margin-right: 8px;
+    border-radius: 4px;
+}
+.acceptBtn{
+    background-color: green;
+    border-color: green;
+}
+.acceptBtn:hover{
+    color: green;
+}
+
+
+/*Steps Client*/
+.tabStepHolder{
+    display: flex;
+    justify-content: center;
+    margin: auto;
+}
+.tabStep{
+    background-color: #f5f5f5;
+    border-bottom: 3px solid var(--blue);
+    border-radius: 5px 5px 0 0;
+    cursor: pointer;
+    display: grid;
+    font-size: 15px;
+    margin: auto .5%;
+    padding: 20px 10px;
+    text-align: center;
+    white-space: nowrap;
+    width: 120px;
+}
+.tabStepActive{
+    background-color: var(--blue);
+    color:#f5f5f5
+}
+.tabStepDeactive{
+    background-color: #eee;
+    border-bottom-color: gray;
+}
+.tabStep span{
+    cursor: pointer;
+    text-align: center;
+    white-space: nowrap;
+}
+.step-placeHolder{
+    margin:50px auto;
+    width: 70%;
+}
+.deact-fiin{
+    background: gray;
+    border: 1px solid gray;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #fff;
+    padding: 14px 60px;
+    transition: 0.3s;
+}
+.DatePicker{
+    width:100%;
+}
+.DatePicker input{
+    text-align: left;
+}
+.DatePicker button{
+    direction: ltr;
+    position: relative;
+}
+.form-fiin textarea {
+    border: 1px solid #E7E7E8;
+    border-radius: 4px;
+    font-size: 14px;
+    padding: 14px 18px;
+    width: 100%;
+  }
+
+  /* Faktor Part */
+  .userInfo{
+    display: flex;
+    min-height: 100px;
+}
+.userSection{
+    display: grid;
+    margin:auto
+}
+.userSection small{
+    margin:3px 5px;
+    display: flex;
+    justify-content: flex-end;
+}
+.userSection b{
+    border:1px solid var(--main-color);
+    padding: 0 10px;
+    border-radius: 6px;
+    width: 80px;
+    margin: 0 10px;
+}
+.pop-form{
+    position: absolute;
+    padding: 0 25px ;
+    top: 75px;
+    right: 0px;
+    width: 120%;
+    z-index: 10;
+}
+.pop-form-holder{
+    background-color: rgba(255,255,255,.9);
+    min-width: 250px;
+}
+.pop-form-item{
+    width: calc(100% - 15px);
+    padding: 0px 20px;
+    border-bottom: 1px solid silver;
+    cursor: pointer;
+    position: relative;
+    min-height: 65px;
+}
+.titleShow{
+    padding: 10px 5px;
+    width: 150px;
+}
+.skuShow{
+    position: absolute;
+    left: 0px;
+    font-size: 12px;
+    top:10px;
+    border:1px solid var(--main-color);
+    border-radius: 10px;
+    
+    text-align: center;
+    width: 100px;
+}
+.priceShow{
+    position: absolute;
+    left: 0px;
+    font-size: 12px;
+    bottom:10px;
+    border:1px solid var(--main-color);
+    border-radius: 10px;
+    
+    text-align: center;
+    width: 70px;
+}
+.countShow{
+    position: absolute;
+    left: 72px;
+    font-size: 12px;
+    bottom:10px;
+    border:1px solid var(--main-color);
+    border-radius: 3px;
+    
+    text-align: center;
+    width: 27px;
+}
+.removeBtn{
+    font-weight: bold;
+    cursor: pointer;
+}
+.removeBtn:hover{
+    color:brown;
+}
+.section-fiin {
+    overflow-x: auto;
+  }
+.tdHolder{
+    position: relative;
+}
+.tdHolder strong{
+    overflow: hidden;
+    white-space: nowrap; 
+    text-overflow: ellipsis;
+    max-width: 180px;
+    display: block;
+}
+.tdHolder small{
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+    border: 1px solid blue;
+    border-radius: 10px;
+    padding: 3px 10px 0;
+    background-color: #fff;
+    line-height: 1;
+}
+.formInputSimple{
+    padding: 5px !important;
+    text-align: center;
+}
+
+/* RTL */
+.ms-auto {
+    margin-right: auto !important;
+    margin-left: 0 !important;
+}
+.flex-lg-row {
+    flex-direction: row-reverse !important;
+}
+
+/* Hesabfa Print */
+.hesabfaTable{
+    font-family: iran;
+    border:2px solid #333;
+    border-radius: 8px;
+    width: 90%;
+    margin: auto;
+    min-height: 100px;
+}
+.hesabfaTable tbody{
+    margin: auto;
+    padding: 0;
+}
+.hesabfaPrint{
+
+}
+.hesabfaRow{
+    width: 95%;
+    margin: auto;
+}
+.verticalRow{
+    position: relative;
+    width: 50px;
+}
+.hesabfaColor{
+    background-color: #B9B9B9;
+    border-radius: 0 8px 8px 0;
+}
+.hesabfaMainTable{
+    font-family: iran;
+    border: 2px solid #333;
+    width: 90%;
+    margin: 6px auto;
+    border-collapse: collapse;
+}
+.hesabfaMainTable td{
+    border: 1px solid #333;
+    padding: 2px 7px;
+}
+.hesabfaMainTable tbody{
+    width: 100%;
+
+}
+.hesabfaMainTable th{
+    border: 2px solid #333;
+    background-color: #B9B9B9;
+    padding: 5px 10px;
+    font-size: 13px;
+}
+.centerCell{
+    text-align: center;
+}
+.verticalRow h3{
+    position: absolute;
+    transform: rotate(-90deg);
+    top: 30px;
+    left: -10px;
+}
+.hesabfaFooter{
+    font-family: iran;
+    width: 90%;
+    margin: 10px auto;
+}
+.priceSeprate{
+    display: flex;
+    justify-content: space-between;
+}
+.hesabfaPrice{
+    display: grid;
+}
+.hesabfaPrice h3{
+    padding-bottom: 6px;
+    border-bottom: 3px solid #333;
+    line-height: 1;
+    margin-bottom: 10px;
+}
+.hesabfaRight{
+    display: grid;
+    border-bottom: 2px solid #333;
+}
+.hesabfaSection{
+    display: grid;
+    margin:auto;
+    width: 25%;
+    text-align: center;
+}
+.hesabfaSection h4{
+    margin:0 auto;
+}
+.hesabfaSection h1{
+    margin-bottom:10px;
+    white-space: nowrap;
+}
+.hesabfaSection small{
+    margin:3px 5px;
+    display: flex;
+    justify-content: flex-end;
+}
+.hesabfaSection b{
+    border:1px solid var(--main-color);
+    padding: 0 10px;
+    border-radius: 6px;
+    width: 120px;
+    margin: 0 10px;
+}
+.footerRows{
+    display: flex;
+    justify-content: space-between;
+}
+.footerHesabfa{
+    display: flex;
+    width: 70%;
+    margin: 10px auto 20px 0;
+    text-align: center;
+    justify-content: space-around;
+}
+.hesabSection{
+    display: grid;
+    width: 90%;
+    margin: auto;
+}
+.hesabBorder{
+    border:1px solid #222;
+    display: flex;
+    border-radius: 7px;
+    padding: 5px 10px;
+    margin:5px 0 0;
+    justify-content: space-between;
+}
+.verticalRow small{
+    position: absolute;
+    transform: rotate(-90deg);
+    top: 17px;
+    left: -5px;
+}
+.hesabPrintTable{
+    padding: 0;
+    width: 90%;
+    margin: 5px auto 0;
+}
+.hesabPrintTable .verticalRow{
+    width: 30px;
+}
+.hesabSection .hesabfaSection{
+    width: calc(100% - 20px);
+}
+.priceCell{
+    width: 65px;
+    max-width: 65px;
+    font-size: 15px;
+}
+.sumTable{
+    font-size: 12px;
+}
+.priceSwitcher{
+    float:left;
+    margin-left: 30px !important;
+}
+.priceSwitcher span{
+    font-size: 11px;
+}
+.fishPrint .orderDataHolder{
+    padding: 0;
+    width: 100%;
+}
+.fishPrint .orderTable{
+    padding: 0px;
+    margin: 2px auto;
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #111;
+    border-radius: 5px;
+}
+.fishPrint .orderTable{
+    
+}
+
+/* End RTL */
+@media only screen and (max-width:1200px){
+    .table-fiin table {
+        max-width: 1300px;
+        width: 100%;
+      }
+}
+@media only screen and (max-width:992px){
+    .header-logo{
+        margin:auto;
+    }
+    .main-menu > li:hover .sub-menu {
+        display: block;
+    }
+    
+}
+@media only screen and (max-width: 768px) {
+    .account-head:hover ul {
+        display: block;
+    }
+}
