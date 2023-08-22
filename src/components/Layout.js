@@ -1,14 +1,14 @@
 import Footer from "./Footer"
 import Header from "./Header"
 const lang = JSON.parse(localStorage.getItem('fiin-lang'));
-
+const url = document.location.pathname;
 function Layout(props){
     
     return(
         <>
-            <Header lang={lang}/>
+            {!url.includes("print")?<Header lang={lang}/>:<></>}
             {props.children}
-            <Footer />
+            {!url.includes("print")?<Footer />:<></>}
         </>
     )
 }

@@ -1,5 +1,5 @@
 const errortrans ={
-    defaultLang:"portuguese",
+    defaultLang:"persian",
     defaultDir:"ltr",
     //Login Page
     signBtn:{
@@ -20,7 +20,7 @@ const errortrans ={
     LoginSubTitle:{
         english: "Login-Customer/Login-Agent/Login-Partner",
         portuguese: "Login-Cliente/Login-Agente/Login-Parceiro",
-        persian: "ورود - مشتری / ورود - عامل / ورود - شریک"
+        persian: "ورود - مدیریت"
     },
     email:{
         english: "Email",
@@ -35,12 +35,12 @@ const errortrans ={
     welcome:{
         english: "Welcome to Finn.",
         portuguese: "Bem-vindo à Fiin.",
-        persian: "به فین خوش آمدید"
+        persian: " خوش آمدید"
     },
     welcomeSubTitle:{
         english: "Welcome to Fiin! Please enter your login information to access your credits and insurance.",
         portuguese: "Seja bem-vindo à Fiin! Por favor insira as suas informações de login, para ter acesso aos seus créditos e seguros.",
-        persian: "به فین خوش آمدید! لطفا اطلاعات ورود خود را برای دسترسی به اعتبار و بیمه خود وارد کنید."
+        persian: "خوش آمدید! لطفا اطلاعات ورود خود را برای دسترسی وارد کنید."
     },
 
     //Menu

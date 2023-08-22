@@ -636,7 +636,7 @@ span {
     padding: 20px;
     transition: all 0.4s;
     position: relative;
-    padding-right: 136px;
+    padding-left: 136px;
 }
 
 .accordion-item .accordion-title::before {
@@ -700,7 +700,7 @@ span {
 
 .show-more {
     position: absolute;
-    right: 15px;
+    left: 15px;
     top: 31px;
     font-size: 12px;
     border: 1px solid #aaa;
@@ -1029,7 +1029,7 @@ span {
     }
 
     .list-item .btn-cancel {
-        padding: 14px;
+        padding: 5px 10px;
     }
 
     .list-item .icon-upload {

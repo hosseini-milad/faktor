@@ -1,9 +1,9 @@
 const env={
-    siteApi:'http://localhost:4090/api',
-    //siteApi:'https://fiinadmin.deleves.com/api',
+    //siteApi:'http://localhost:4090/api',
+    siteApi:'https://faktoradmin.dkmehr.com/api',
     
-    siteApiUrl:'http://localhost:4090',
-    //siteApiUrl:'https://fiinadmin.deleves.com',
+    //siteApiUrl:'http://localhost:4090',
+    siteApiUrl:'https://faktoradmin.dkmehr.com',
 
     columnOrder:['lead','informations','fiin','property','seguros',
         'escritura','commissions','suspended']
@@ -58,4 +58,22 @@ export const splitDate=(dateRaw)=>{
     day:parseInt(dateArray[2])})
   }
   catch{return}
+}
+export function normalPrice(priceText){
+  if(!priceText||priceText === null||priceText === undefined) return("")
+  
+  var rawPrice = priceText.toString().replace(/\D/g,'')
+  //console.log(rawPrice,priceText)
+  return(
+    (rawPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace( /^\D+/g, ''))
+  )
+}
+export function normalPriceCount(priceText,count){
+  if(!priceText||priceText === null||priceText === undefined) return("")
+  var rawCount = parseInt(count.toString().replace(/\D/g,''))
+  var rawPrice = parseInt(priceText.toString().replace(/\D/g,''))*rawCount
+  //console.log(rawPrice,priceText)
+  return(
+    (rawPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace( /^\D+/g, ''))
+  )
 }

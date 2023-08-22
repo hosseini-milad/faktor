@@ -4,12 +4,15 @@ import env from "../../env"
 import CreditAccordion from "./CreditAccordion"
 import CreditFilter from "./CreditFilter"
 import Cookies from 'universal-cookie';
+import BarcodeScannerComponent from "react-webcam-barcode-scanner";
 const cookies = new Cookies();
 
 const CreditList = (props)=>{
     const [users,setUsers] = useState()
     const [filter,setFilter] = useState()
     const [doFilter,setDoFilter] = useState(1)
+    const [ data, setData ] = useState('Not Found');
+    const [acceptData,setAcceptData] = useState([])
 
     useEffect(()=>{
         if(!doFilter)return
@@ -46,6 +49,23 @@ const CreditList = (props)=>{
             </div>   
             <CreditAccordion userList={users}/>
         </div>
+        <BarcodeScannerComponent
+        width={500}
+        height={500}
+        onUpdate={(err, result) => {
+          if (result) {
+            setData(result.text)
+            setAcceptData(
+                [...acceptData,result.text]
+            )
+          }
+          else setData('Not Found')
+        }}
+      />
+      <p>{data}</p>
+      <p>{acceptData?acceptData.map((item,i)=>(
+        <h6 key={i}>{item}</h6>
+      )):<></>}</p>
     </div>
     )
 }

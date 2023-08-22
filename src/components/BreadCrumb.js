@@ -1,7 +1,7 @@
 const Breadcrumb = (props)=>{
     return(
         <div className="breadcrumb">
-            <a href="#">Home</a>
+            <a href="#">خانه</a>
             /
             <span>{props.title}</span>
         </div>

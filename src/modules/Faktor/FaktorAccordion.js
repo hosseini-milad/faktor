@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { normalDate, normalPrice } from "../../env"
 
 function FaktorAccordion(props){
     const [tab,setTab] = useState(0)
@@ -11,42 +12,42 @@ function FaktorAccordion(props){
                         <div className="row row-cols-lg-6 row-cols-md-3 row-cols-sm-2 row-cols-1 align-items-center">
                             <div className="col">
                                 <div className="list-item">
-                                    <span>faktorNo: </span>
+                                    <span>شماره فاکتور: </span>
                                     {faktor.faktorNo}
                                 </div>
                             </div>
                             <div className="col">
                                 <div className="list-item">
-                                    <span>faktor Date:</span>
-                                    {faktor.initDate}
+                                    <span>تاریخ ثبت:</span>
+                                    {new Date(faktor.initDate).toLocaleDateString('fa-IR')}
                                 </div>
                             </div>
                             <div className="col">
                                 <div className="list-item">
-                                    <span>faktor Price: </span>
-                                    {faktor.totalPrice}
+                                    <span>مبلغ: </span>
+                                    {normalPrice(faktor.totalPrice)}
                                 </div>
                             </div>
                             <div className="col">
                                 <div className="list-item">
-                                    <span style={{fontSize:"12px"}}>User: </span>
-                                    {"Milad Hosseini"}
+                                    <span style={{fontSize:"12px"}}>کاربر: </span>
+                                    {"میلاد حسینی"}
                                 </div>
                             </div>
                             <div className="col">
                                 <div className="list-item">
-                                    <span>Count: </span>
-                                    {"5"}
+                                    <span>تعداد: </span>
+                                    {faktor.totalCount}
                                 </div>
                             </div>
                             <div className="col">
                                 <div className="list-item">
-                                    <a href="/upload" className="btn-cancel">
-                                        <span className="icon-upload"></span> Print </a>
+                                    <a href={`/faktor/print/${faktor.faktorNo}`} className="btn-cancel">
+                                        <span className="icon-upload"></span> چاپ فاکتور </a>
                                 </div>
                             </div>
                         </div>
-                        <span className="show-more">Show More</span>
+                        <span className="show-more">مشاهده جزئیات</span>
                     </div>
                     <div className="accordion-content" id="item1" 
                         style={{display:tab===i+1?"block":"none"}}>
@@ -60,12 +61,12 @@ function FaktorAccordion(props){
                                 </div>
                                 <div className="col">
                                     <div className="list-item">
-                                        <span>sku: </span>{faktorItem.sku}
+                                        <span>شناسه: </span>{faktorItem.sku}
                                     </div>
                                 </div>
                                 <div className="col">
                                     <div className="list-item">
-                                        <span>count:</span> {faktorItem.count}
+                                        <span>تعداد:</span> {faktorItem.count}
                                     </div>
                                 </div>
                             </div>

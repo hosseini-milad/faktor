@@ -48,12 +48,12 @@ const FaktorList = (props)=>{
     }
     return(
         <div className="container">
-        <Breadcrumb title={"Set Faktor"}/>
+        <Breadcrumb title={"لیست فاکتور"}/>
 
 
         <div className="section-fiin">
             <div className="section-head">
-                <h1 className="section-title">Lista de Clientes</h1>
+                <h1 className="section-title">لیست فاکتورها</h1>
                 <p className="hidden">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt .</p>
             </div>  
             
