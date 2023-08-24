@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { normalDate, normalPrice } from "../../env"
+import { normalDate, normalPrice, normalPriceCount } from "../../env"
 
 function FaktorAccordion(props){
     const [tab,setTab] = useState(0)
@@ -10,6 +10,7 @@ function FaktorAccordion(props){
                     <div className={tab===i+1?"accordion-title active-title":"accordion-title"}
                          data-tab="item1" onClick={()=>tab===i+1?setTab(0):setTab(i+1)}>
                         <div className="row row-cols-lg-6 row-cols-md-3 row-cols-sm-2 row-cols-1 align-items-center">
+                        <small style={{position:"absolute",top:"7px",right:"0px"}}>{i+1}</small>
                             <div className="col">
                                 <div className="list-item">
                                     <span>شماره فاکتور: </span>
@@ -54,7 +55,8 @@ function FaktorAccordion(props){
                     <div className="accordion-content" id="item1" 
                         style={{display:tab===i+1?"block":"none"}}>
                         {faktor.faktorItems&&faktor.faktorItems.map((faktorItem,i)=>(
-                            <div className="row row-cols-xl-5 row-cols-lg-4 row-cols-md-3 row-cols-sm-2  row-cols-1" key={i}>
+                            <div className="row row-cols-xl-5 row-cols-lg-5 row-cols-md-3 row-cols-sm-2  row-cols-1" key={i}>
+                                
                                 <div className="col">
                                     <div className="list-item">
                                         <span> </span>
@@ -74,6 +76,11 @@ function FaktorAccordion(props){
                                 <div className="col">
                                     <div className="list-item">
                                         <span>فی:</span> {normalPrice(faktorItem.price)}
+                                    </div>
+                                </div>
+                                <div className="col">
+                                    <div className="list-item">
+                                        <span>قیمت:</span> {normalPriceCount(faktorItem.price,faktorItem.count)}
                                     </div>
                                 </div>
                             </div>

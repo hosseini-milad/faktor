@@ -1,18 +1,17 @@
-import { useState ,useEffect } from "react";
 import env, { normalPrice, normalPriceCount } from "../../../env";
 var token = JSON.parse(localStorage.getItem('token-lenz'));
 
 function PrintHesabfa(props){
     
-  const orderInfo = props.orderData.faktor
-  const userInfo = props.userInfo
+  const orderInfo = props.orderData
+  const userInfo = props.orderData.userData?props.orderData.userData[0]:''
     return(
         <div className="printArea">
           <div className="userInfo">
               <div className="hesabfaSection">
               </div>
               <div className="hesabfaSection">
-                <h1>Order Title</h1>
+                <h1>روانکاران شریف</h1>
                 <h4>فاکتور فروش</h4>
               </div>
               <div className="hesabfaSection" style={{minWidth: "240px"}}>
@@ -33,11 +32,11 @@ function PrintHesabfa(props){
                         <tr>
                           <td colSpan={3} className="hesabfaItem">
                             <span>خریدار: </span>
-                            <strong> نام خریدار {userInfo.Name}</strong>
+                            <strong> {userInfo.username}</strong>
                           </td>
                           <td colSpan={2} className="hesabfaItem">
                             <span>شماره تماس: </span>
-                            <strong>{userInfo.Mobile}</strong>
+                            <strong>{userInfo.phone}</strong>
                           </td>
                         </tr>
                         <tr>
@@ -92,15 +91,15 @@ function PrintHesabfa(props){
             </table>
             <div className="hesabfaFooter">
               <div className="footerRows">
-                  <div className="hesabfaRight">
+                  {/*<div className="hesabfaRight">
                     <strong>شرایط و نحوه فروش:   نقدی    غیرنقدی</strong>
                     <span>مانده حساب فاکتور: {normalPrice(userInfo.Liability-userInfo.Credits)} ریال 
                       {(userInfo.Liability-userInfo.Credits>0)?" بدهکار ":" بستانکار "} </span>
-                  </div>
+                </div>*/}
                   <div className="hesabfaPrice">
                     <div className="priceSeprate">
                       <span>مجموع:</span>
-                      <span>{normalPrice("totalPrice.sum") } ریال</span>
+                      <span>{normalPrice(orderInfo.totalPrice) } ریال</span>
                     </div>
                     <div className="priceSeprate">
                     <span>تخفیف: </span>
@@ -119,7 +118,7 @@ function PrintHesabfa(props){
                   نام کاربر: {token&&token.userId.slice(-3)}<br/> ساعت: 
                   {new Date(Date.now()).getHours()+":"+new Date(Date.now()).getMinutes()}
               </span>
-              <button className="printBtn" onClick={()=>window.location.href="/hesabfishprint/"+"rxOrderNo"}>فیش پرینت</button>
+              <button className="btn-fiin" onClick={()=>window.location.href="/faktor/fishprint/"+orderInfo.faktorNo}>فیش پرینت</button>
             </div>
         </div>
     )

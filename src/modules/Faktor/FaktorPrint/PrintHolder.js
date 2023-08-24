@@ -2,14 +2,13 @@ import { useEffect, useState } from "react"
 import env from "../../../env"
 import Cookies from 'universal-cookie';
 import PrintHesabfa from "./PrintHesabfa";
+import FishPrintHesabfa from "./FishPrintHesabfa";
 const cookies = new Cookies();
 const url = document.location.pathname.split('/')[3]
+const type = document.location.pathname.split('/')[2]
 
 const FaktorPrint = (props)=>{
     
-    console.log(url)
-    const [filter,setFilter] = useState()
-    const [error,setError] = useState({message:'',color:"brown"})
     const [faktorList,setFaktorList] = useState() 
     
     const token=cookies.get('faktor-login')
@@ -29,7 +28,7 @@ const FaktorPrint = (props)=>{
             (result) => {
                 console.log(result)
                 if(result)
-                    setFaktorList(result) 
+                    setFaktorList(result.faktor[0]) 
             },
             (error) => {
                 console.log(error)
@@ -37,7 +36,9 @@ const FaktorPrint = (props)=>{
     },[])
     return(
         <div className="container">
-            {faktorList?<PrintHesabfa orderData={faktorList} userInfo={''}/>  :
+            {faktorList?type==="fishprint"?<FishPrintHesabfa 
+                orderData={faktorList} userInfo={''}/>
+            :<PrintHesabfa orderData={faktorList} userInfo={''}/>  :
             <main>در حال دریافت اطلاعات</main>}
         </div>
     )

@@ -45,7 +45,7 @@ const FaktorRegister = (props)=>{
                     console.log(result.error)
                 else{
                     setError({message:result.message,color:"green"})
-                    setTimeout(()=>window.location.reload(),3000)
+                    //setTimeout(()=>window.location.reload(),3000)
                 } 
             },
             (error) => {
