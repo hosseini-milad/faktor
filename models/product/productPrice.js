@@ -6,6 +6,7 @@ const ProductPriceSchema = new Schema({
     pID: String,
     ItemID: String,
     saleType:String,
+    stock:String,
     price:String,
     date:{ type: Date }
 })

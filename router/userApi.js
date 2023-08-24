@@ -5,14 +5,11 @@ const router = express.Router()
 const auth = require("../middleware/auth");
 const logger = require('../middleware/logger');
 const productSchema = require('../models/product/products');
-const productcounts = require('../models/product/productCount');
 const category = require('../models/product/category');
 const cart = require('../models/product/cart');
 const FaktorSchema = require('../models/product/faktor');
-const customerSchema = require('../models/auth/customers');
-const sepidarPOST = require('../middleware/SepidarPost');
 
-router.post('/products', async (req,res)=>{
+router.post('/list', async (req,res)=>{
     try{
         const allProducts = await productSchema.find()
 
@@ -44,16 +41,11 @@ router.post('/find-products', async (req,res)=>{
             localField: "ItemID", 
             foreignField: "ItemID", 
             as : "countData"
-        }}])
-        var searchProductResult=[]
-        for(var i=0;i<searchProducts.length;i++){
-            var count = (searchProducts[i].countData.find(item=>item.Stock==='13'))
-            if(count)
-                searchProductResult.push({...searchProducts[i],count:count})
-        }
- 
+        }},
+        {$limit:6}])
+            
         //logger.warn("main done")
-        res.json({products:searchProductResult})
+        res.json({products:searchProducts})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -156,14 +148,9 @@ router.post('/update-cart',jsonParser, async (req,res)=>{
     try{
         var status = "";
         const cartData = await cart.findOne({userId:data.userId})
-        const availItems = await checkAvailable(req.body.cartItem)
-        if(!availItems){
-            res.status(400).json({error:"موجودی کافی نیست"}) 
-            return
-        }
-
         const cartItems = createCart(cartData,req.body.cartItem)
         data.cartItems =(cartItems)
+        //console.log(req.body.cartItem)
         if(!cartData){
             await cart.create(data)
             status = "new Cart"
@@ -174,10 +161,10 @@ router.post('/update-cart',jsonParser, async (req,res)=>{
             status = "update cart"
         }
         var cartDetail = ''
-        cartDetail =findCartSum(cartItems)
+        if(cartData) cartDetail =findCartSum(cartData.cartItems)
         
         const cartNewData = await cart.findOne({userId:data.userId}).sort({"date":1})
-        res.json({cart:cartNewData,status:status,availItems:availItems,data:data,...cartDetail})
+        res.json({cart:cartNewData,status:status,data:data,...cartDetail})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -208,13 +195,9 @@ router.post('/edit-cart',jsonParser, async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
-const checkAvailable= async(items)=>{
-    const existItem = await productcounts.findOne({ItemID:items.id,Stock:"13"})
-    if(compareCount(existItem.quantity,items.count))
-    return(compareCount(existItem.quantity,items.count))
-}
 const createCart=(cartData,cartItem)=>{
-var cartItemTemp=cartData?cartData.cartItems:[]
+    //if(!cartData||!cartData.cartItems)return([])
+var cartItemTemp=cartData.cartItems
     var repeat = 0
     for(var i=0;i<cartItemTemp.length;i++){
         if(cartItemTemp[i].id===cartItem.id){
@@ -281,21 +264,8 @@ router.post('/remove-cart',jsonParser, async (req,res)=>{
 router.post('/faktor', async (req,res)=>{
     const userId =req.body.userId?req.body.userId:req.headers['userid'];
     try{
-        const faktorList = await FaktorSchema.aggregate
-        ([{$match:{userId:userId},
-        },
-        {$lookup:{
-            from : "customers", 
-            localField: "customerID", 
-            foreignField: "CustomerID", 
-            as : "userData"
-        }},
-        {$lookup:{
-            from : "productcounts", 
-            localField: "ItemID", 
-            foreignField: "ItemID", 
-            as : "countData"
-        }}])
+        const faktorList = await FaktorSchema.find({userId:userId}).sort({"date":1})
+
         //logger.warn("main done")
         res.json({faktor:faktorList})
     }
@@ -319,7 +289,6 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
     const data={
         userId:req.body.userId?req.body.userId:req.headers['userid'],
         faktorItems:req.body.faktorItems,
-        customerID:req.body.customerID,
         date:req.body.date,
         progressDate:Date.now()
     }
@@ -332,20 +301,10 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
             const faktorNo= await createfaktorNo("F","02","21")
             data.faktorNo=faktorNo
             const faktorDetail = findCartSum(data.faktorItems)
-            const SepidarFaktor = await SepidarFunc({...data,...faktorDetail})
-            const addFaktorResult = await sepidarPOST(SepidarFaktor,"/api/invoices")
+            const faktorSepidar = await SendFaktor(data)
+            const addFaktorResult = //await FaktorSchema.create({...data,...faktorDetail})
             status = "new Faktor"
-            if(addFaktorResult.message){
-                res.status(400).json({error:addFaktorResult.message})
-                return
-            }
-            else{
-                
-                await cart.deleteOne({userId:data.userId})
-                const faktorAdd = await FaktorSchema.create(
-                    {...data,...faktorDetail,InvoiceNumber:addFaktorResult.Number,
-                        InvoiceID:addFaktorResult.InvoiceID})
-                    console.log(addFaktorResult)
+            //await cart.deleteOne({userId:data.userId,data:data})
         //}
         /*else{
             await cart.updateOne(
@@ -353,43 +312,14 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
             status = "update cart"
         }*/
         //const cartNewData = await cart.findOne({userId:data.userId}).sort({"date":1})
-        res.json({sepidar:addFaktorResult,data:data,message:"فاکتور ثبت شد"})
-    }
+        res.json({status:addFaktorResult,data:data,message:"فاکتور ثبت شد"})
     }
     catch(error){
         res.status(500).json({message: error.message})
     }
 })
-const SepidarFunc=async(data)=>{
-    var query ={
-        "GUID": "124ab075-fc79-417f-b8cf-2a"+data.faktorNo,
-        "CustomerRef": toInt(data.customerID),
-        "CurrencyRef":1,
-        "SaleTypeRef": 4,
-        "Price": data.totalPrice,
-        "Tax": 8000,
-        "Duty":0.0000,
-        "Discount": 0.0000,
-        "Items": 
-          data.faktorItems.map((item,i)=>(
-            {
-            "ItemRef": toInt(item.id),
-            "TracingRef": null,
-            "TracingTitle": null,
-            "StockRef":13,
-            "Quantity": toInt(item.count),
-            "SecondaryQuantity": 1.0000,
-            "Fee": toInt(item.price),
-            "Price": toInt(item.price,item.count),
-            "Discount": 0.0000,
-            "Tax": toInt(item.price,"0.09"),
-            "Duty": 0.0000,
-            "Addition": 0.0000,
-            "NetPrice": 16500001.0000
-          }))
-        
-      }
-    return(query)
+const SendFaktor=async(data)=>{
+    console.log(data)
 }
 const createfaktorNo= async(Noun,year,userCode)=>{
     var faktorNo = '';
@@ -401,34 +331,5 @@ const createfaktorNo= async(Noun,year,userCode)=>{
             return(faktorNo)
     }
 }
-const toInt=(strNum,count)=>{
-    if(!strNum)return(0)
-    
-    return(parseInt(strNum.replace(/\D/g,''))*
-    (count?parseInt(count.replace(/\D/g,'')):1))
-}
-const compareCount=(count1,count2)=>{
-    return(parseInt(count1.toString().replace(/\D/g,''))>=
-    (parseInt(count2.toString().replace(/\D/g,''))))
-}
-router.post('/customer-find', async (req,res)=>{
-    const search = req.body.search
-    try{ 
-        const searchCustomer = await customerSchema.
-        aggregate([{$match:
-            {$or:[
-                {username:{$regex: search, $options : 'i'}},
-                {Code:{$regex: search, $options : 'i'}}
-            ]}
-        },
-        {$limit:6}])
-            
-        //logger.warn("main done")
-        res.json({customers:searchCustomer})
-    }
-    catch(error){
-        res.status(500).json({message: error.message})
-    }
-})
 
 module.exports = router;

@@ -8,8 +8,11 @@ const FaktorSchema = new Schema({
     initDate: { type: Date, default: Date.now },
     progressDate: { type: Date },
     userId:{ type: String },
+    customerID:{ type: String },
 
     totalPrice:{ type: String },
+    InvoiceID:{ type: String },
+    InvoiceNumber:{ type: String },
     totalCount:{ type: String }
 })
 module.exports = mongoose.model('faktor',FaktorSchema);

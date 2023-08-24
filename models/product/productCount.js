@@ -5,6 +5,7 @@ var Schema = mongoose.Schema;
 const ProductCountSchema = new Schema({
     pID: String,
     ItemID: String,
+    UnitRef:String,
     quantity:String,
     Stock:String,
     date:{ type: Date }
