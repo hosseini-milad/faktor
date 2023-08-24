@@ -6,7 +6,7 @@ const ProductCountSchema = new Schema({
     pID: String,
     ItemID: String,
     UnitRef:String,
-    quantity:String,
+    quantity:Number,
     Stock:String,
     date:{ type: Date }
 })

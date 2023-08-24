@@ -11,6 +11,7 @@ const cart = require('../models/product/cart');
 const FaktorSchema = require('../models/product/faktor');
 const customerSchema = require('../models/auth/customers');
 const sepidarPOST = require('../middleware/SepidarPost');
+const productCount = require('../models/product/productCount');
 
 router.post('/products', async (req,res)=>{
     try{
@@ -295,7 +296,8 @@ router.post('/faktor', async (req,res)=>{
             localField: "ItemID", 
             foreignField: "ItemID", 
             as : "countData"
-        }}])
+        }},
+    {$limit:10}])
         //logger.warn("main done")
         res.json({faktor:faktorList})
     }
@@ -306,8 +308,16 @@ router.post('/faktor', async (req,res)=>{
 router.post('/faktor-find', async (req,res)=>{
     const faktorId =req.body.faktorId;
     try{
-        const faktorData = await FaktorSchema.findOne({faktorNo:faktorId})
-
+        const faktorData = await //FaktorSchema.findOne({faktorNo:faktorId})
+        FaktorSchema.aggregate
+        ([{$match:{faktorNo:faktorId},
+        },
+        {$lookup:{
+            from : "customers", 
+            localField: "customerID", 
+            foreignField: "CustomerID", 
+            as : "userData"
+        }}])
         //logger.warn("main done")
         res.json({faktor:faktorData})
     }
@@ -324,37 +334,24 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         progressDate:Date.now()
     }
     try{
-        var status = "";
-        //const cartData = await cart.findOne({userId:data.userId})
-        //const cartItems = createCart(cartData,req.body.cartItem)
-        //data.cartItems =(cartItems)
-        //if(!cartData){
-            const faktorNo= await createfaktorNo("F","02","21")
-            data.faktorNo=faktorNo
-            const faktorDetail = findCartSum(data.faktorItems)
-            const SepidarFaktor = await SepidarFunc({...data,...faktorDetail})
-            const addFaktorResult = await sepidarPOST(SepidarFaktor,"/api/invoices")
-            status = "new Faktor"
-            if(addFaktorResult.message){
-                res.status(400).json({error:addFaktorResult.message})
-                return
-            }
-            else{
-                
-                await cart.deleteOne({userId:data.userId})
-                const faktorAdd = await FaktorSchema.create(
-                    {...data,...faktorDetail,InvoiceNumber:addFaktorResult.Number,
-                        InvoiceID:addFaktorResult.InvoiceID})
-                    console.log(addFaktorResult)
-        //}
-        /*else{
-            await cart.updateOne(
-                {userId:data.userId},{$set:data})
-            status = "update cart"
-        }*/
-        //const cartNewData = await cart.findOne({userId:data.userId}).sort({"date":1})
-        res.json({sepidar:addFaktorResult,data:data,message:"فاکتور ثبت شد"})
-    }
+        const faktorNo= await createfaktorNo("F","02","21")
+        data.faktorNo=faktorNo
+        const faktorDetail = findCartSum(data.faktorItems)
+        const SepidarFaktor = await SepidarFunc({...data,...faktorDetail})
+        const addFaktorResult = await sepidarPOST(SepidarFaktor,"/api/invoices")
+        if(addFaktorResult.Message){
+            res.status(400).json({error:addFaktorResult.Message})
+            return
+        }
+        else{
+            await updateCount(data.faktorItems)
+            await cart.deleteOne({userId:data.userId})
+            await FaktorSchema.create(
+                {...data,...faktorDetail,InvoiceNumber:addFaktorResult.Number,
+                    InvoiceID:addFaktorResult.InvoiceID})
+                //console.log(addFaktorResult)
+            res.json({sepidar:addFaktorResult,data:data,message:"فاکتور ثبت شد"})
+        }
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -391,6 +388,13 @@ const SepidarFunc=async(data)=>{
       }
     return(query)
 }
+const updateCount = async(items)=>{
+    for(var i=0;i<items.length;i++){
+        console.log(items[i].count,toInt(items[i].count,"1",-1))
+        await productCount.updateOne({ItemID:items[i].id,Stock:"13"},
+            {$inc:{quantity:toInt(items[i].count,"1",-1)}})
+    }
+}
 const createfaktorNo= async(Noun,year,userCode)=>{
     var faktorNo = '';
     for(var i=0;i<10;i++){
@@ -401,11 +405,17 @@ const createfaktorNo= async(Noun,year,userCode)=>{
             return(faktorNo)
     }
 }
-const toInt=(strNum,count)=>{
+const toInt=(strNum,count,align)=>{
     if(!strNum)return(0)
     
-    return(parseInt(strNum.replace(/\D/g,''))*
+    return(parseInt((align?"-":'')+strNum.replace(/\D/g,''))*
     (count?parseInt(count.replace(/\D/g,'')):1))
+}
+const minusInt=(quantity,minus)=>{
+    if(!quantity)return(0)
+    
+    return(parseInt(quantity.replace(/\D/g,''))-
+    parseInt(minus.replace(/\D/g,'')))
 }
 const compareCount=(count1,count2)=>{
     return(parseInt(count1.toString().replace(/\D/g,''))>=
