@@ -11,7 +11,7 @@ function Register(props){
     
     const [showPass,setShowPass] = useState(0)
     const RegisterNow=()=>{
-        const token=cookies.get('fiin-login')
+        const token=cookies.get('faktor-login')
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,

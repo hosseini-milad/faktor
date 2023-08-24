@@ -6,10 +6,10 @@ import errortrans from "../translate/error";
 const Header = (props)=>{
     const cookies = new Cookies();
     const [convas,setConvas] = useState(0)
-    const token=cookies.get('fiin-login');
+    const token=cookies.get('faktor-login');
     const lang = props.lang?props.lang.lang:errortrans.defaultLang;
     const logOff=()=>{
-       cookies.remove('fiin-login',{ path: '/' });
+       cookies.remove('faktor-login',{ path: '/' });
        setTimeout(()=>(document.location.reload(),500))
     }
     return(

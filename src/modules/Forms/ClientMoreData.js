@@ -13,7 +13,7 @@ function ClientMoreData(props){
     const [regElement,setRegElement] = useState()
     const [error,setError] = useState({message:'',color:"brown"})
     useEffect(()=>{
-        const token=cookies.get('fiin-login')
+        const token=cookies.get('faktor-login')
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,
@@ -33,7 +33,7 @@ function ClientMoreData(props){
             })
         },[])
     const UpdateData=()=>{
-        const token=cookies.get('fiin-login')
+        const token=cookies.get('faktor-login')
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,

@@ -16,7 +16,7 @@ const FaktorList = (props)=>{
     const [pageNumber,setPageNumber] = useState(0)
     const [faktorList,setFaktorList] = useState() 
     
-    const token=cookies.get('fiin-login')
+    const token=cookies.get('faktor-login')
     
     useEffect(()=>{
         //console.log(search)

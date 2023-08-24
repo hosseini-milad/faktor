@@ -12,7 +12,7 @@ function ClientMontage(props){
     const [regElement,setRegElement] = useState()
     const [error,setError] = useState({message:'',color:"brown"})
     useEffect(()=>{
-        const token=cookies.get('fiin-login')
+        const token=cookies.get('faktor-login')
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,
@@ -28,12 +28,12 @@ function ClientMontage(props){
                 setRegElement(result.user[0])
             },
             (error) => {
-                cookies.remove('fiin-login',{ path: '/' });
+                cookies.remove('faktor-login',{ path: '/' });
                 setTimeout(()=>(document.location.reload(),500))
             })
         },[])
     const UpdateData=()=>{
-        const token=cookies.get('fiin-login')
+        const token=cookies.get('faktor-login')
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,
@@ -56,7 +56,7 @@ function ClientMontage(props){
                 }
             },
             (error) => {
-                cookies.remove('fiin-login',{ path: '/' });
+                cookies.remove('faktor-login',{ path: '/' });
                 setTimeout(()=>(document.location.reload(),500))
             })
         .catch((error)=>{

@@ -42,18 +42,18 @@ import ProductList from './modules/Products/ProductList';
 import ProductRegister from './modules/Products/ProductRegister';
 import FaktorPrint from './modules/Faktor/FaktorPrint/PrintHolder';
 const cookies = new Cookies();
-var lang = JSON.parse(localStorage.getItem('fiin-lang'));
+var lang = JSON.parse(localStorage.getItem('faktor-lang'));
 
 if(!lang){
-  localStorage.setItem('fiin-lang',JSON.stringify(
+  localStorage.setItem('faktor-lang',JSON.stringify(
     {lang:errortrans.defaultLang}));
-  lang = JSON.parse(localStorage.getItem('fiin-lang'));
+  lang = JSON.parse(localStorage.getItem('faktor-lang'));
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
     <Router>
-    {cookies.get('fiin-login')?
+    {cookies.get('faktor-login')?
       <Routes>
         <Route path="/" element={<Layout></Layout>}/>
         <Route path="/dashboard" element={<Layout><Dashboard/></Layout>}/>

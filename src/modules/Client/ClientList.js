@@ -14,7 +14,7 @@ const ClientList = (props)=>{
     const [doFilter,setDoFilter] = useState(1)
     const [pageNumber,setPageNumber] = useState(0)
     
-    const token=cookies.get('fiin-login')
+    const token=cookies.get('faktor-login')
     useEffect(()=>{
         setUsers('')
         const postOptions={

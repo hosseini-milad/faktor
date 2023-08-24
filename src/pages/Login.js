@@ -29,7 +29,7 @@ function Login(props){
             else{
                 const accessLevel = result.access
                 const cookies = new Cookies();
-                cookies.set('fiin-login', {
+                cookies.set('faktor-login', {
                     userId:result._id,
                     access:result.access,
                     level:accessLevel==="manager"?10:accessLevel==="agency"?5:

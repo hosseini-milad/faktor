@@ -11,7 +11,7 @@ function ProductRegTable(props){
     const [newItem,setNewItem] = useState()
     const [error,setError] = useState({message:'',color:"brown"})
     console.log(productList)
-    const token=cookies.get('fiin-login')
+    const token=cookies.get('faktor-login')
     useEffect(()=>{
         const postOptions={
             method:'post',

@@ -15,7 +15,7 @@ const FaktorNewItem = (props)=>{
     const [description,setDescription] = useState('')
     const [search,setSearch] = useState('')
     
-    const token=cookies.get('fiin-login')
+    const token=cookies.get('faktor-login')
     useEffect(()=>{
         if(search.length<3){
             setShowPop(0)
@@ -64,10 +64,17 @@ const FaktorNewItem = (props)=>{
         .then(
             (result) => {
                 console.log(result)
-                props.setFaktorList(result)
-                setSearch('')
-                setItem('')
-                setCount("1")
+                if(result.error){
+                    setError({message:result.error,color:"brown"})
+                    setTimeout(()=>setError({message:'',
+                        color:"brown"}),3000)
+                }
+                else{
+                    props.setFaktorList(result)
+                    setSearch('')
+                    setItem('')
+                    setCount("1")
+                }
             },
             (error) => {
                 console.log(error)
@@ -92,11 +99,11 @@ const FaktorNewItem = (props)=>{
                         <div className="pop-form-item" key={i}
                         onClick={()=>(setItem(item),setShowPop(0))}>
                             <span className="titleShow">{item.title}</span>
-                            <small className="skuShow">{item.sku}</small>
+                        <small className="skuShow">{item.sku}</small>
                             <span className="priceShow">{normalPrice(item.priceData&&item.priceData[0]&&
                                 item.priceData[0].price)}</span>
                             <small className="countShow">{item.countData[0]&&
-                                item.countData[0].quantity.split('.')[0]}</small>
+                            item.count.quantity.split('.')[0]}</small>
                         </div>
                         ))}
                     </div>
@@ -110,7 +117,9 @@ const FaktorNewItem = (props)=>{
                         placeholder="تعداد"/>
                 </div></td>
             <td width="20%">{item?normalPrice(item.priceData&&item.priceData[0]&&
-                                item.priceData[0].price):''}</td>
+                                item.priceData[0].price):''}<br/>
+                        <small className="errorSmall" style={{color:error.color}}>
+                            {error.message}</small></td>
             <td width="20%"><div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
                     <input type="text" name="description" id="description" 
                         onChange={(e)=>setDescription(e.target.value)}

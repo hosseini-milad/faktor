@@ -32,7 +32,7 @@ const Steps = (props)=>{
     useEffect(()=>{
         window.scroll(0,150)
     },[index])
-    const token=cookies.get('fiin-login')
+    const token=cookies.get('faktor-login')
     return(
         <div className="container">
         <Breadcrumb title={"Lista de Clientes"}/>

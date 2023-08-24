@@ -36,7 +36,7 @@ function Board(){
     const [taskState,setTaskState] = useState()
     //const initalData = 
     const [boardArray,setBoardArray] = useState()
-    const token=cookies.get('fiin-login')
+    const token=cookies.get('faktor-login')
     useEffect(()=>{
         setTaskState()
         const postOptions={
@@ -53,7 +53,7 @@ function Board(){
                 setBoardArray(()=>UpdateTaskStatus(result))
             },
             (error) => {
-                //cookies.remove('fiin-login',{ path: '/' });
+                //cookies.remove('faktor-login',{ path: '/' });
                 //setTimeout(()=>(document.location.reload(),500))
                 console.log(error)
             })

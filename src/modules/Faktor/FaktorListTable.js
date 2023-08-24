@@ -9,7 +9,7 @@ const cookies = new Cookies();
 function FaktorListTable(props){
     
     console.log(props.faktorList)
-    const token=cookies.get('fiin-login')
+    const token=cookies.get('faktor-login')
 
     useEffect(()=>{
         //console.log(search)

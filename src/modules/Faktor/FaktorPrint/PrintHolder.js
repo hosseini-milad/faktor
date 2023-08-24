@@ -12,7 +12,7 @@ const FaktorPrint = (props)=>{
     const [error,setError] = useState({message:'',color:"brown"})
     const [faktorList,setFaktorList] = useState() 
     
-    const token=cookies.get('fiin-login')
+    const token=cookies.get('faktor-login')
     console.log(faktorList)
     useEffect(()=>{
         //console.log(search)

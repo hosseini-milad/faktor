@@ -30,8 +30,10 @@ function FaktorAccordion(props){
                             </div>
                             <div className="col">
                                 <div className="list-item">
-                                    <span style={{fontSize:"12px"}}>کاربر: </span>
-                                    {"میلاد حسینی"}
+                                    <span style={{fontSize:"12px"}}> کاربر: </span>
+                                    {faktor.userData&&
+                                    faktor.userData[0]&&
+                                    faktor.userData[0].username}
                                 </div>
                             </div>
                             <div className="col">
@@ -67,6 +69,11 @@ function FaktorAccordion(props){
                                 <div className="col">
                                     <div className="list-item">
                                         <span>تعداد:</span> {faktorItem.count}
+                                    </div>
+                                </div>
+                                <div className="col">
+                                    <div className="list-item">
+                                        <span>فی:</span> {normalPrice(faktorItem.price)}
                                     </div>
                                 </div>
                             </div>

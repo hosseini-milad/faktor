@@ -17,7 +17,7 @@ function PrintHesabfa(props){
               </div>
               <div className="hesabfaSection" style={{minWidth: "240px"}}>
                 <small>شماره فاکتور: <b>{orderInfo.faktorNo}</b></small>
-                <small>شماره ارجاع: <b>{orderInfo.faktorNo}</b></small>
+                <small>شماره ارجاع: <b>{orderInfo.InvoiceNumber}</b></small>
                 <small> تاریخ سفارش: <b>{new Date(orderInfo.initDate).toLocaleDateString('fa-IR')}</b></small>
               </div>
             </div>

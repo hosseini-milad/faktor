@@ -13,7 +13,7 @@ function Profile(){
     const [email,setEmail] = useState()
     const [error,setError] = useState({message:'',color:"brown"})
     
-    const token=cookies.get('fiin-login')
+    const token=cookies.get('faktor-login')
     useEffect(()=>{
         const postOptions={
             method:'post',
@@ -34,7 +34,7 @@ function Profile(){
         })
     },[])
     const saveData=()=>{
-        const token=cookies.get('fiin-login')
+        const token=cookies.get('faktor-login')
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,
@@ -62,7 +62,7 @@ function Profile(){
         })
     }
     const changeEmailFunction=()=>{
-        const token=cookies.get('fiin-login')
+        const token=cookies.get('faktor-login')
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,

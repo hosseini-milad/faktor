@@ -7,8 +7,8 @@ const cookies = new Cookies();
 
 function FaktorRegTable(props){
     
-    const token=cookies.get('fiin-login')
-
+    const token=cookies.get('faktor-login')
+    console.log(props.faktorList)
     useEffect(()=>{
         //console.log(search)
         const postOptions={
