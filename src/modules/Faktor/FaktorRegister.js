@@ -110,9 +110,9 @@ const FaktorRegister = (props)=>{
                             <div className="pop-form-item" key={i}
                             onClick={()=>(setUsers(item),setShowPop(0))}>
                                 <span className="titleShow">{item.username}</span>
-                                <small className="priceShow" style={{width:"100px"}}>{item.phone}</small>
+                                {/*<small className="priceShow" style={{width:"100px"}}>{item.phone}</small>
                                 
-                                <small className="priceShow">{item.CustomerID}</small>
+                            <small className="priceShow">{item.CustomerID}</small>*/}
                             </div>
                             ))}
                         </div>

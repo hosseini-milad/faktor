@@ -99,11 +99,11 @@ const FaktorNewItem = (props)=>{
                         <div className="pop-form-item" key={i}
                         onClick={()=>(setItem(item),setShowPop(0))}>
                             <span className="titleShow">{item.title}</span>
-                        <small className="skuShow">{item.sku}</small>
+                        {/*<small className="skuShow">{item.sku}</small>
                             <span className="priceShow">{normalPrice(item.priceData&&item.priceData[0]&&
                                 item.priceData[0].price)}</span>
                             <small className="countShow">{item.countData[0]&&
-                            item.count.quantity}</small>
+                            item.count.quantity}</small>*/}
                         </div>
                         ))}
                     </div>
