@@ -73,7 +73,7 @@ function FaktorRegTable(props){
             <thead>
                 <tr>
                     <th width="3%">ردیف</th>
-                    <th width="30%">آیتم</th>
+                    <th width="30%">شرح</th>
                     <th width="10%">تعداد</th>
                     <th width="10%">قیمت</th>
                     <th width="10%">توضیحات</th>
@@ -85,7 +85,7 @@ function FaktorRegTable(props){
                                 faktorList={props.faktorList}/>
                 {(props.faktorList&&props.faktorList.totalCount)?
                     props.faktorList.cart.cartItems.map((faktor,i)=>(
-                <tr key={i} style={{backgroundColor:"lightGreen"}}>
+                <tr key={i} style={{backgroundColor:"#EEEFFC"}}>
                     <td>{i+1}</td>
                     <td className="tdHolder">
                         <strong>{faktor.title}</strong>
@@ -104,7 +104,7 @@ function FaktorRegTable(props){
                 )):
                 <tr><td colSpan={2}>سبد خرید خالی است</td></tr>}
                 {props.faktorList&&props.faktorList.totalCount?
-                  <tr style={{backgroundColor:"lightBlue"}}>
+                  <tr style={{backgroundColor:"#666A70"}}>
                     <td>#</td>
                     <td></td>
                     <td>{props.faktorList.totalCount}</td>

@@ -241,6 +241,7 @@ span {
 .table-fiin th {
     font-weight: 300;
     padding: 11px 24px;
+    text-align: center;
 }
 
 .table-fiin td {
