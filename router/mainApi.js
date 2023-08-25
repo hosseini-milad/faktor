@@ -32,7 +32,7 @@ router.use('/task', taskApi)
 router.use('/product', productApi)
 router.use('/form', formApi)
 router.use('/user', userApi)
-schedule.scheduleJob('0 0 * * *', () => { 
+schedule.scheduleJob('0 0 * * *', async() => { 
     response = await fetch(ONLINE_URL+"/sepidar-product",
         {method: 'POST'});
     response = await fetch(ONLINE_URL+"/sepidar-price",
