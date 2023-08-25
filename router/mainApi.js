@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router()
+const { default: fetch } = require("node-fetch");
 const slider = require('../models/main/slider');
 const authApi = require('./authApi');
 const taskApi = require('./taskApi');
@@ -11,6 +12,8 @@ const products = require('../models/product/products');
 const productPrice = require('../models/product/productPrice');
 const productCount = require('../models/product/productCount');
 const customers = require('../models/auth/customers');
+const schedule = require('node-schedule')
+const { ONLINE_URL} = process.env;
 
 router.get('/main', async (req,res)=>{
     try{
@@ -29,7 +32,16 @@ router.use('/task', taskApi)
 router.use('/product', productApi)
 router.use('/form', formApi)
 router.use('/user', userApi)
-
+schedule.scheduleJob('0 0 * * *', () => { 
+    response = await fetch(ONLINE_URL+"/sepidar-product",
+        {method: 'POST'});
+    response = await fetch(ONLINE_URL+"/sepidar-price",
+        {method: 'POST'});
+    response = await fetch(ONLINE_URL+"/sepidar-quantity",
+        {method: 'POST'});
+    response = await fetch(ONLINE_URL+"/sepidar-users",
+        {method: 'POST'});
+ })
 router.post('/sepidar-product', async (req,res)=>{
     const url=req.body.url
     try{

@@ -13,7 +13,7 @@ require('winston-daily-rotate-file');
 var emitter = require('events').EventEmitter;
 var eventsEmitter = new emitter();
 const { API_PORT } = process.env;
-const port = 4090 || API_PORT;
+const port = API_PORT;
 
 eventsEmitter.on('tqi9z2oj5x1gu3iuqtv1d9pyc1gtfkef', () => {
   
