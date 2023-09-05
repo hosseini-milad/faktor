@@ -162,8 +162,13 @@ router.post('/cartlist', async (req,res)=>{
         }},
     {$limit:10}])
         for(var i = 0;i<cartList.length;i++){
-            var cartResult = findCartSum(cartList[i].cartItems)
-            cartList[i].countData=cartResult
+            if(cartList[i].cartItems&&cartList[i].cartItems.length){
+                var cartResult = findCartSum(cartList[i].cartItems)
+                cartList[i].countData=cartResult
+            }
+            else{
+                cartList.splice(i,1)
+            }
         }
         res.json({cart:cartList})
     }
