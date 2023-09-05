@@ -12,6 +12,7 @@ const FaktorSchema = require('../models/product/faktor');
 const customerSchema = require('../models/auth/customers');
 const sepidarPOST = require('../middleware/SepidarPost');
 const productCount = require('../models/product/productCount');
+const cartLog = require('../models/product/cartLog');
 
 router.post('/products', async (req,res)=>{
     try{
@@ -49,11 +50,10 @@ router.post('/find-products', async (req,res)=>{
         var searchProductResult=[]
         for(var i=0;i<searchProducts.length;i++){
             var count = (searchProducts[i].countData.find(item=>item.Stock==='13'))
-            if(count)
+            if(count&&count.quantity){
                 searchProductResult.push({...searchProducts[i],count:count})
+            }
         }
- 
-        //logger.warn("main done")
         res.json({products:searchProductResult})
     }
     catch(error){
@@ -138,6 +138,7 @@ router.post('/cart', async (req,res)=>{
     }
 })
 const findCartSum=(cartItems)=>{
+    if(!cartItems)return({totalPrice:0,totalCount:0})
     var cartSum=0;
     var cartCount=0;
     for (var i=0;i<cartItems.length;i++){
@@ -147,6 +148,30 @@ const findCartSum=(cartItems)=>{
     }
     return({totalPrice:cartSum,totalCount:cartCount})
 }
+router.post('/cartlist', async (req,res)=>{
+    const userId =req.body.userId?req.body.userId:req.headers['userid'];
+    try{
+        const cartList = await cart.aggregate
+        ([
+            { $addFields: { "userId": { "$toObjectId": "$userId" }}},
+        {$lookup:{
+            from : "customers", 
+            localField: "userId", 
+            foreignField: "_id", 
+            as : "userData"
+        }},
+    {$limit:10}])
+        for(var i = 0;i<cartList.length;i++){
+            var cartResult = findCartSum(cartList[i].cartItems)
+            cartList[i].countData=cartResult
+        }
+        res.json({cart:cartList})
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
+
 router.post('/update-cart',jsonParser, async (req,res)=>{
     const data={
         userId:req.body.userId?req.body.userId:req.headers['userid'],
@@ -166,10 +191,12 @@ router.post('/update-cart',jsonParser, async (req,res)=>{
         const cartItems = createCart(cartData,req.body.cartItem)
         data.cartItems =(cartItems)
         if(!cartData){
+            cartLog.create({...data,ItemID:req.body.cartItem,action:"create"})
             await cart.create(data)
             status = "new Cart"
         }
         else{
+            cartLog.create({...data,ItemID:req.body.cartItem,action:"update"})
             await cart.updateOne(
                 {userId:data.userId},{$set:data})
             status = "update cart"
@@ -264,7 +291,7 @@ router.post('/remove-cart',jsonParser, async (req,res)=>{
         const cartItems = removeCart(cartData,req.body.cartID)
         data.cartItems =(cartItems)
         //console.log(req.body.cartItem)
-        
+        cartLog.create({...data,ItemID:req.body.cartID,action:"delete"})
             await cart.updateOne(
                 {userId:data.userId},{$set:data})
             status = "update cart"
