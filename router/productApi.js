@@ -457,7 +457,7 @@ const compareCount=(count1,count2)=>{
 router.post('/customer-find', async (req,res)=>{
     const search = req.body.search
     try{ 
-        var searchCustomer = await customerSchema.
+        var searchCustomer = await users.
         aggregate([{$match:
             {$or:[
                 {username:{$regex: search, $options : 'i'}},
@@ -466,7 +466,7 @@ router.post('/customer-find', async (req,res)=>{
         },
         {$limit:6}])
         if(!searchCustomer.length){
-            searchCustomer = await users.
+            searchCustomer = await customerSchema.
             aggregate([{$match:
                 {$or:[
                     {username:{$regex: search, $options : 'i'}},
