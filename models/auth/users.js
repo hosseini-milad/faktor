@@ -21,6 +21,7 @@ const userSchema = new mongoose.Schema({
   agent:{ type: String },
   active:{ type: String },
   status:{ type: String },
+  Code:{ type: String },
 
   nameCompany:{ type: String },
   firma:{ type: String },

@@ -13,6 +13,7 @@ const customerSchema = require('../models/auth/customers');
 const sepidarPOST = require('../middleware/SepidarPost');
 const productCount = require('../models/product/productCount');
 const cartLog = require('../models/product/cartLog');
+const users = require('../models/auth/users');
 
 router.post('/products', async (req,res)=>{
     try{
@@ -396,7 +397,7 @@ const SepidarFunc=async(data)=>{
         "CurrencyRef":1,
         "SaleTypeRef": 4,
         "Price": data.totalPrice,
-        "Tax": 8000,
+        "Tax":  toInt(data.totalPrice,"0.09"),
         "Duty":0.0000,
         "Discount": 0.0000,
         "Items": 
@@ -414,7 +415,7 @@ const SepidarFunc=async(data)=>{
             "Tax": toInt(item.price,"0.09"),
             "Duty": 0.0000,
             "Addition": 0.0000,
-            "NetPrice": 16500001.0000
+            "NetPrice": 0.0000
           }))
         
       }
@@ -440,8 +441,8 @@ const createfaktorNo= async(Noun,year,userCode)=>{
 const toInt=(strNum,count,align)=>{
     if(!strNum)return(0)
     
-    return(parseInt((align?"-":'')+strNum.replace(/\D/g,''))*
-    (count?parseInt(count.replace(/\D/g,'')):1))
+    return(parseInt(parseInt((align?"-":'')+strNum)*
+    (count?parseFloat(count):1)))
 }
 const minusInt=(quantity,minus)=>{
     if(!quantity)return(0)
@@ -456,7 +457,7 @@ const compareCount=(count1,count2)=>{
 router.post('/customer-find', async (req,res)=>{
     const search = req.body.search
     try{ 
-        const searchCustomer = await customerSchema.
+        var searchCustomer = await customerSchema.
         aggregate([{$match:
             {$or:[
                 {username:{$regex: search, $options : 'i'}},
@@ -464,6 +465,16 @@ router.post('/customer-find', async (req,res)=>{
             ]}
         },
         {$limit:6}])
+        if(!searchCustomer.length){
+            searchCustomer = await users.
+            aggregate([{$match:
+                {$or:[
+                    {username:{$regex: search, $options : 'i'}},
+                    {Code:{$regex: search, $options : 'i'}}
+                ]}
+            },
+            {$limit:6}])
+        }
             
         //logger.warn("main done")
         res.json({customers:searchCustomer})
