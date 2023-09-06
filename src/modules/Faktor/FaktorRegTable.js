@@ -6,36 +6,38 @@ import env, { normalPrice } from "../../env";
 const cookies = new Cookies();
 
 function FaktorRegTable(props){
-    
+    const user=props.users
     const token=cookies.get('faktor-login')
-    console.log(props.faktorList)
     useEffect(()=>{
-        //console.log(search)
+        //console.log(props.users)
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,
             "x-access-token": token&&token.token,
             "userId":token&&token.userId},
-            body:JSON.stringify({userId:token&&token.userId})
+            body:JSON.stringify({userId:user?user._id:(token&&token.userId)})
           }
         fetch(env.siteApi + "/product/cart",postOptions)
         .then(res => res.json())
         .then(
             (result) => {
                 if(result.cart)
-                    props.setFaktorList(result) 
+                    props.setFaktorList(result)
+                else
+                    props.setFaktorList('') 
             },
             (error) => {
                 console.log(error)
             })
-    },[])
+    },[user])
     const removeItem=(ItemID)=>{
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,
             "x-access-token": token&&token.token,
             "userId":token&&token.userId},
-            body:JSON.stringify({userId:token&&token.userId,cartID:ItemID})
+            body:JSON.stringify({userId:user?user._id:(token&&token.userId),
+                cartID:ItemID})
           }
         fetch(env.siteApi + "/product/remove-cart",postOptions)
         .then(res => res.json())
@@ -68,6 +70,7 @@ function FaktorRegTable(props){
                 console.log(error)
             })
     }
+    console.log(props.faktorList)
     return(<>
         <table style={{overflow: "auto"}}>
             <thead>
@@ -82,7 +85,7 @@ function FaktorRegTable(props){
             </thead>
             <tbody>
                 <FaktorNewItem setFaktorList={props.setFaktorList} 
-                                faktorList={props.faktorList}/>
+                                faktorList={props.faktorList} users={user}/>
                 {(props.faktorList&&props.faktorList.totalCount)?
                     props.faktorList.cart.cartItems.map((faktor,i)=>(
                 <tr key={i} style={{backgroundColor:"#EEEFFC"}}>
@@ -94,7 +97,7 @@ function FaktorRegTable(props){
                         <input type="text" name="count" id="count" 
                             onChange={(e)=>setCount(faktor.id,e.target.value)}
                             className="formInputSimple"
-                            defaultValue={faktor.count}
+                            value={faktor.count||''}
                             placeholder="تعداد"/>
                         </div></td>
                     <td>{normalPrice(faktor.price)}</td>
@@ -104,15 +107,15 @@ function FaktorRegTable(props){
                 )):
                 <tr><td colSpan={2}>سبد خرید خالی است</td></tr>}
                 {props.faktorList&&props.faktorList.totalCount?
-                  <tr style={{backgroundColor:"#666A70"}}>
+                  <tr style={{backgroundColor:"#666A70",color:"#fff"}}>
                     <td>#</td>
                     <td></td>
-                    <td>{props.faktorList.totalCount}</td>
+                    <td style={{textAlign:"center"}}>{props.faktorList.totalCount}</td>
                     <td colSpan={2}>جمع سفارش: 
                         <b> {normalPrice(props.faktorList.totalPrice)} ریال 
                         </b></td>
                     
-                    <td>خالی کردن</td>
+                    <td style={{padding: "22px 8px"}}>خالی کردن</td>
                   </tr>:<></>}
             </tbody>
         </table>

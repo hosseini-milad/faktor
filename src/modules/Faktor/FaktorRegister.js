@@ -68,7 +68,6 @@ const FaktorRegister = (props)=>{
     .then(res => res.json())
     .then(
         (result) => {
-            console.log(result)
             if(result.customers)
                 setShowPop(1)
             if(result.error){
@@ -120,7 +119,8 @@ const FaktorRegister = (props)=>{
                 </div>
             </div> 
             <div className="table-fiin">
-                <FaktorRegTable faktorList={faktorList} setFaktorList={setFaktorList}/>
+                <FaktorRegTable faktorList={faktorList} 
+                    setFaktorList={setFaktorList} users={users}/>
             </div>
 
             <div className="footer-form-fiin rev">

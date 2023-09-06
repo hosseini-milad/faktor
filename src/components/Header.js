@@ -26,6 +26,8 @@ const Header = (props)=>{
                     <ul className="main-menu">
                         <li><a href="/faktor/register"> ثبت فاکتور </a>
                         </li>
+                        <li><a href="/cart/List">سفارشات باز</a>
+                        </li>
                         <li><a href="/faktor/List"> لیست فاکتورها</a>
                         </li>
                         

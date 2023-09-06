@@ -41,6 +41,7 @@ import FaktorList from './modules/Faktor/FaktorList';
 import ProductList from './modules/Products/ProductList';
 import ProductRegister from './modules/Products/ProductRegister';
 import FaktorPrint from './modules/Faktor/FaktorPrint/PrintHolder';
+import CartList from './modules/Cart/CartList';
 
 const cookies = new Cookies();
 var lang = JSON.parse(localStorage.getItem('faktor-lang'));
@@ -86,6 +87,8 @@ root.render(
         <Route path="/faktor/register" element={<Layout><FaktorRegister/></Layout>}/>
         <Route path="/faktor/print/:faktorId" element={<Layout><FaktorPrint/></Layout>}/>
         <Route path="/faktor/fishprint/:faktorId" element={<Layout><FaktorPrint/></Layout>}/>
+
+        <Route path="/cart/list" element={<Layout><CartList/></Layout>}/>
         
         {/* Product Pages */}
         <Route path="/product/list" element={<Layout><ProductList/></Layout>}/>

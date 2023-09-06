@@ -92,14 +92,14 @@ function Profile(){
     }
     return(
         <div className="container">
-        <Breadcrumb title={"Dados do utilizador"}/>
+        <Breadcrumb title={"پروفایل کاربری"}/>
         
         <div className="section-fiin dados-do-consultor">
             <div className="row justify-content-center">
                 <div className="col-lg-8">
                     <div className="form-fiin form-box-style">
                         <div className="section-head">
-                            <h1 className="section-title">Dados do utilizador <span>{users?users.access:''}</span></h1>
+                            <h1 className="section-title">پروفایل کاربری <span>{users?users.access:''}</span></h1>
                             {users&&users.access==="agency"?
                             <><p>Dados do parceiro</p><hr/></>:''}
                         </div>

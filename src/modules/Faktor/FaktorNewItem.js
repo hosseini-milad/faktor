@@ -32,7 +32,6 @@ const FaktorNewItem = (props)=>{
         .then(res => res.json())
         .then(
             (result) => {
-                console.log(result)
                 if(result.products)
                     setShowPop(1)
                 if(result.error){
@@ -54,16 +53,15 @@ const FaktorNewItem = (props)=>{
             headers: { 'Content-Type': 'application/json' ,
             "x-access-token": token&&token.token,
             "userId":token&&token.userId},
-            body:JSON.stringify({userId:(token&&token.userId),
+            body:JSON.stringify({userId:props.users?props.users._id:(token&&token.userId),
                 date:Date.now,cartItem:{id:item.ItemID,sku:item.sku,
-                    title:item.title,count:count?count:1,price:item.priceData&&
+                    title:item.title,count:count?count:1,price:item.priceData&&item.priceData[0]&&
                     item.priceData[0].price,description:description}})
           }
         fetch(env.siteApi + "/product/update-cart",postOptions)
         .then(res => res.json())
         .then(
             (result) => {
-                console.log(result)
                 if(result.error){
                     setError({message:result.error,color:"brown"})
                     setTimeout(()=>setError({message:'',
@@ -101,9 +99,9 @@ const FaktorNewItem = (props)=>{
                             <span className="titleShow">{item.title}</span>
                         {/*<small className="skuShow">{item.sku}</small>
                             <span className="priceShow">{normalPrice(item.priceData&&item.priceData[0]&&
-                                item.priceData[0].price)}</span>
+                                item.priceData[0].price)}</span>*/}
                             <small className="countShow">{item.countData[0]&&
-                            item.count.quantity}</small>*/}
+                            item.count.quantity}</small>
                         </div>
                         ))}
                     </div>
@@ -113,7 +111,7 @@ const FaktorNewItem = (props)=>{
                 <div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
                     <input type="text" name="count" id="count" 
                         onChange={(e)=>setCount(e.target.value)}
-                        value={count}
+                        value={count} style={{textAlign:"center"}}
                         placeholder="تعداد"/>
                 </div></td>
             <td width="20%">{item?normalPrice(item.priceData&&item.priceData[0]&&

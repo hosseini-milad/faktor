@@ -58,14 +58,14 @@ function ProfileView(){
     }
     return(
         <div className="container">
-        <Breadcrumb title={"Dados do utilizador"}/>
+        <Breadcrumb title={"پروفایل کاربری"}/>
         
         <div className="section-fiin dados-do-consultor">
             <div className="row justify-content-center">
                 <div className="col-lg-8">
                     <div className="form-fiin form-box-style">
                         <div className="section-head">
-                            <h1 className="section-title">Dados Do utilizador <span>{token?token.access:''}</span></h1>
+                            <h1 className="section-title">پروفایل کاربری <span>{token?token.access:''}</span></h1>
                             {token&&token.access==="agency"?
                             <><p>Dados do parceiro</p><hr/></>:<></>}
                         </div>
@@ -128,7 +128,7 @@ function ProfileView(){
                         <div className="row">
                             <div className="col-md-6">
                                 <div className="form-field-fiin">
-                                    <label htmlFor="first-name">Name</label>
+                                    <label htmlFor="first-name">نام</label>
                                     <input type="text" name="firstname" id="first-name" 
                                     value={users&&users.cName} disabled={disableState}
                                     onChange={(e)=>setUsers(data => ({
@@ -139,7 +139,7 @@ function ProfileView(){
                             </div>
                             <div className="col-md-6">
                                 <div className="form-field-fiin">
-                                    <label htmlFor="last-name">Apelido</label>
+                                    <label htmlFor="last-name">نام خانوادگی</label>
                                     <input type="text" name="lastname" id="last-name" 
                                     value={users&&users.sName} disabled={disableState}
                                     onChange={(e)=>setUsers(data => ({
@@ -150,7 +150,7 @@ function ProfileView(){
                             </div>
                             <div className="col-md-6">
                                 <div className="form-field-fiin">
-                                    <label htmlFor="nif">NIF</label>
+                                    <label htmlFor="nif">کدملی</label>
                                     <input type="text" name="nif" id="nif" 
                                     value={users&&users.nif} disabled={disableState}
                                     onChange={(e)=>setUsers(data => ({
@@ -161,7 +161,7 @@ function ProfileView(){
                             </div>
                             <div className="col-md-6">
                                 <div className="form-field-fiin">
-                                    <label htmlFor="email">E-mail</label>
+                                    <label htmlFor="email">آدرس ایمیل</label>
                                     <input type="email" name="email" id="email" 
                                     value={users&&users.email} disabled={disableState}
                                     onChange={(e)=>setUsers(data => ({
@@ -172,7 +172,7 @@ function ProfileView(){
                             </div>
                             <div className="col-md-6">
                                 <div className="form-field-fiin">
-                                    <label htmlFor="telefone">Telefone</label>
+                                    <label htmlFor="telefone">شماره تماس</label>
                                     <input type="tel" name="telefone" id="telefone" 
                                     value={users&&users.phone} disabled={disableState}
                                     onChange={(e)=>setUsers(data => ({

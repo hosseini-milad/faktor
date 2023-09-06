@@ -252,7 +252,7 @@ body{
 }
 .titleShow{
     padding: 10px 5px;
-    width: 150px;
+    width: 200px;
 }
 .skuShow{
     position: absolute;
@@ -278,7 +278,7 @@ body{
 }
 .countShow{
     position: absolute;
-    left: 72px;
+    left: 12px;
     font-size: 12px;
     bottom:10px;
     border:1px solid var(--main-color);
@@ -295,7 +295,7 @@ body{
     color:brown;
 }
 .section-fiin {
-    overflow-x: auto;
+    overflow-x: initial;
   }
 .tdHolder{
     position: relative;
@@ -304,7 +304,7 @@ body{
     overflow: hidden;
     white-space: nowrap; 
     text-overflow: ellipsis;
-    max-width: 180px;
+    max-width: 300px;
     display: block;
 }
 .tdHolder small{
