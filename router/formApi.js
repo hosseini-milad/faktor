@@ -260,5 +260,60 @@ router.post('/report-sale', async (req,res)=>{
       res.status(500).json({message: error.message})
   }
 })
+router.post('/report-board', async (req,res)=>{
+  const search = req.body.search
+  try{ 
+    var today = new Date();
+    var cartList = await cart.find()
+    var faktorList = await faktor.find({initDate:{ $gte:today.setDate(today.getDate()-7)}})
+    
+    var outputItems = []
+    /*for(var i=0;i<7;i++)
+      outputItems[i] ={sku:'',price:0,count:0}*/
+    for(var i=0;i<faktorList.length;i++){
+      var added = []
+      for(var j=0;j<faktorList[i].faktorItems.length;j++){
+        var foundIndex = findItem(faktorList[i].faktorItems[j].id,outputItems)
+        if(foundIndex!==-1)
+          outputItems[foundIndex].count = 
+            sumCount(outputItems[foundIndex].count,faktorList[i].faktorItems[j].count)
+        else 
+          outputItems.push(faktorList[i].faktorItems[j])
+      }
+      
+    }
+    for(var i=0;i<cartList.length;i++){
+      var added = []
+      for(var j=0;j<cartList[i].cartItems.length;j++){
+        var foundIndex = findItem(cartList[i].cartItems[j].id,outputItems)
+        if(foundIndex!==-1)
+          outputItems[foundIndex].count = 
+            sumCount(outputItems[foundIndex].count,cartList[i].cartItems[j].count)
+        else 
+          outputItems.push(cartList[i].cartItems[j])
+      } 
+    }
+    var sortedItem=[]
+    outputItems.sort((a, b) => {
+      return b.count - a.count;
+  });
+    //logger.warn("main done")
+    res.json({saleReport:faktorList,outputReport:outputItems})
+  }
+  catch(error){
+      res.status(500).json({message: error.message})
+  }
+})
+const findItem=(itemId,itemList)=>{
+  for(var i=0;i<itemList.length;i++)
+    if(itemList[i].id === itemId)
+      return(i)
+  return(-1)
+}
+const sumCount=(count1,count2)=>{
+  var c1 = parseInt(count1.toString())
+  var c2 = parseInt(count2.toString())
+  return(c1+c2)
+}
 
 module.exports = router;
