@@ -513,7 +513,17 @@ body{
     margin: auto;
 }
 
+
 /* End RTL */
+
+/* Charts */
+.charts{
+    width: 40%;
+}
+
+/* End Charts */
+
+
 @media only screen and (max-width:1200px){
     .table-fiin table {
         max-width: 1300px;
