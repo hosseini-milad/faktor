@@ -10,6 +10,7 @@ const User = require("../models/auth/users");
 const UserDetail = require("../models/auth/customerDetail")
 const UserMontage = require("../models/auth/customerMontage");
 const task = require('../models/main/task');
+const faktor = require('../models/product/faktor');
 
 router.post('/user-detail',auth,jsonParser, async (req,res)=>{
   const userId =req.body.userId?req.body.userId:req.headers['userid']
@@ -225,4 +226,35 @@ router.post('/confirm-user-data',auth,jsonParser, async (req,res)=>{
       res.status(500).json({message: error.message})
   }
 })
+
+router.post('/report-sale', async (req,res)=>{
+  const search = req.body.search
+  try{ 
+      var faktorList = await faktor.find({})
+      /*aggregate([{$match:
+          {$or:[
+              {username:{$regex: search, $options : 'i'}},
+              {Code:{$regex: search, $options : 'i'}}
+          ]}
+      },
+      {$limit:6}])
+      if(!searchCustomer.length){
+          searchCustomer = await customerSchema.
+          aggregate([{$match:
+              {$or:[
+                  {username:{$regex: search, $options : 'i'}},
+                  {Code:{$regex: search, $options : 'i'}}
+              ]}
+          },
+          {$limit:6}])
+      }*/
+          
+      //logger.warn("main done")
+      res.json({saleReport:faktorList})
+  }
+  catch(error){
+      res.status(500).json({message: error.message})
+  }
+})
+
 module.exports = router;
