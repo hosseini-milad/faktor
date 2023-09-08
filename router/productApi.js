@@ -161,6 +161,12 @@ router.post('/cartlist', async (req,res)=>{
             foreignField: "_id", 
             as : "userData"
         }},
+        {$lookup:{
+            from : "users", 
+            localField: "userId", 
+            foreignField: "_id", 
+            as : "adminData"
+        }},
     {$limit:10}])
         for(var i = 0;i<cartList.length;i++){
             if(cartList[i].cartItems&&cartList[i].cartItems.length){
@@ -453,7 +459,7 @@ const minusInt=(quantity,minus)=>{
 const compareCount=(count1,count2)=>{
     return(parseInt(count1.toString().replace(/\D/g,''))>=
     (parseInt(count2.toString().replace(/\D/g,''))))
-}
+} 
 router.post('/customer-find', async (req,res)=>{
     const search = req.body.search
     try{ 
