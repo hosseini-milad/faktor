@@ -357,7 +357,7 @@ router.post('/quick-to-cart',jsonParser, async (req,res)=>{
         const quickCartItems = qCartData&&qCartData.cartItems
 
         const cartData = await cart.findOne({userId:data.userId})
-        var cartItems=cartData.cartItems
+        var cartItems=cartData&&cartData.cartItems
         for(var i=0;i<quickCartItems.length;i++)
             cartItems=createCart(cartItems,quickCartItems[i])
         data.cartItems =(cartItems)
