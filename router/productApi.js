@@ -229,7 +229,7 @@ router.post('/update-cart',jsonParser, async (req,res)=>{
         }
         var cartDetail = ''
         var qCartDetail = ''
-        cartDetail =findCartSum(cartData.cartItems)
+        cartDetail =findCartSum(cartData&&cartData.cartItems)
         
         const cartNewData = await quickCart.findOne({userId:data.userId}).sort({"date":1})
         if(cartNewData) qCartDetail =findCartSum(cartNewData.cartItems)
