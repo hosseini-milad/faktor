@@ -363,9 +363,14 @@ router.post('/quick-to-cart',jsonParser, async (req,res)=>{
         data.cartItems =(cartItems)
         //console.log(req.body.cartItem)
         cartLog.create({...data,ItemID:req.body.cartID,action:"quick to cart"})
-            await cart.updateOne(
-                {userId:data.userId},{$set:data})
-            status = "update cart"
+        
+        if(cartData)
+            {await cart.updateOne(
+            {userId:data.userId},{$set:data})
+            status = "update cart"}
+        else
+            {await cart.create(data)
+            status = "create cart"}
         var cartDetail = ''
         if(cartData) cartDetail =findCartSum(cartData&&cartData.cartItems)
         
