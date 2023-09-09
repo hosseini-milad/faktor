@@ -12,7 +12,8 @@ const products = require('../models/product/products');
 const productPrice = require('../models/product/productPrice');
 const productCount = require('../models/product/productCount');
 const customers = require('../models/auth/customers');
-const schedule = require('node-schedule')
+const schedule = require('node-schedule');
+const bankAccounts = require('../models/product/bankAccounts');
 const { ONLINE_URL} = process.env;
 
 router.get('/main', async (req,res)=>{
@@ -83,6 +84,29 @@ router.post('/sepidar-price', async (req,res)=>{
                 
         }
         res.json({sepidar:sepidarPriceResult,failure:"failure"})
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
+router.post('/sepidar-bank', async (req,res)=>{
+    const url=req.body.url
+    try{
+        const sepidarBankResult = await sepidarFetch("data","/api/BankAccounts")
+
+        //var successItem=[];
+        //var failure = 0;
+        await bankAccounts.deleteMany({})
+        for(var i = 0;i<sepidarBankResult.length;i++){
+            //sepidarPriceResult[i].SaleTypeRef===5&& 
+            await bankAccounts.create({
+                BankAccountID:sepidarBankResult[i].BankAccountID,
+                DlCode:sepidarBankResult[i].DlCode,
+                DlTitle:sepidarBankResult[i].DlTitle,
+                CurrencyRef:sepidarBankResult[i].CurrencyRef})
+                
+        }
+        res.json({sepidar:sepidarBankResult,failure:"failure"})
     }
     catch(error){
         res.status(500).json({message: error.message})

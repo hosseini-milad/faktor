@@ -8,12 +8,14 @@ const productSchema = require('../models/product/products');
 const productcounts = require('../models/product/productCount');
 const category = require('../models/product/category');
 const cart = require('../models/product/cart');
+const qCart = require('../models/product/quickCart');
 const FaktorSchema = require('../models/product/faktor');
 const customerSchema = require('../models/auth/customers');
 const sepidarPOST = require('../middleware/SepidarPost');
 const productCount = require('../models/product/productCount');
 const cartLog = require('../models/product/cartLog');
 const users = require('../models/auth/users');
+const quickCart = require('../models/product/quickCart');
 
 router.post('/products', async (req,res)=>{
     try{
@@ -130,9 +132,13 @@ router.post('/cart', async (req,res)=>{
     const userId =req.body.userId?req.body.userId:req.headers['userid'];
     try{
         const cartData = await cart.findOne({userId:userId}).sort({"date":1})
+        const qCartData = await qCart.findOne({userId:userId}).sort({"date":1})
         var cartDetail = ''
+        var qCartDetail = ''
         if(cartData) cartDetail =findCartSum(cartData.cartItems)
-        res.json({cart:cartData,...cartDetail})
+        if(qCartData) qCartDetail =findCartSum(qCartData.cartItems)
+        res.json({cart:cartData,...cartDetail,
+            quickCart:qCartData,qCartDetail:qCartDetail})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -168,6 +174,7 @@ router.post('/cartlist', async (req,res)=>{
             as : "adminData"
         }},
     {$limit:10}])
+    var cartTotal={cartPrice:0,cartCount:0}
         for(var i = 0;i<cartList.length;i++){
             if(cartList[i].cartItems&&cartList[i].cartItems.length){
                 var cartResult = findCartSum(cartList[i].cartItems)
@@ -177,7 +184,12 @@ router.post('/cartlist', async (req,res)=>{
                 cartList.splice(i,1)
             }
         }
-        res.json({cart:cartList})
+        for(var i=0;i<cartList.length;i++){
+            cartTotal.cartPrice+=cartList[i].countData.totalPrice;
+            cartTotal.cartCount+=cartList[i].countData.totalCount;
+        }
+        res.json({cart:cartList,
+            cartTotal:cartTotal})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -194,30 +206,35 @@ router.post('/update-cart',jsonParser, async (req,res)=>{
     try{
         var status = "";
         const cartData = await cart.findOne({userId:data.userId})
+        const qCartData = await quickCart.findOne({userId:data.userId})
         const availItems = await checkAvailable(req.body.cartItem)
         if(!availItems){
             res.status(400).json({error:"موجودی کافی نیست"}) 
             return
         }
 
-        const cartItems = createCart(cartData,req.body.cartItem)
+        const cartItems = createCart(qCartData?qCartData.cartItems:[],req.body.cartItem)
         data.cartItems =(cartItems)
-        if(!cartData){
+        if(!qCartData){
             cartLog.create({...data,ItemID:req.body.cartItem,action:"create"})
-            await cart.create(data)
+            await quickCart.create(data)
             status = "new Cart"
         }
         else{
             cartLog.create({...data,ItemID:req.body.cartItem,action:"update"})
-            await cart.updateOne(
+            await quickCart.updateOne(
                 {userId:data.userId},{$set:data})
             status = "update cart"
         }
         var cartDetail = ''
-        cartDetail =findCartSum(cartItems)
+        var qCartDetail = ''
+        cartDetail =findCartSum(cartData.cartItems)
         
-        const cartNewData = await cart.findOne({userId:data.userId}).sort({"date":1})
-        res.json({cart:cartNewData,status:status,availItems:availItems,data:data,...cartDetail})
+        const cartNewData = await quickCart.findOne({userId:data.userId}).sort({"date":1})
+        if(cartNewData) qCartDetail =findCartSum(cartNewData.cartItems)
+
+        res.json({quickCart:cartNewData,status:status,availItems:availItems,
+            data:data,...cartDetail,cart:cartData,qCartDetail:qCartDetail})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -233,16 +250,21 @@ router.post('/edit-cart',jsonParser, async (req,res)=>{
     try{
         var status = "";
         const cartData = await cart.findOne({userId:data.userId})
-        const cartItems = editCart(cartData,req.body.cartItem)
+        const qCartData = await quickCart.findOne({userId:data.userId})
+        const cartItems = editCart(qCartData,req.body.cartItem)
         data.cartItems =(cartItems)
-            await cart.updateOne(
+            await quickCart.updateOne(
                 {userId:data.userId},{$set:data})
             status = "update cart"
         var cartDetail = ''
+        var qCartDetail = ''
         if(cartData) cartDetail =findCartSum(cartData.cartItems)
         
-        const cartNewData = await cart.findOne({userId:data.userId}).sort({"date":1})
-        res.json({cart:cartNewData,status:status,data:data,...cartDetail})
+        const cartNewData = await quickCart.findOne({userId:data.userId}).sort({"date":1})
+        if(qCartData) qCartDetail =findCartSum(cartNewData.cartItems)
+        
+        res.json({quickCart:cartNewData,status:status,
+            data:data,...cartDetail,cart:cartData,qCartDetail:qCartDetail})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -254,7 +276,7 @@ const checkAvailable= async(items)=>{
     return(compareCount(existItem.quantity,items.count))
 }
 const createCart=(cartData,cartItem)=>{
-var cartItemTemp=cartData?cartData.cartItems:[]
+var cartItemTemp=cartData?cartData:[]
     var repeat = 0
     for(var i=0;i<cartItemTemp.length;i++){
         if(cartItemTemp[i].id===cartItem.id){
@@ -300,18 +322,55 @@ router.post('/remove-cart',jsonParser, async (req,res)=>{
     try{
         var status = "";
         const cartData = await cart.findOne({userId:data.userId})
-        const cartItems = removeCart(cartData,req.body.cartID)
+        const qCartData = await quickCart.findOne({userId:data.userId})
+        const cartItems = removeCart(qCartData,req.body.cartID)
         data.cartItems =(cartItems)
         //console.log(req.body.cartItem)
         cartLog.create({...data,ItemID:req.body.cartID,action:"delete"})
+            await quickCart.updateOne(
+                {userId:data.userId},{$set:data})
+            status = "update cart"
+        var cartDetail = ''
+        var qCartDetail = ''
+        if(cartData) cartDetail =findCartSum(cartData.cartItems)
+        if(qCartData) qCartDetail =findCartSum(qCartData.cartItems)
+        
+        const cartNewData = await quickCart.findOne({userId:data.userId}).sort({"date":1})
+        res.json({quickCart:cartNewData,status:status,
+            data:data,...cartDetail,cart:cartData,qCartDetail:qCartDetail})
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
+router.post('/quick-to-cart',jsonParser, async (req,res)=>{
+    const data={
+        userId:req.body.userId?req.body.userId:req.headers['userid'],
+
+        date:req.body.date,
+        progressDate:Date.now()
+    }
+    try{
+        var status = "";
+        const qCartData = await quickCart.findOne({userId:data.userId})
+        const quickCartItems = qCartData.cartItems
+
+        const cartData = await cart.findOne({userId:data.userId})
+        var cartItems=cartData.cartItems
+        for(var i=0;i<quickCartItems.length;i++)
+            cartItems=createCart(cartItems,quickCartItems[i])
+        data.cartItems =(cartItems)
+        //console.log(req.body.cartItem)
+        cartLog.create({...data,ItemID:req.body.cartID,action:"quick to cart"})
             await cart.updateOne(
                 {userId:data.userId},{$set:data})
             status = "update cart"
         var cartDetail = ''
         if(cartData) cartDetail =findCartSum(cartData.cartItems)
         
+        await quickCart.deleteOne({userId:data.userId})
         const cartNewData = await cart.findOne({userId:data.userId}).sort({"date":1})
-        res.json({cart:cartNewData,status:status,data:data,...cartDetail})
+        res.json({cart:cartNewData,status:status,data:data,...cartDetail,quickCart:''})
     }
     catch(error){
         res.status(500).json({message: error.message})
