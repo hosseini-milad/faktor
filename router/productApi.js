@@ -367,7 +367,7 @@ router.post('/quick-to-cart',jsonParser, async (req,res)=>{
                 {userId:data.userId},{$set:data})
             status = "update cart"
         var cartDetail = ''
-        if(cartData) cartDetail =findCartSum(cartData.cartItems)
+        if(cartData) cartDetail =findCartSum(cartData&&cartData.cartItems)
         
         await quickCart.deleteOne({userId:data.userId})
         const cartNewData = await cart.findOne({userId:data.userId}).sort({"date":1})
