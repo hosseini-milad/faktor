@@ -16,6 +16,7 @@ const productCount = require('../models/product/productCount');
 const cartLog = require('../models/product/cartLog');
 const users = require('../models/auth/users');
 const quickCart = require('../models/product/quickCart');
+const bankAccounts = require('../models/product/bankAccounts');
 
 router.post('/products', async (req,res)=>{
     try{
@@ -543,6 +544,17 @@ router.post('/customer-find', async (req,res)=>{
             
         //logger.warn("main done")
         res.json({customers:searchCustomer})
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
+router.post('/bankCustomer', async (req,res)=>{
+    const search = req.body.search
+    try{ 
+        var bankCustomer = await bankAccounts.find()
+        
+        res.json({bankList:bankCustomer})
     }
     catch(error){
         res.status(500).json({message: error.message})
