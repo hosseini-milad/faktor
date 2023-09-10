@@ -311,6 +311,26 @@ var cartItemTemp=cartData.cartItems
         }
     }
 }
+const totalCart=(cartArray)=>{
+    var cartListTotal =[]
+    for(var i =0;i<cartArray.length;i++){
+        const userCode = cartArray[i].adminData[0]?
+            cartArray[i].adminData[0].CustomerID:
+            cartArray[i].userData[0].CustomerID
+        var repeat=0
+        for(var j=0;j<cartListTotal.length;j++)
+            if(userCode&&(userCode===cartListTotal[j].userId)){
+                cartListTotal[j].cartItems.push(
+                    ...cartArray[i].cartItems)
+                cartListTotal[j].userTotal +="|"+cartArray[i].userId
+                repeat=1
+            break
+        }
+        !repeat&&cartListTotal.push({userId:userCode,userTotal:cartArray[i].userId,
+            cartItems:cartArray[i].cartItems})
+    }
+    return(cartListTotal)
+}
 
 
 router.post('/remove-cart',jsonParser, async (req,res)=>{
@@ -372,10 +392,10 @@ router.post('/quick-to-cart',jsonParser, async (req,res)=>{
             {await cart.create(data)
             status = "create cart"}
         var cartDetail = ''
-        if(cartData) cartDetail =findCartSum(cartData&&cartData.cartItems)
-        
-        await quickCart.deleteOne({userId:data.userId})
         const cartNewData = await cart.findOne({userId:data.userId}).sort({"date":1})
+        if(cartNewData) cartDetail =findCartSum(cartNewData&&cartNewData.cartItems)
+        await updateCount(quickCartItems)
+        await quickCart.deleteOne({userId:data.userId})
         res.json({cart:cartNewData,status:status,data:data,...cartDetail,quickCart:''})
     }
     catch(error){
@@ -432,51 +452,81 @@ router.post('/faktor-find', async (req,res)=>{
 router.post('/update-faktor',jsonParser, async (req,res)=>{
     const data={
         userId:req.body.userId?req.body.userId:req.headers['userid'],
-        faktorItems:req.body.faktorItems,
-        customerID:req.body.customerID,
         date:req.body.date,
         progressDate:Date.now()
     }
     try{
-        const faktorNo= await createfaktorNo("F","02","21")
-        data.faktorNo=faktorNo
-        const faktorDetail = findCartSum(data.faktorItems)
-        const SepidarFaktor = await SepidarFunc({...data,...faktorDetail})
-        const addFaktorResult = await sepidarPOST(SepidarFaktor,"/api/invoices")
-        if(addFaktorResult.Message){
-            res.status(400).json({error:addFaktorResult.Message})
-            return
+        const cartList = await cart.aggregate
+        ([
+            { $addFields: { "userId": { "$toObjectId": "$userId" }}},
+        {$lookup:{
+            from : "customers", 
+            localField: "userId", 
+            foreignField: "_id", 
+            as : "userData"
+        }},
+        {$lookup:{
+            from : "users", 
+            localField: "userId", 
+            foreignField: "_id", 
+            as : "adminData"
+        }}])
+        
+        const faktorDetail = totalCart(cartList)
+        var sepidarQuery=[]
+        var addFaktorResult=[]
+        var faktorNo=0
+        for(var i=0;i<faktorDetail.length;i++){
+            faktorNo= await createfaktorNo("F","02","21")
+            sepidarQuery[i] = await SepidarFunc(faktorDetail[i],faktorNo)
+            addFaktorResult[i] = await sepidarPOST(sepidarQuery[i],"/api/invoices")
+            if(addFaktorResult[0].Message){
+                res.json({error:addFaktorResult[0].Message,status:"faktor"})
+                return
+            }
+            else{
+                await FaktorSchema.create(
+                    {...data,faktorItems:'',customerID:'',
+                    ...faktorDetail,InvoiceNumber:addFaktorResult[i].Number,
+                        InvoiceID:addFaktorResult[i].InvoiceID})
+                await cart.deleteMany({userId:faktorDetail[i].userTotal.split('|')})
+                
+            }
+        }
+        const recieptQuery = await RecieptFunc(req.body.receiptInfo,addFaktorResult[0],faktorNo)
+        const recieptResult = await sepidarPOST(recieptQuery,"/api/Receipts/BasedOnInvoice")
+        //const SepidarFaktor = await SepidarFunc(faktorDetail)
+        if(recieptResult.Message){
+            res.json({error:recieptResult.Message,status:"reciept"})
+                return
         }
         else{
-            await updateCount(data.faktorItems)
-            await cart.deleteOne({userId:data.userId})
-            await FaktorSchema.create(
-                {...data,...faktorDetail,InvoiceNumber:addFaktorResult.Number,
-                    InvoiceID:addFaktorResult.InvoiceID})
-                //console.log(addFaktorResult)
-            res.json({sepidar:addFaktorResult,data:data,message:"فاکتور ثبت شد"})
-        }
+            res.json({recieptInfo:faktorDetail,
+                users:users,
+                faktorInfo:addFaktorResult,
+                faktorData:sepidarQuery,
+                status:"done"})
+            }
+        
     }
     catch(error){
         res.status(500).json({message: error.message})
     }
 })
-const SepidarFunc=async(data)=>{
+const SepidarFunc=async(data,faktorNo)=>{
     var query ={
-        "GUID": "124ab075-fc79-417f-b8cf-2a"+data.faktorNo,
-        "CustomerRef": toInt(data.customerID),
+        "GUID": "124ab075-fc79-417f-b8cf-2a"+faktorNo,
+        "CustomerRef": toInt(data.userId),
         "CurrencyRef":1,
         "SaleTypeRef": 4,
-        "Price": data.totalPrice,
-        "Tax":  toInt(data.totalPrice,"0.09"),
         "Duty":0.0000,
         "Discount": 0.0000,
         "Items": 
-          data.faktorItems.map((item,i)=>(
+          data.cartItems.map((item,i)=>(
             {
             "ItemRef": toInt(item.id),
             "TracingRef": null,
-            "TracingTitle": null,
+            "TracingTitle": item.sku,
             "StockRef":13,
             "Quantity": toInt(item.count),
             "SecondaryQuantity": 1.0000,
@@ -485,8 +535,26 @@ const SepidarFunc=async(data)=>{
             "Discount": 0.0000,
             "Tax": toInt(item.price,"0.09"),
             "Duty": 0.0000,
-            "Addition": 0.0000,
-            "NetPrice": 0.0000
+            "Addition": 0.0000
+          }))
+        
+      }
+    return(query)
+}
+const RecieptFunc=async(data,FaktorInfo,faktorNo)=>{
+    var query ={
+        "GUID": "124ab075-fc79-417f-b8cf-2a"+faktorNo,
+        "InvoiceID": toInt(FaktorInfo.InvoiceID),
+        "Description": toInt(FaktorInfo.Number),
+        "Date":new Date(),
+        "Drafts": 
+          data.filter(n => n).map((pay,i)=>(
+            {
+            "BankAccountID": toInt(pay.id),
+            "Description": pay.title,
+            "Number": pay.Number,
+            "Date":new Date(),
+            "Amount": toInt(pay.value)
           }))
         
       }
@@ -512,7 +580,7 @@ const createfaktorNo= async(Noun,year,userCode)=>{
 const toInt=(strNum,count,align)=>{
     if(!strNum)return(0)
     
-    return(parseInt(parseInt((align?"-":'')+strNum)*
+    return(parseInt(parseInt((align?"-":'')+strNum.toString().replace( /,/g, ''))*
     (count?parseFloat(count):1)))
 }
 const minusInt=(quantity,minus)=>{
