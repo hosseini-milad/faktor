@@ -17,6 +17,7 @@ const cartLog = require('../models/product/cartLog');
 const users = require('../models/auth/users');
 const quickCart = require('../models/product/quickCart');
 const bankAccounts = require('../models/product/bankAccounts');
+const sepidarFetch = require('../middleware/Sepidar');
 
 router.post('/products', async (req,res)=>{
     try{
@@ -444,7 +445,9 @@ router.post('/faktor-find', async (req,res)=>{
             as : "userData"
         }}])
         //logger.warn("main done")
-        res.json({faktor:faktorData})
+
+        const OnlineFaktor = await sepidarFetch("data","/api/invoices/"+faktorId)
+        res.json({faktor:OnlineFaktor})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -533,7 +536,7 @@ const SepidarFunc=async(data,faktorNo)=>{
             {
             "ItemRef": toInt(item.id),
             "TracingRef": null,
-            "TracingTitle": item.sku,
+            "Description":item.title+"|"+item.sku,
             "StockRef":13,
             "Quantity": toInt(item.count),
             "SecondaryQuantity": 1.0000,
