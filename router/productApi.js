@@ -404,11 +404,12 @@ router.post('/quick-to-cart',jsonParser, async (req,res)=>{
 })
 
 router.post('/faktor', async (req,res)=>{
+    const offset =req.body.offset?parseInt(req.body.offset):0 
     const userId =req.body.userId?req.body.userId:req.headers['userid'];
     try{
+        const faktorTotalCount = await FaktorSchema.find().count()
         const faktorList = await FaktorSchema.aggregate
-        ([{$match:{userId:userId},
-        },
+        ([
         {$lookup:{
             from : "customers", 
             localField: "customerID", 
@@ -421,9 +422,9 @@ router.post('/faktor', async (req,res)=>{
             foreignField: "ItemID", 
             as : "countData"
         }},
-    {$limit:10}])
+    {$skip:offset},{$limit:10}])
         //logger.warn("main done")
-        res.json({faktor:faktorList})
+        res.json({faktor:faktorList,faktorCount:faktorTotalCount})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -485,9 +486,14 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
                 return
             }
             else{
+                const cartDetail =findCartSum(faktorDetail[i].cartItems)
                 await FaktorSchema.create(
-                    {...data,faktorItems:'',customerID:'',
-                    ...faktorDetail,InvoiceNumber:addFaktorResult[i].Number,
+                    {...data,faktorItems:faktorDetail[i].cartItems,
+                        customerID:faktorDetail[i].userId,
+                        faktorNo:faktorNo,
+                        totalPrice:cartDetail.totalPrice,
+                        totalCount:cartDetail.totalCount,
+                        InvoiceNumber:addFaktorResult[i].Number,
                         InvoiceID:addFaktorResult[i].InvoiceID})
                 await cart.deleteMany({userId:
                     faktorDetail[i].userTotal&&faktorDetail[i].userTotal.toString().split('|')})
@@ -495,7 +501,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
             }
         }
         const recieptQuery = await RecieptFunc(req.body.receiptInfo,addFaktorResult[0],faktorNo)
-        const recieptResult = await sepidarPOST(recieptQuery,"/api/Receipts/BasedOnInvoice")
+        const recieptResult = 1//await sepidarPOST(recieptQuery,"/api/Receipts/BasedOnInvoice")
         //const SepidarFaktor = await SepidarFunc(faktorDetail)
         if(recieptResult.Message){
             res.json({error:recieptResult.Message,status:"reciept"})
