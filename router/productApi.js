@@ -553,7 +553,7 @@ const RecieptFunc=async(data,FaktorInfo,faktorNo)=>{
             {
             "BankAccountID": toInt(pay.id),
             "Description": pay.title,
-            "Number": pay.Number,
+            "Number": pay.Number?pay.Number:"000",
             "Date":new Date(),
             "Amount": toInt(pay.value)
           }))
