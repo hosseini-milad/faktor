@@ -489,7 +489,8 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
                     {...data,faktorItems:'',customerID:'',
                     ...faktorDetail,InvoiceNumber:addFaktorResult[i].Number,
                         InvoiceID:addFaktorResult[i].InvoiceID})
-                await cart.deleteMany({userId:faktorDetail[i].userTotal.split('|')})
+                await cart.deleteMany({userId:
+                    faktorDetail[i].userTotal&&faktorDetail[i].userTotal.split('|')})
                 
             }
         }
