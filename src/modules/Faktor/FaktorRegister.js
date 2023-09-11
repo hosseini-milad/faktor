@@ -26,32 +26,6 @@ const FaktorRegister = (props)=>{
         setDoFilter(0)
     },[doFilter])
     
-    const registerFaktor=()=>{
-        const postOptions={
-            method:'post',
-            headers: { 'Content-Type': 'application/json' ,
-            "x-access-token": token&&token.token,
-            "userId":token&&token.userId},
-            body:JSON.stringify({userId:token&&token.userId,
-                faktorItems:faktorList.cart.cartItems,
-                customerID:(users&&users.CustomerID)?users.CustomerID:"1639"})
-          }
-        fetch(env.siteApi + "/product/update-faktor",postOptions)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                console.log(result)
-                if(result.error)
-                    console.log(result.error)
-                else{
-                    setError({message:result.message,color:"green"})
-                    setTimeout(()=>window.location.reload(),3000)
-                } 
-            },
-            (error) => {
-                console.log(error)
-            })
-    }
     useEffect(()=>{
     if(search.length<3){
         setShowPop(0)
@@ -123,12 +97,12 @@ const FaktorRegister = (props)=>{
                     setFaktorList={setFaktorList} users={users}/>
             </div>
 
-            <div className="footer-form-fiin rev">
+            {/*<div className="footer-form-fiin rev">
                 <WaitingBtn class="btn-fiin" title={"ثبت فاکتور"} 
                             waiting={'ثبت فاکتور.'}
                             function={registerFaktor} name="submit" error={error}/>
                 
-            </div>
+                        </div>*/}
         </div>
         
         <small className="errorSmall" style={{color:error.color}}>

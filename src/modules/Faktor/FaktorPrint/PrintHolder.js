@@ -28,7 +28,7 @@ const FaktorPrint = (props)=>{
             (result) => {
                 console.log(result)
                 if(result)
-                    setFaktorList(result.faktor[0]) 
+                    setFaktorList(result.faktor) 
             },
             (error) => {
                 console.log(error)

@@ -517,12 +517,52 @@ body{
 /* End RTL */
 
 /* Charts */
+.chartHolder{
+    display: flex;
+    flex-wrap: wrap;
+}
 .charts{
-    width: 40%;
+    width: 45%;
+    margin:50px 2% 100px;
+    min-height: 300px;
+    font-family: Vazir;
 }
 
 /* End Charts */
 
+.payHolder{
+    width: 300px;
+    margin:5px 10px;
+}
+.tarazHolder{
+    display: flex;
+}
+.sepidarSum{
+    margin-right: 5%;
+    display: grid;
+    align-content: end;
+}
+.resultTable{
+    margin:auto !important;
+    font-size: 12px !important;
+    border:none
+}
+.resultTable tr{
+    border:none !important;
+}
+.resultTable td{
+    padding:5px 10px !important;
+}
+.disable-btn{
+    background-color:silver;
+    border:silver;
+    color:gray;
+}
+.disable-btn:hover{
+    background-color:gray;
+    border:gray;
+    color:#fff;
+}
 
 @media only screen and (max-width:1200px){
     .table-fiin table {

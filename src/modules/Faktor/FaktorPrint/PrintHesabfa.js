@@ -15,9 +15,9 @@ function PrintHesabfa(props){
                 <h4>فاکتور فروش</h4>
               </div>
               <div className="hesabfaSection" style={{minWidth: "240px"}}>
-                <small>شماره فاکتور: <b>{orderInfo.faktorNo}</b></small>
-                <small>شماره ارجاع: <b>{orderInfo.InvoiceNumber}</b></small>
-                <small> تاریخ سفارش: <b>{new Date(orderInfo.initDate).toLocaleDateString('fa-IR')}</b></small>
+                <small>شماره فاکتور: <b>{orderInfo.Number}</b></small>
+                <small>شماره ارجاع: <b>{orderInfo.InvoiceID}</b></small>
+                <small> تاریخ سفارش: <b>{new Date(orderInfo.Date).toLocaleDateString('fa-IR')}</b></small>
               </div>
             </div>
             <table className="hesabfaTable">
@@ -32,7 +32,7 @@ function PrintHesabfa(props){
                         <tr>
                           <td colSpan={3} className="hesabfaItem">
                             <span>خریدار: </span>
-                            <strong> {userInfo.username}</strong>
+                            <strong> {userInfo.CustomerRef}</strong>
                           </td>
                           <td colSpan={2} className="hesabfaItem">
                             <span>شماره تماس: </span>
@@ -73,19 +73,22 @@ function PrintHesabfa(props){
                   <th>تعداد</th>
                   <th>مبلغ واحد<br/>(ریال)</th>
                   <th>مبلغ<br/>(ریال)</th>
-                  <th>تخفیف<br/>(ریال)</th>
+                  <th>مالیات<br/>(ریال)</th>
                   <th>مبلغ کل<br/>(ریال)</th>
                 </tr>
-                {orderInfo&&orderInfo.faktorItems.map((items,i)=>(
+                {orderInfo&&orderInfo.InvoiceItems&&
+                  orderInfo.InvoiceItems.map((items,i)=>(
                 <tr key={i}>
                   <td className="centerCell">{i+1}</td>
-                  <td>{items.title}</td>
-                  <td>{items.sku}</td>
-                  <td className="centerCell">{items.count}</td>
-                  <td>{normalPrice(items.price)}</td>
-                  <td>{normalPriceCount(items.price,items.count)}</td>
-                  <td>{normalPrice(items.Discount)}</td>
-                  <td>{normalPrice(items.TotalAmount)}</td>
+                  <td>{items.Description&&items.Description.includes('|')&&
+                    items.Description.split('|')[0]}</td>
+                  <td>{items.Description&&items.Description.includes('|')&&
+                    items.Description.split('|')[1]}</td>
+                  <td className="centerCell">{items.Quantity}</td>
+                  <td>{normalPrice(items.Fee)}</td>
+                  <td>{normalPrice(items.Price)}</td>
+                  <td>{normalPrice(items.Tax)}</td>
+                  <td>{normalPrice(items.NetPrice)}</td>
                 </tr>))}
               </tbody>
             </table>
@@ -99,14 +102,14 @@ function PrintHesabfa(props){
                   <div className="hesabfaPrice">
                     <div className="priceSeprate">
                       <span>مجموع:</span>
-                      <span>{normalPrice(orderInfo.totalPrice) } ریال</span>
+                      <span>{normalPrice(orderInfo.Price) } ریال</span>
                     </div>
                     <div className="priceSeprate">
-                    <span>تخفیف: </span>
+                    <span>مالیات: </span>
                     <span>{1?
-                      normalPrice("totalPrice.discount")+" ریال ":"-"}</span>
+                      normalPrice(orderInfo.Tax)+" ریال ":"-"}</span>
                     </div>
-                    <h3>مبلغ کل: {normalPrice(orderInfo.totalPrice)} ریال</h3>
+                    <h3>مبلغ کل: {normalPrice(orderInfo.NetPrice)} ریال</h3>
                     <strong> </strong>
                   </div>
                 </div>
@@ -118,7 +121,7 @@ function PrintHesabfa(props){
                   نام کاربر: {token&&token.userId.slice(-3)}<br/> ساعت: 
                   {new Date(Date.now()).getHours()+":"+new Date(Date.now()).getMinutes()}
               </span>
-              <button className="btn-fiin" onClick={()=>window.location.href="/faktor/fishprint/"+orderInfo.faktorNo}>فیش پرینت</button>
+              <button className="btn-fiin" onClick={()=>window.location.href="/faktor/fishprint/"+orderInfo.InvoiceID}>فیش پرینت</button>
             </div>
         </div>
     )

@@ -4,6 +4,7 @@ import ListFilters from "../ListFilters"
 import env from "../../env"
 import Cookies from 'universal-cookie';
 import CartAccordion from "./CartAccordion";
+import CartPay from "./CartPay";
 const cookies = new Cookies();
 
 const CartList = (props)=>{
@@ -13,6 +14,7 @@ const CartList = (props)=>{
     const [doFilter,setDoFilter] = useState(1)
     const [pageNumber,setPageNumber] = useState(0)
     const [faktorList,setFaktorList] = useState() 
+    const [faktorTotal,setFaktorTotal] = useState() 
     
     const token=cookies.get('faktor-login')
     
@@ -31,6 +33,7 @@ const CartList = (props)=>{
             (result) => {
                 if(result.cart)
                     setFaktorList(result.cart) 
+                    setFaktorTotal(result.cartTotal) 
             },
             (error) => {
                 console.log(error)
@@ -56,9 +59,10 @@ const CartList = (props)=>{
             </div>  
             
         </div>
-        <CartAccordion faktorList={faktorList} />
+        {faktorList?<><CartAccordion faktorList={faktorList} />
         <small className="errorSmall" style={{color:error.color}}>
             {error.message}</small>
+        <CartPay faktorList={faktorTotal} token={token}/></>:<></>}
     </div>
     )
 }

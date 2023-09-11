@@ -114,10 +114,11 @@ const FaktorNewItem = (props)=>{
                         value={count} style={{textAlign:"center"}}
                         placeholder="تعداد"/>
                 </div></td>
-            <td width="20%">{item?normalPrice(item.priceData&&item.priceData[0]&&
+            <td width="10%">{item?normalPrice(item.priceData&&item.priceData[0]&&
                                 item.priceData[0].price):''}<br/>
                         <small className="errorSmall" style={{color:error.color}}>
                             {error.message}</small></td>
+            <td></td>
             <td width="20%"><div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
                     <input type="text" name="description" id="description" 
                         onChange={(e)=>setDescription(e.target.value)}

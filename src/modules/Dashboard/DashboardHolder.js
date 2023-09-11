@@ -1,8 +1,9 @@
-import { Line } from 'react-chartjs-2';
+
 import {
     Chart as ChartJS,
     ArcElement,
     CategoryScale,
+    registerables ,
     LinearScale,
     PointElement,
     LineElement,
@@ -14,13 +15,19 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import Cookies from 'universal-cookie';
 import env from '../../env';
+import ChartDaily from './ChartDaily';
+import ChartSale from './ChartSale';
+import ChartItem from './ChartItem';
 const cookies = new Cookies();
 
 const faker = require('faker');
 
 function DashBoardHolder(){
-    const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+    const [labelSale,setSaleLabels] = useState([])
+    const [labelDaily,setDailyLabels] = useState([])
+    //const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
     const [saleReport,setSaleReport] = useState('')
+    const [saleDaily,setDailyReport] = useState('')
     const [error,setError] = useState({message:'',color:"brown"})
     const token=cookies.get('faktor-login')
     useEffect(()=>{
@@ -40,7 +47,14 @@ function DashBoardHolder(){
                     
                 }
                 else{
-                    setSaleReport(result.saleReport)
+                    setSaleReport(result.outputReport)
+                    var dates = result.outputReport.map(item=>new Date(item.date).toLocaleDateString('fa-IR'))
+                    setSaleLabels(dates)
+                    
+                    setDailyReport(result.cart)
+                    var users = result.cart.map(item=>
+                        item.userData[0]?item.userData[0].username:item.adminData[0].username)
+                    setDailyLabels(users)
                 }
                 
             },
@@ -49,23 +63,7 @@ function DashBoardHolder(){
             })
         },[])
 
-    const data = {
-        labels,
-        datasets: [
-          {
-            label: 'Sale',
-            data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-            borderColor: 'rgb(255, 99, 132)',
-            backgroundColor: 'rgba(255, 99, 132, 0.5)',
-          },
-          {
-            label: 'Purchase',
-            data: labels.map(() => faker.datatype.number({ min: -1000, max: 1000 })),
-            borderColor: 'rgb(53, 162, 235)',
-            backgroundColor: 'rgba(53, 162, 235, 0.5)',
-          },
-        ],
-      };
+    
     ChartJS.register(
         CategoryScale,
         LinearScale,
@@ -74,28 +72,25 @@ function DashBoardHolder(){
         ArcElement,
         Title,
         Tooltip,
-        Legend
+        Legend,
+        ...registerables
       );
-      
-    const options = {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'top',
-          },
-          title: {
-            display: true,
-            text: 'Chart Description',
-          },
-        },
-      };
-      console.log(saleReport)
+      ChartJS.defaults.font.family = "Vazir";
     return(
         <main className="container-fluid">
-            <div className="boards">
                 <h2>DashBoard</h2>
+            <div className="chartHolder">
+                {/*<div className='charts'>
+                  <ChartDaily labels={labelDaily} data={saleDaily} ChartJS={ChartJS}/>
+                    
+                </div>
                 <div className='charts'>
-                    <Line data={data} options={options}/>
+                  <ChartSale labels={labelSale} data={saleReport} ChartJS={ChartJS}/>
+                    
+                </div>*/}
+                <div className='charts'>
+                  <ChartItem token={token}/>
+                  <small></small>
                 </div>
             </div>
         </main>

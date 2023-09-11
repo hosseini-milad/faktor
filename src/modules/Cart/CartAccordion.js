@@ -35,7 +35,7 @@ function CartAccordion(props){
                                     {faktor.userData&&
                                     faktor.userData[0]?
                                     faktor.userData[0].username:
-                                    faktor.userId.slice(-5)}
+                                    faktor.adminData[0]&&faktor.adminData[0].username}
                                 </div>
                             </div>
                             <div className="col">

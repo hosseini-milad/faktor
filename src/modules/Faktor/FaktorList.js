@@ -6,26 +6,27 @@ import Cookies from 'universal-cookie';
 import FilterBitrix from "../filtersBitrix";
 import FaktorListTable from "./FaktorListTable";
 import FaktorAccordion from "./FaktorAccordion";
+import Paging from "../../components/Paging";
 const cookies = new Cookies();
 
 const FaktorList = (props)=>{
-    const [users,setUsers] = useState()
-    const [filter,setFilter] = useState()
     const [error,setError] = useState({message:'',color:"brown"})
     const [doFilter,setDoFilter] = useState(1)
     const [pageNumber,setPageNumber] = useState(0)
     const [faktorList,setFaktorList] = useState() 
+    const [faktorCount,setFaktorCount] = useState(0) 
     
     const token=cookies.get('faktor-login')
-    
+    console.log(pageNumber)
+
     useEffect(()=>{
-        //console.log(search)
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,
             "x-access-token": token&&token.token,
             "userId":token&&token.userId},
-            body:JSON.stringify({userId:token&&token.userId})
+            body:JSON.stringify({userId:token&&token.userId,
+                offset:pageNumber})
           }
         fetch(env.siteApi + "/product/faktor",postOptions)
         .then(res => res.json())
@@ -33,19 +34,17 @@ const FaktorList = (props)=>{
             (result) => {
                 if(result.faktor)
                     setFaktorList(result.faktor) 
+                    setFaktorCount(result.faktorCount)
             },
             (error) => {
                 console.log(error)
             })
-    },[])
+    },[pageNumber])
     useEffect(()=>{
         if(!doFilter)return
         setPageNumber(0)
         setDoFilter(0)
     },[doFilter])
-    const registerFaktor=()=>{
-        console.log()
-    }
     return(
         <div className="container">
         <Breadcrumb title={"لیست فاکتور"}/>
@@ -59,6 +58,9 @@ const FaktorList = (props)=>{
             
         </div>
         <FaktorAccordion faktorList={faktorList} />
+        <Paging size={faktorCount} perPage="10" pageNumber={pageNumber}
+        setPageNumber={setPageNumber}/>
+
         <small className="errorSmall" style={{color:error.color}}>
             {error.message}</small>
     </div>

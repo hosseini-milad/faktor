@@ -16,11 +16,11 @@ function FishPrintHesabfa(props){
                 <h4>روانکاران شریف</h4>
               </div>
               <div className="hesabfaSection hesabBorder">
-                <small>ش.فاکتور: {orderInfo.faktorNo}</small>
-                <small>ش.ارجاع: {orderInfo.InvoiceNumber}</small>
+                <small>ش.فاکتور: {orderInfo.Number}</small>
+                <small>ش.ارجاع: {orderInfo.InvoiceID}</small>
               </div>
               <div className="hesabfaSection hesabBorder">
-                <small> تاریخ: {new Date(orderInfo.initDate).toLocaleDateString('fa')}</small>
+                <small> تاریخ: {new Date(orderInfo.Date).toLocaleDateString('fa')}</small>
                 <small>ساعت: {new Date(Date.now()).getHours()+":"+new Date(Date.now()).getMinutes()}</small>
               </div>
             </div>
@@ -48,12 +48,14 @@ function FishPrintHesabfa(props){
                   <th>تعداد</th>
                   <th className="priceCell">مبلغ</th>
                 </tr>
-                {orderInfo&&orderInfo.faktorItems.map((items,i)=>(
+                {orderInfo&&orderInfo.InvoiceItems&&
+                  orderInfo.InvoiceItems.map((items,i)=>(
                 <tr key={i}>
                   <td className="centerCell">{i+1}</td>
-                  <td style={{fontSize:"11px"}}>{items.title}</td>
-                  <td className="centerCell">{items.count}</td>
-                  <td className="priceCell">{normalPriceCount(items.price,items.count)}</td>
+                  <td style={{fontSize:"11px"}}>{items.Description&&items.Description.includes('|')&&
+                    items.Description.split('|')[0]}</td>
+                  <td className="centerCell">{items.Quantity}</td>
+                  <td className="priceCell">{normalPrice(items.Price)}</td>
                 </tr>))}
               </tbody>
             </table>
@@ -62,15 +64,15 @@ function FishPrintHesabfa(props){
                 <tr>
                   <td rowSpan={3}>جمع اقلام: {orderInfo.totalCount}</td>
                   <td>جمع فاکتور </td>
-                  <td className="priceCell">{normalPrice(orderInfo.totalPrice)}</td>
+                  <td className="priceCell">{normalPrice(orderInfo.Price)}</td>
                 </tr>
                 <tr>
-                  <td>جمع تخفیف </td>
-                  <td className="priceCell">{"0"}</td>
+                  <td>مالیات </td>
+                  <td className="priceCell">{normalPrice(orderInfo.Tax)}</td>
                 </tr>
                 <tr>
                   <td>قابل پرداخت </td>
-                  <td className="priceCell"><b>{normalPrice(orderInfo.totalPrice)}</b></td>
+                  <td className="priceCell"><b>{normalPrice(orderInfo.NetPrice)}</b></td>
                 </tr>
               </tbody>
             </table>

@@ -45,7 +45,7 @@ function FaktorAccordion(props){
                             </div>
                             <div className="col">
                                 <div className="list-item">
-                                    <a href={`/faktor/print/${faktor.faktorNo}`} className="btn-cancel">
+                                    <a href={`/faktor/print/${faktor.InvoiceID}`} className="btn-cancel">
                                         <span className="icon-upload"></span> چاپ فاکتور </a>
                                 </div>
                             </div>
