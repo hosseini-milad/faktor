@@ -514,7 +514,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         }
         const recieptQuery = await RecieptFunc(req.body.receiptInfo,addFaktorResult[0],faktorNo)
         const recieptResult = await sepidarPOST(recieptQuery,"/api/Receipts/BasedOnInvoice")
-        const SepidarFaktor = await SepidarFunc(faktorDetail)
+        //const SepidarFaktor = await SepidarFunc(faktorDetail)
         if(recieptResult.Message){
             res.json({error:recieptResult.Message,status:"reciept"})
                 return
