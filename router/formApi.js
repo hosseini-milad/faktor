@@ -311,8 +311,8 @@ const findItem=(itemId,itemList)=>{
   return(-1)
 }
 const sumCount=(count1,count2)=>{
-  var c1 = parseInt(count1.toString())
-  var c2 = parseInt(count2.toString())
+  var c1 = parseInt(count1&&count1.toString())
+  var c2 = parseInt(count2&&count2.toString())
   return(c1+c2)
 }
 

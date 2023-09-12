@@ -7,6 +7,7 @@ const QCartSchema = new Schema({
     initDate: { type: Date, default: Date.now },
     progressDate: { type: Date },
     userId:{ type: String },
+    manageId:{ type: String },
 
     totalPrice:{ type: String }
 })

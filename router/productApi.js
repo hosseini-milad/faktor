@@ -162,7 +162,8 @@ router.post('/cartlist', async (req,res)=>{
     try{
         const cartList = await cart.aggregate
         ([
-            { $addFields: { "userId": { "$toObjectId": "$userId" }}},
+        { $addFields: { "userId": { "$toObjectId": "$userId" }}},
+        { $addFields: { "manageId": { "$toObjectId": "$manageId" }}},
         {$lookup:{
             from : "customers", 
             localField: "userId", 
@@ -174,6 +175,12 @@ router.post('/cartlist', async (req,res)=>{
             localField: "userId", 
             foreignField: "_id", 
             as : "adminData"
+        }},
+        {$lookup:{
+            from : "users", 
+            localField: "manageId", 
+            foreignField: "_id", 
+            as : "managerData"
         }},
     {$limit:10}])
     var cartTotal={cartPrice:0,cartCount:0}
@@ -201,7 +208,7 @@ router.post('/cartlist', async (req,res)=>{
 router.post('/update-cart',jsonParser, async (req,res)=>{
     const data={
         userId:req.body.userId?req.body.userId:req.headers['userid'],
-
+        manageId:req.headers['userid'],
         date:req.body.date,
         progressDate:Date.now()
     }
@@ -369,6 +376,7 @@ router.post('/quick-to-cart',jsonParser, async (req,res)=>{
     const data={
         userId:req.body.userId?req.body.userId:req.headers['userid'],
 
+        manageId:req.headers['userid'],
         date:req.body.date,
         progressDate:Date.now()
     }
@@ -422,7 +430,7 @@ router.post('/faktor', async (req,res)=>{
             localField: "ItemID", 
             foreignField: "ItemID", 
             as : "countData"
-        }},
+        }},{$sort:{"initDate":-1}},
     {$skip:offset},{$limit:10}])
         //logger.warn("main done")
         res.json({faktor:faktorList,faktorCount:faktorTotalCount})
@@ -456,6 +464,7 @@ router.post('/faktor-find', async (req,res)=>{
 router.post('/update-faktor',jsonParser, async (req,res)=>{
     const data={
         userId:req.body.userId?req.body.userId:req.headers['userid'],
+        manageId:req.headers['userid'],
         date:req.body.date,
         progressDate:Date.now()
     }
