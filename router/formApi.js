@@ -231,9 +231,10 @@ router.post('/confirm-user-data',auth,jsonParser, async (req,res)=>{
 
 router.post('/report-sale', async (req,res)=>{
   const search = req.body.search
+  const port = process.env.API_PORT
   try{ 
     var today = new Date();
-    const response = await fetch("http://localhost:4090/api/product/cartlist",
+    const response = await fetch("http://localhost:"+port+"/api/product/cartlist",
       {method: 'POST'});
     const cartList = await response.json();
     //var cartList = await cart.find()
