@@ -55,8 +55,9 @@ const FaktorNewItem = (props)=>{
             "userId":token&&token.userId},
             body:JSON.stringify({userId:props.users?props.users._id:(token&&token.userId),
                 date:Date.now,cartItem:{id:item.ItemID,sku:item.sku,
-                    title:item.title,count:count?count:1,price:item.priceData&&item.priceData[0]&&
-                    item.priceData[0].price,description:description}})
+                    title:item.title,count:count?count:1,
+                    price:item.priceData.find(item=>item.saleType===props.payValue).price
+                    ,description:description}})
           }
         fetch(env.siteApi + "/product/update-cart",postOptions)
         .then(res => res.json())

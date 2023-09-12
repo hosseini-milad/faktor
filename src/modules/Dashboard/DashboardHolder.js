@@ -80,14 +80,14 @@ function DashBoardHolder(){
         <main className="container-fluid">
                 <h2>DashBoard</h2>
             <div className="chartHolder">
-                {/*<div className='charts'>
+                <div className='charts'>
                   <ChartDaily labels={labelDaily} data={saleDaily} ChartJS={ChartJS}/>
                     
                 </div>
-                <div className='charts'>
+                {/*<div className='charts'>
                   <ChartSale labels={labelSale} data={saleReport} ChartJS={ChartJS}/>
                     
-                </div>*/}
+    </div>*/}
                 <div className='charts'>
                   <ChartItem token={token}/>
                   <small></small>
