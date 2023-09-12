@@ -64,8 +64,7 @@ router.post('/sepidar-product', async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
-router.post('/sepidar-price', async (req,res)=>{
-    const url=req.body.url
+router.get('/sepidar-price', async (req,res)=>{
     try{
         const sepidarPriceResult = await sepidarFetch("data","/api/PriceNoteItems")
 
