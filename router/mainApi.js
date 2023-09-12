@@ -43,7 +43,7 @@ schedule.scheduleJob('0 0 * * *', async() => {
     response = await fetch(ONLINE_URL+"/sepidar-users",
         {method: 'POST'});
  })
-router.post('/sepidar-product', async (req,res)=>{
+router.get('/sepidar-product', async (req,res)=>{
     const url=req.body.url
     try{
         const sepidarResult = await sepidarFetch("data","/api/Items")
@@ -88,7 +88,7 @@ router.get('/sepidar-price', async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
-router.post('/sepidar-bank', async (req,res)=>{
+router.get('/sepidar-bank', async (req,res)=>{
     const url=req.body.url
     try{
         const sepidarBankResult = await sepidarFetch("data","/api/BankAccounts")
@@ -111,8 +111,7 @@ router.post('/sepidar-bank', async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
-router.post('/sepidar-quantity', async (req,res)=>{
-    const url=req.body.url
+router.get('/sepidar-quantity', async (req,res)=>{
     try{
         const sepidarQuantityResult = await sepidarFetch("data","/api/Items/Inventories")
 
@@ -135,7 +134,7 @@ router.post('/sepidar-quantity', async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
-router.post('/sepidar-users', async (req,res)=>{
+router.get('/sepidar-users', async (req,res)=>{
     try{ 
         const sepidarUsersResult = await sepidarFetch("data","/api/Customers")
 
