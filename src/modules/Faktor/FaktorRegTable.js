@@ -33,7 +33,7 @@ function FaktorRegTable(props){
     //console.log(props.faktorList)
     return(<>
         <QuickCartPart setFaktorList={props.setFaktorList} 
-            faktorList={props.faktorList} user={user} 
+            faktorList={props.faktorList} user={user} payValue={props.payValue}
             token={token}/>
         <CartPart setFaktorList={props.setFaktorList} 
             faktorList={props.faktorList} user={user} 

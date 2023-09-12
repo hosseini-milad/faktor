@@ -18,8 +18,10 @@ const FaktorRegister = (props)=>{
     const [faktorList,setFaktorList] = useState() 
     const [search,setSearch] = useState('')
     const [showPop,setShowPop] = useState(0)
+    const [showPay,setShowPay] = useState(0)
+    const [payValue, setPayValue] = useState("3");
     const token=cookies.get('faktor-login')
-    
+    const payMethods =[["نقدی","3"],["اعتباری","4"]]
     useEffect(()=>{
         if(!doFilter)return
         setPageNumber(0)
@@ -57,6 +59,10 @@ const FaktorRegister = (props)=>{
             console.log(error)
         })
     },[search])
+    useEffect(()=>{
+        setShowPay(users?1:0)
+        setPayValue("3")
+    },[users])
     return(
         <div className="container">
         <Breadcrumb title={"ثبت فاکتور"}/>
@@ -69,6 +75,7 @@ const FaktorRegister = (props)=>{
             
             <div className="footer-form-fiin rev">
                 <div width="30%" style={{position:"relative", minWidth:"220px", marginLeft:"100px"}}>
+                    
                     <div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
                         <input type="text" name="search" id="search" 
                             //onKeyPress={(e)=>(e.key === 'Enter')?addItem(e.target.value):''}
@@ -91,9 +98,20 @@ const FaktorRegister = (props)=>{
                         </div>
                     </div>:<></>}
                 </div>
+                {showPay?<div className="form-field-fiin" style={{marginBottom: "0"}}>
+                    {payMethods.map(([value,id],i)=>(
+                       <div key={ i } style={{display: "flex"}}>
+                       <input type="radio" style={{marginLeft: "10px"}}
+                             checked={ payValue===id } 
+                         onChange={ (e)=>setPayValue(e.target.value) } 
+                         value={ id } /> 
+                           { value }
+                         </div> 
+                    ))}
+                </div>:<></>}
             </div> 
             <div className="table-fiin">
-                <FaktorRegTable faktorList={faktorList} 
+                <FaktorRegTable faktorList={faktorList} payValue={payValue}
                     setFaktorList={setFaktorList} users={users}/>
             </div>
 

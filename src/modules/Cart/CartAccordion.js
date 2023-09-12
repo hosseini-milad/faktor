@@ -13,8 +13,11 @@ function CartAccordion(props){
                         <small style={{position:"absolute",top:"7px",right:"0px"}}>{i+1}</small>
                             <div className="col">
                                 <div className="list-item">
-                                    <span>شماره فاکتور: </span>
-                                    {faktor.faktorNo}
+                                    <span>مشتری: </span>
+                                    {faktor.userData&&
+                                    faktor.userData[0]?
+                                    faktor.userData[0].username:
+                                    faktor.adminData[0]&&faktor.adminData[0].username}
                                 </div>
                             </div>
                             <div className="col">
@@ -31,17 +34,16 @@ function CartAccordion(props){
                             </div>
                             <div className="col">
                                 <div className="list-item">
-                                    <span style={{fontSize:"12px",marginLeft:"10px"}}> کاربر: </span>
-                                    {faktor.userData&&
-                                    faktor.userData[0]?
-                                    faktor.userData[0].username:
-                                    faktor.adminData[0]&&faktor.adminData[0].username}
+                                    <span>تعداد: </span>
+                                    {faktor.countData.totalCount}
                                 </div>
                             </div>
                             <div className="col">
                                 <div className="list-item">
-                                    <span>تعداد: </span>
-                                    {faktor.countData.totalCount}
+                                    <span style={{fontSize:"12px",marginLeft:"10px"}}> کاربر: </span>
+                                    {faktor.managerData&&
+                                    faktor.managerData[0]&&
+                                    faktor.managerData[0].username}
                                 </div>
                             </div>
                             {/*<div className="col">

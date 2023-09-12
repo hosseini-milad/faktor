@@ -72,6 +72,7 @@ function QuickCartPart(props){
                 console.log(error)
             })
     }
+    console.log(props.faktorList)
     return(<>
         <table style={{overflow: "auto"}}>
             <thead>
@@ -86,8 +87,8 @@ function QuickCartPart(props){
                 </tr>
             </thead>
             <tbody>
-                <FaktorNewItem setFaktorList={props.setFaktorList} 
-                                faktorList={props.faktorList} users={props.user}/>
+                <FaktorNewItem setFaktorList={props.setFaktorList} payValue={props.payValue}
+                    faktorList={props.faktorList} users={props.user}/>
                 {(props.faktorList&&props.faktorList.quickCart)?
                     props.faktorList.quickCart.cartItems.map((faktor,i)=>(
                 <tr key={i} style={{backgroundColor:"#EEEFFC"}}>
@@ -123,9 +124,13 @@ function QuickCartPart(props){
             </tbody>
         </table>
         <div className="footer-form-fiin rev">
+            {props.faktorList&&props.faktorList.qCartDetail&&
+            props.faktorList.qCartDetail.totalCount?
             <WaitingBtn class="btn-fiin" title={"ثبت موقت"} 
                         waiting={'ثبت موقت.'}
-                        function={addToCart} name="submit" error={error}/>
+                        function={addToCart} name="submit" error={error}/>:
+            <input type="button" value="ثبت موقت" 
+                className="btn-fiin disable-btn" />}
             <small className="errorSmall" style={{color:error.color}}>
             {error.message}</small>
         </div>
