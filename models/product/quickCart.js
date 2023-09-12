@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 var Schema = mongoose.Schema;
 
-const CartSchema = new Schema({
+const QCartSchema = new Schema({
     cartItems:  { type : Array , "default" : [] },
     initDate: { type: Date, default: Date.now },
     progressDate: { type: Date },
@@ -11,4 +11,4 @@ const CartSchema = new Schema({
 
     totalPrice:{ type: String }
 })
-module.exports = mongoose.model('cart',CartSchema);
+module.exports = mongoose.model('quickcart',QCartSchema);

@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcryptjs');
+const { default: fetch } = require("node-fetch");
 const jwt = require("jsonwebtoken");
 var ObjectID = require('mongodb').ObjectID;
 const jsonParser = bodyParser.json();
@@ -11,6 +12,7 @@ const UserDetail = require("../models/auth/customerDetail")
 const UserMontage = require("../models/auth/customerMontage");
 const task = require('../models/main/task');
 const faktor = require('../models/product/faktor');
+const cart = require('../models/product/cart');
 
 router.post('/user-detail',auth,jsonParser, async (req,res)=>{
   const userId =req.body.userId?req.body.userId:req.headers['userid']
@@ -230,31 +232,88 @@ router.post('/confirm-user-data',auth,jsonParser, async (req,res)=>{
 router.post('/report-sale', async (req,res)=>{
   const search = req.body.search
   try{ 
-      var faktorList = await faktor.find({})
-      /*aggregate([{$match:
-          {$or:[
-              {username:{$regex: search, $options : 'i'}},
-              {Code:{$regex: search, $options : 'i'}}
-          ]}
-      },
-      {$limit:6}])
-      if(!searchCustomer.length){
-          searchCustomer = await customerSchema.
-          aggregate([{$match:
-              {$or:[
-                  {username:{$regex: search, $options : 'i'}},
-                  {Code:{$regex: search, $options : 'i'}}
-              ]}
-          },
-          {$limit:6}])
-      }*/
-          
-      //logger.warn("main done")
-      res.json({saleReport:faktorList})
+    var today = new Date();
+    const response = await fetch("http://localhost:4090/api/product/cartlist",
+      {method: 'POST'});
+    const cartList = await response.json();
+    //var cartList = await cart.find()
+    var faktorList = await faktor.find({initDate:{ $gte:today.setDate(today.getDate()-7)}})
+    
+    var outputReport = []
+    for(var i=0;i<7;i++)
+        outputReport[i] ={date:'',price:0,count:0}
+    var todayOrigin = new Date();
+    for(var i=0;i<7;i++){
+      var fullDate = new Date(today.setDate(todayOrigin.getDate()-i))
+      var date = fullDate.toISOString().split('T')[0]
+      outputReport[i].date=date
+      for(var j=0;j<faktorList.length;j++){
+        if(faktorList[j]&&faktorList[j].initDate.toISOString().includes(date))
+        {outputReport[i].price= outputReport[i].price+
+            parseInt(faktorList[j].totalPrice)}
+      }
+    }
+    //logger.warn("main done")
+    res.json({saleReport:faktorList,outputReport:outputReport,...cartList})
   }
   catch(error){
       res.status(500).json({message: error.message})
   }
 })
+router.post('/report-board', async (req,res)=>{
+  const search = req.body.search
+  try{ 
+    var today = new Date();
+    var cartList = await cart.find()
+    var faktorList = await faktor.find({initDate:{ $gte:today.setDate(today.getDate()-7)}})
+    
+    var outputItems = []
+    /*for(var i=0;i<7;i++)
+      outputItems[i] ={sku:'',price:0,count:0}*/
+    for(var i=0;i<faktorList.length;i++){
+      var added = []
+      for(var j=0;j<faktorList[i].faktorItems.length;j++){
+        var foundIndex = findItem(faktorList[i].faktorItems[j].id,outputItems)
+        if(foundIndex!==-1)
+          outputItems[foundIndex].count = 
+            sumCount(outputItems[foundIndex].count,faktorList[i].faktorItems[j].count)
+        else 
+          outputItems.push(faktorList[i].faktorItems[j])
+      }
+      
+    }
+    for(var i=0;i<cartList.length;i++){
+      var added = []
+      for(var j=0;j<cartList[i].cartItems.length;j++){
+        var foundIndex = findItem(cartList[i].cartItems[j].id,outputItems)
+        if(foundIndex!==-1)
+          outputItems[foundIndex].count = 
+            sumCount(outputItems[foundIndex].count,cartList[i].cartItems[j].count)
+        else 
+          outputItems.push(cartList[i].cartItems[j])
+      } 
+    }
+    var sortedItem=[]
+    outputItems.sort((a, b) => {
+      return b.count - a.count;
+  });
+    //logger.warn("main done")
+    res.json({saleReport:faktorList,outputReport:outputItems})
+  }
+  catch(error){
+      res.status(500).json({message: error.message})
+  }
+})
+const findItem=(itemId,itemList)=>{
+  for(var i=0;i<itemList.length;i++)
+    if(itemList[i].id === itemId)
+      return(i)
+  return(-1)
+}
+const sumCount=(count1,count2)=>{
+  var c1 = parseInt(count1&&count1.toString())
+  var c2 = parseInt(count2&&count2.toString())
+  return(c1+c2)
+}
 
 module.exports = router;
