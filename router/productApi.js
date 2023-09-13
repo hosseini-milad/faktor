@@ -309,6 +309,16 @@ var cartItemTemp=cartData.cartItems
         }
     }
 }
+const removeCartCount=(cartData,cartID,count)=>{
+    if(!cartData||!cartData.cartItems)return([])
+var cartItemTemp=cartData.cartItems
+    for(var i=0;i<cartItemTemp.length;i++){
+        if(cartItemTemp[i].id===cartID){
+            cartItemTemp[i].count= parseInt(cartItemTemp[i].count)-parseInt(count)
+            return(cartItemTemp)
+        }
+    }
+}
 const editCart=(cartData,cartItem)=>{
     if(!cartData||!cartData.cartItems)return([])
 var cartItemTemp=cartData.cartItems
@@ -372,6 +382,36 @@ router.post('/remove-cart',jsonParser, async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
+
+router.post('/return-cart',jsonParser, async (req,res)=>{
+    const data={
+        userId:req.body.userId?req.body.userId:req.headers['userid'],
+
+        date:req.body.date,
+        progressDate:Date.now()
+    }
+    try{
+        var status = "";
+        const cartData = await cart.findOne({userId:data.userId})
+        const cartItems = removeCartCount(cartData,req.body.cartID,req.body.count)
+        data.cartItems =(cartItems)
+        //console.log(req.body.cartItem)
+        cartLog.create({...data,ItemID:req.body.cartID,action:"return"})
+            await cart.updateOne(
+                {userId:data.userId},{$set:data})
+            status = "Return "
+        var cartDetail = ''
+        if(cartData) cartDetail =findCartSum(cartItems)
+        await returnUpdateCount(req.body.cartID,req.body.count)
+        const cartNewData = await cart.findOne({userId:data.userId}).sort({"date":1})
+        res.json({cart:cartNewData,status:status, message:"برگشت از فروش ثبت شد",
+            data:data,...cartDetail,cart:cartData})
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
+
 router.post('/quick-to-cart',jsonParser, async (req,res)=>{
     const data={
         userId:req.body.userId?req.body.userId:req.headers['userid'],
@@ -585,6 +625,11 @@ const updateCount = async(items)=>{
         await productCount.updateOne({ItemID:items[i].id,Stock:"13"},
             {$inc:{quantity:toInt(items[i].count,"1",-1)}})
     }
+}
+const returnUpdateCount = async(itemID,count)=>{
+    await productCount.updateOne({ItemID:itemID,Stock:"13"},
+        {$inc:{quantity:toInt(count)}})
+    
 }
 const createfaktorNo= async(Noun,year,userCode)=>{
     var faktorNo = '';

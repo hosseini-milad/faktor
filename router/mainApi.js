@@ -14,6 +14,7 @@ const productCount = require('../models/product/productCount');
 const customers = require('../models/auth/customers');
 const schedule = require('node-schedule');
 const bankAccounts = require('../models/product/bankAccounts');
+const updateLog = require('../models/product/updateLog');
 const { ONLINE_URL} = process.env;
 
 router.get('/main', async (req,res)=>{
@@ -35,13 +36,13 @@ router.use('/form', formApi)
 router.use('/user', userApi)
 schedule.scheduleJob('0 0 * * *', async() => { 
     response = await fetch(ONLINE_URL+"/sepidar-product",
-        {method: 'POST'});
+        {method: 'GET'});
     response = await fetch(ONLINE_URL+"/sepidar-price",
-        {method: 'POST'});
+        {method: 'GET'});
     response = await fetch(ONLINE_URL+"/sepidar-quantity",
-        {method: 'POST'});
+        {method: 'GET'});
     response = await fetch(ONLINE_URL+"/sepidar-users",
-        {method: 'POST'});
+        {method: 'GET'});
  })
 router.get('/sepidar-product', async (req,res)=>{
     const url=req.body.url
@@ -59,7 +60,12 @@ router.get('/sepidar-product', async (req,res)=>{
                 if(createResult)
                 successItem.push(createResult)
         }
-        res.json({sepidar:sepidarResult,failure:failure})
+        
+        await updateLog.create({
+            updateQuery: "sepidar-product" ,
+            date:Date.now()
+        })
+        res.json({sepidar:sepidarResult.length,status:"update Product"})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -82,7 +88,12 @@ router.get('/sepidar-price', async (req,res)=>{
                 date:new Date()})
                 
         }
-        res.json({sepidar:sepidarPriceResult,failure:"failure"})
+        
+        await updateLog.create({
+            updateQuery: "sepidar-price" ,
+            date:Date.now()
+        })
+        res.json({sepidar:sepidarPriceResult.length,status:"update Price"})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -105,7 +116,11 @@ router.get('/sepidar-bank', async (req,res)=>{
                 CurrencyRef:sepidarBankResult[i].CurrencyRef})
                 
         }
-        res.json({sepidar:sepidarBankResult,failure:"failure"})
+        await updateLog.create({
+            updateQuery: "sepidar-bank" ,
+            date:Date.now()
+        })
+        res.json({sepidar:sepidarBankResult,status:"update Bank"})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -128,36 +143,26 @@ router.get('/sepidar-quantity', async (req,res)=>{
             date:new Date()})
                 
         }
-        res.json({sepidar:sepidarQuantityResult,failure:"failure"})
+        
+        await updateLog.create({
+            updateQuery: "sepidar-quantity" ,
+            date:Date.now()
+        })
+        res.json({sepidar:sepidarQuantityResult.length,status:"update Quantity"})
     }
     catch(error){
         res.status(500).json({message: error.message})
     }
 })
-router.get('/sepidar-users', async (req,res)=>{
+router.get('/sepidar-update-log', async (req,res)=>{
     try{ 
-        const sepidarUsersResult = await sepidarFetch("data","/api/Customers")
-
-        //var successItem=[];
-        //var failure = 0;
-        await customers.deleteMany({})
-        for(var i = 0;i<sepidarUsersResult.length;i++){
-            await customers.create({
-                CustomerID:sepidarUsersResult[i].CustomerID,
-                email:sepidarUsersResult[i].CustomerID+"@order.com",
-                cName:sepidarUsersResult[i].Name,
-                sName:sepidarUsersResult[i].LastName,
-                phone:sepidarUsersResult[i].PhoneNumber,
-                username:sepidarUsersResult[i].Title,
-                meliCode:sepidarUsersResult[i].NationalID,
-                Code:sepidarUsersResult[i].Code,
-            date:new Date()})
-                
-        }
-        res.json({sepidar:sepidarUsersResult,failure:"failure"})
+        const sepidarLog = await updateLog.find({})
+        
+        res.json({log:sepidarLog,message:"done"})
     }
     catch(error){
         res.status(500).json({message: error.message})
     }
 })
+
 module.exports = router;
