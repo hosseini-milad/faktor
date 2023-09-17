@@ -43,6 +43,7 @@ import ProductRegister from './modules/Products/ProductRegister';
 import FaktorPrint from './modules/Faktor/FaktorPrint/PrintHolder';
 import CartList from './modules/Cart/CartList';
 import DashBoardHolder from './modules/Dashboard/DashboardHolder';
+import Update from './pages/Update';
 
 const cookies = new Cookies();
 var lang = JSON.parse(localStorage.getItem('faktor-lang'));
@@ -64,7 +65,7 @@ root.render(
         <Route path="/upload" element={<Layout><UpLoad/></Layout>}/>
         <Route path="/profile" element={<Layout><ProfileView/></Layout>}/>
         <Route path="/profile/:profileId" element={<Layout><Profile/></Layout>}/>
-        
+        <Route path="/update" element={<Layout><Update/></Layout>}/>
         
         {/* Credit Pages */}
         <Route path="/credit/list" element={<Layout><CreditList/></Layout>}/>
