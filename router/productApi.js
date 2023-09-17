@@ -590,9 +590,9 @@ const SepidarFunc=async(data,faktorNo)=>{
             "Quantity": toInt(item.count),
             "SecondaryQuantity": 1.0000,
             "Fee": toInt(item.price),
-            "Price": toInt(item.price,item.count),
+            "Price": normalPriceCount(item.price,item.count),
             "Discount": 0.0000,
-            "Tax": toInt(item.price,"0.09"),
+            "Tax": normalPriceCount(item.price,"0.09"),
             "Duty": 0.0000,
             "Addition": 0.0000
           }))
@@ -647,6 +647,15 @@ const toInt=(strNum,count,align)=>{
     return(parseInt(parseInt((align?"-":'')+strNum.toString().replace( /,/g, ''))*
     (count?parseFloat(count):1)))
 }
+const normalPriceCount=(priceText,count)=>{
+    if(!priceText||priceText === null||priceText === undefined) return("")
+    var rawCount = parseFloat(count.toString())
+    var rawPrice = Math.round(parseInt(priceText.toString().replace(/\D/g,''))*rawCount)
+    rawPrice = parseInt(rawPrice)
+    return(
+      (rawPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace( /^\D+/g, ''))
+    )
+  }
 const minusInt=(quantity,minus)=>{
     if(!quantity)return(0)
     
