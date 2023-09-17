@@ -532,7 +532,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         for(var i=0;i<faktorDetail.length;i++){
             faktorNo= await createfaktorNo("F","02","21")
             sepidarQuery[i] = await SepidarFunc(faktorDetail[i],faktorNo)
-            addFaktorResult[i] = 0&&await sepidarPOST(sepidarQuery[i],"/api/invoices")
+            addFaktorResult[i] = await sepidarPOST(sepidarQuery[i],"/api/invoices")
             if(!addFaktorResult[i]||addFaktorResult[0].Message){
                 res.json({error:addFaktorResult[0].Message,
                     query:sepidarQuery[i],status:"faktor"})
@@ -554,7 +554,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
             }
         }
         const recieptQuery = await RecieptFunc(req.body.receiptInfo,addFaktorResult[0],faktorNo)
-        const recieptResult = 0&&await sepidarPOST(recieptQuery,"/api/Receipts/BasedOnInvoice")
+        const recieptResult = await sepidarPOST(recieptQuery,"/api/Receipts/BasedOnInvoice")
         //const SepidarFaktor = await SepidarFunc(faktorDetail)
         if(!recieptQuery||recieptResult.Message){
             res.json({error:recieptResult.Message,query:recieptQuery,status:"reciept"})
