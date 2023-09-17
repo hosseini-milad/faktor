@@ -156,7 +156,7 @@ router.get('/sepidar-quantity', async (req,res)=>{
 })
 router.get('/sepidar-update-log', async (req,res)=>{
     try{ 
-        const sepidarLog = await updateLog.find({})
+        const sepidarLog = await updateLog.find({}).sort({"date":-1})
         
         res.json({log:sepidarLog,message:"done"})
     }
