@@ -97,7 +97,9 @@ const FaktorNewItem = (props)=>{
                         {filterItems&&filterItems.map((item,i)=>(
                         <div className="pop-form-item" key={i}
                         onClick={()=>(setItem(item),setShowPop(0))}>
-                            <span className="titleShow">{item.title}</span>
+                            <span className="titleShow">
+                                <small>{item.sku+" - "}</small>
+                                {item.title}</span>
                         {/*<small className="skuShow">{item.sku}</small>
                             <span className="priceShow">{normalPrice(item.priceData&&item.priceData[0]&&
                                 item.priceData[0].price)}</span>*/}
