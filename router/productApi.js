@@ -588,7 +588,6 @@ const SepidarFunc=async(data,faktorNo)=>{
             "Description":item.title+"|"+item.sku,
             "StockRef":13,
             "Quantity": toInt(item.count),
-            "SecondaryQuantity": 1.0000,
             "Fee": toInt(item.price),
             "Price": normalPriceCount(item.price,item.count),
             "Discount": 0.0000,
@@ -650,7 +649,8 @@ const toInt=(strNum,count,align)=>{
 const normalPriceCount=(priceText,count)=>{
     if(!priceText||priceText === null||priceText === undefined) return("")
     var rawCount = parseFloat(count.toString())
-    var rawPrice = Math.round(parseInt(priceText.toString().replace(/\D/g,''))*rawCount)
+    var rawPrice = Math.round(parseInt(priceText.toString().replace( /,/g, '')
+        .replace(/\D/g,''))*rawCount)
     rawPrice = parseInt(rawPrice)
     return(
       (rawPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace( /^\D+/g, ''))
