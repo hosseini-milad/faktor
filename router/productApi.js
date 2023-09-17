@@ -532,9 +532,10 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         for(var i=0;i<faktorDetail.length;i++){
             faktorNo= await createfaktorNo("F","02","21")
             sepidarQuery[i] = await SepidarFunc(faktorDetail[i],faktorNo)
-            addFaktorResult[i] = await sepidarPOST(sepidarQuery[i],"/api/invoices")
-            if(addFaktorResult[0].Message){
-                res.json({error:addFaktorResult[0].Message,status:"faktor"})
+            addFaktorResult[i] = 0&&await sepidarPOST(sepidarQuery[i],"/api/invoices")
+            if(!addFaktorResult[i]||addFaktorResult[0].Message){
+                res.json({error:addFaktorResult[0].Message,
+                    query:sepidarQuery[i],status:"faktor"})
                 return
             }
             else{
@@ -553,10 +554,10 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
             }
         }
         const recieptQuery = await RecieptFunc(req.body.receiptInfo,addFaktorResult[0],faktorNo)
-        const recieptResult = await sepidarPOST(recieptQuery,"/api/Receipts/BasedOnInvoice")
+        const recieptResult = 0&&await sepidarPOST(recieptQuery,"/api/Receipts/BasedOnInvoice")
         //const SepidarFaktor = await SepidarFunc(faktorDetail)
-        if(recieptResult.Message){
-            res.json({error:recieptResult.Message,status:"reciept"})
+        if(!recieptQuery||recieptResult.Message){
+            res.json({error:recieptResult.Message,query:recieptQuery,status:"reciept"})
                 return
         }
         else{
@@ -589,9 +590,9 @@ const SepidarFunc=async(data,faktorNo)=>{
             "StockRef":13,
             "Quantity": toInt(item.count),
             "Fee": toInt(item.price),
-            "Price": normalPriceCount(item.price,item.count),
+            "Price": normalPriceCount(item.price,item.count,1),
             "Discount": 0.0000,
-            "Tax": normalPriceCount(item.price,"0.09"),
+            "Tax": normalPriceCount(item.price,item.count,"0.09"),
             "Duty": 0.0000,
             "Addition": 0.0000
           }))
@@ -646,11 +647,12 @@ const toInt=(strNum,count,align)=>{
     return(parseInt(parseInt((align?"-":'')+strNum.toString().replace( /,/g, ''))*
     (count?parseFloat(count):1)))
 }
-const normalPriceCount=(priceText,count)=>{
+const normalPriceCount=(priceText,count,tax)=>{
     if(!priceText||priceText === null||priceText === undefined) return("")
     var rawCount = parseFloat(count.toString())
+    var rawTax = parseFloat(tax.toString())
     var rawPrice = Math.round(parseInt(priceText.toString().replace( /,/g, '')
-        .replace(/\D/g,''))*rawCount)
+        .replace(/\D/g,''))*rawCount*rawTax)
     rawPrice = parseInt(rawPrice)
     return(
       (rawPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace( /^\D+/g, ''))
