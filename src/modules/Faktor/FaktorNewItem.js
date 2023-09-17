@@ -55,8 +55,9 @@ const FaktorNewItem = (props)=>{
             "userId":token&&token.userId},
             body:JSON.stringify({userId:props.users?props.users._id:(token&&token.userId),
                 date:Date.now,cartItem:{id:item.ItemID,sku:item.sku,
-                    title:item.title,count:count?count:1,price:item.priceData&&item.priceData[0]&&
-                    item.priceData[0].price,description:description}})
+                    title:item.title,count:count?count:1,
+                    price:item.priceData.find(item=>item.saleType===props.payValue).price
+                    ,description:description}})
           }
         fetch(env.siteApi + "/product/update-cart",postOptions)
         .then(res => res.json())
@@ -96,7 +97,9 @@ const FaktorNewItem = (props)=>{
                         {filterItems&&filterItems.map((item,i)=>(
                         <div className="pop-form-item" key={i}
                         onClick={()=>(setItem(item),setShowPop(0))}>
-                            <span className="titleShow">{item.title}</span>
+                            <span className="titleShow">
+                                <small>{item.sku+" - "}</small>
+                                {item.title}</span>
                         {/*<small className="skuShow">{item.sku}</small>
                             <span className="priceShow">{normalPrice(item.priceData&&item.priceData[0]&&
                                 item.priceData[0].price)}</span>*/}

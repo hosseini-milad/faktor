@@ -72,7 +72,6 @@ function QuickCartPart(props){
                 console.log(error)
             })
     }
-    console.log(props.faktorList)
     return(<>
         <table style={{overflow: "auto"}}>
             <thead>

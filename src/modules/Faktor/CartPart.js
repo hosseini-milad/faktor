@@ -2,6 +2,7 @@ import { useState } from "react"
 import Paging from "../../components/Paging"
 import SumTable from "../../components/SumTable"
 import { normalPrice, normalPriceCount } from "../../env"
+import FaktorReturn from "./FaktorReturn"
 
 function CartPart(props){
     return(<>
@@ -33,7 +34,8 @@ function CartPart(props){
                         </div>*/}{faktor.count}</td>
                     <td style={{textAlign:"center"}}>{normalPrice(faktor.price)}</td>
                     <td>{faktor.description}</td>
-                    <td>{/*<div className="removeBtn" onClick={()=>removeItem(faktor.id)}>حـذف</div>*/}</td>
+                    <td>{<FaktorReturn itemId={faktor} setFaktorList={props.setFaktorList}
+                        user={props.user} token={props.token}/>}</td>
                 </tr>
                 )):
                 <tr><td colSpan={2}>سبد خرید خالی است</td></tr>}

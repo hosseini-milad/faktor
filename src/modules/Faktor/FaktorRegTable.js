@@ -3,6 +3,7 @@ import Cookies from 'universal-cookie';
 import env, { normalPrice } from "../../env";
 import QuickCartPart from "./QuickCartPart";
 import CartPart from "./CartPart";
+import FaktorReturn from "./FaktorReturn";
 const cookies = new Cookies();
 
 function FaktorRegTable(props){

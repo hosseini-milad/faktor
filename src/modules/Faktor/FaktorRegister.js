@@ -19,7 +19,7 @@ const FaktorRegister = (props)=>{
     const [search,setSearch] = useState('')
     const [showPop,setShowPop] = useState(0)
     const [showPay,setShowPay] = useState(0)
-    const [payValue, setPayValue] = useState("3");
+    const [payValue, setPayValue] = useState("4");
     const token=cookies.get('faktor-login')
     const payMethods =[["نقدی","3"],["اعتباری","4"]]
     useEffect(()=>{
@@ -61,7 +61,7 @@ const FaktorRegister = (props)=>{
     },[search])
     useEffect(()=>{
         setShowPay(users?1:0)
-        setPayValue("3")
+        setPayValue("4")
     },[users])
     return(
         <div className="container">

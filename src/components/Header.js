@@ -30,6 +30,8 @@ const Header = (props)=>{
                         </li>
                         <li><a href="/faktor/List"> لیست فاکتورها</a>
                         </li>
+                        <li><a href="/update"> بروزرسانی سپیدار</a>
+                        </li>
                         
                     </ul>
                 </div>
