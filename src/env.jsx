@@ -1,10 +1,10 @@
 const env={
-    siteApi:'http://localhost:4090/api',
-    //siteApi:'https://faktoradmin.dkmehr.com/api',
+    //siteApi:'http://localhost:4090/api',
+    siteApi:'https://faktoradmin.dkmehr.com/api',
     //siteApi:'https://saleadmin.sharifoilco.com/api',
 
-    siteApiUrl:'http://localhost:4090',
-    //siteApiUrl:'https://faktoradmin.dkmehr.com',
+    //siteApiUrl:'http://localhost:4090',
+    siteApiUrl:'https://faktoradmin.dkmehr.com',
     //siteApiUrl:'https://saleadmin.sharifoilco.com',
 
     columnOrder:['lead','informations','fiin','property','seguros',
