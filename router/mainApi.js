@@ -43,6 +43,8 @@ schedule.scheduleJob('0 0 * * *', async() => {
         {method: 'GET'});
     response = await fetch(ONLINE_URL+"/sepidar-users",
         {method: 'GET'});
+    response = await fetch(ONLINE_URL+"/sepidar-bank",
+        {method: 'GET'});
  })
 router.get('/sepidar-product', async (req,res)=>{
     const url=req.body.url
@@ -65,7 +67,40 @@ router.get('/sepidar-product', async (req,res)=>{
             updateQuery: "sepidar-product" ,
             date:Date.now()
         })
-        res.json({sepidar:sepidarResult.length,status:"update Product"})
+        res.json({sepidar:sepidarResult.length,message:"محصولات بروز شدند"})
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
+router.get('/sepidar-users', async (req,res)=>{
+    const url=req.body.url
+    try{
+        const sepidarResult = await sepidarFetch("data","/api/Customers")
+        await customers.deleteMany({})
+        var successItem=[];
+        var failure = 0;
+        for(var i = 0;i<sepidarResult.length;i++){
+            const createResult = await customers.create({
+                username: sepidarResult[i].Title,
+                cName: sepidarResult[i].Name,
+                sName: sepidarResult[i].LastName,
+                phone: sepidarResult[i].PhoneNumber,
+                meliCode: sepidarResult[i].NationalID,
+                email: sepidarResult[i].Code+"@sharifoilco.com",
+                access:"customer",
+                Code:sepidarResult[i].Code,
+                CustomerID:sepidarResult[i].CustomerID,
+                date:new Date()})
+                if(createResult)
+                successItem.push(createResult)
+        }
+        
+        await updateLog.create({
+            updateQuery: "sepidar-customer" ,
+            date:Date.now()
+        })
+        res.json({sepidar:sepidarResult.length,message:"کاربران بروز شدند"})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -93,7 +128,7 @@ router.get('/sepidar-price', async (req,res)=>{
             updateQuery: "sepidar-price" ,
             date:Date.now()
         })
-        res.json({sepidar:sepidarPriceResult.length,status:"update Price"})
+        res.json({sepidar:sepidarPriceResult.length,message:"قیمت ها بروز شدند"})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -120,7 +155,7 @@ router.get('/sepidar-bank', async (req,res)=>{
             updateQuery: "sepidar-bank" ,
             date:Date.now()
         })
-        res.json({sepidar:sepidarBankResult,status:"update Bank"})
+        res.json({sepidar:sepidarBankResult.length,message:"بانک ها بروز شدند"})
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -148,7 +183,25 @@ router.get('/sepidar-quantity', async (req,res)=>{
             updateQuery: "sepidar-quantity" ,
             date:Date.now()
         })
-        res.json({sepidar:sepidarQuantityResult.length,status:"update Quantity"})
+        res.json({sepidar:sepidarQuantityResult.length,message:"تعداد بروز شدند"})
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
+router.get('/sepidar-all', async (req,res)=>{
+    try{
+        response = await fetch(ONLINE_URL+"/sepidar-product",
+            {method: 'GET'});
+        response = await fetch(ONLINE_URL+"/sepidar-price",
+            {method: 'GET'});
+        response = await fetch(ONLINE_URL+"/sepidar-quantity",
+            {method: 'GET'});
+        response = await fetch(ONLINE_URL+"/sepidar-users",
+            {method: 'GET'});
+        response = await fetch(ONLINE_URL+"/sepidar-bank",
+            {method: 'GET'});
+        res.json({message:"تمامی جدول ها بروز شدند"})
     }
     catch(error){
         res.status(500).json({message: error.message})
