@@ -1,11 +1,11 @@
 const env={
     //siteApi:'http://localhost:4090/api',
-    siteApi:'https://faktoradmin.dkmehr.com/api',
-    //siteApi:'https://saleadmin.sharifoilco.com/api',
+    //siteApi:'https://faktoradmin.dkmehr.com/api',
+    siteApi:'https://saleadmin.sharifoilco.com/api',
 
     //siteApiUrl:'http://localhost:4090',
-    siteApiUrl:'https://faktoradmin.dkmehr.com',
-    //siteApiUrl:'https://saleadmin.sharifoilco.com',
+    //siteApiUrl:'https://faktoradmin.dkmehr.com',
+    siteApiUrl:'https://saleadmin.sharifoilco.com',
 
     columnOrder:['lead','informations','fiin','property','seguros',
         'escritura','commissions','suspended']
@@ -89,4 +89,9 @@ export function defferPrice(priceText,minus){
     ((rawPrice>rawMinus?"+":"-")+
       (rawPrice-rawMinus).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace( /^\D+/g, ''))
   )
+}
+export function defferCount(count1,count2){
+  var defer = parseInt(count1)-parseInt(count2)
+  
+  return defer>-1?defer:-1
 }

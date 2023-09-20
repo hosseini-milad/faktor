@@ -110,10 +110,8 @@ const FaktorRegister = (props)=>{
                     ))}
                 </div>:<></>}
             </div> 
-            <div className="table-fiin">
                 <FaktorRegTable faktorList={faktorList} payValue={payValue}
                     setFaktorList={setFaktorList} users={users}/>
-            </div>
 
             {/*<div className="footer-form-fiin rev">
                 <WaitingBtn class="btn-fiin" title={"ثبت فاکتور"} 

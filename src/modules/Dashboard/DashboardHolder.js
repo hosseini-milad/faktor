@@ -42,12 +42,13 @@ function DashBoardHolder(){
         .then(res => res.json())
         .then(
             (result) => {
+                console.log(result)
                 if(result.error){
                     setError({message:result.error,color:"brown"})
                     
                 }
                 else{
-                    setSaleReport(result.outputReport)
+                    setSaleReport(result.cartTotal)
                     var dates = result.outputReport.map(item=>new Date(item.date).toLocaleDateString('fa-IR'))
                     setSaleLabels(dates)
                     
@@ -78,11 +79,12 @@ function DashBoardHolder(){
       ChartJS.defaults.font.family = "Vazir";
     return(
         <main className="container-fluid">
-                <h2>DashBoard</h2>
             <div className="chartHolder">
                 <div className='charts'>
-                  <ChartDaily labels={labelDaily} data={saleDaily} ChartJS={ChartJS}/>
+                  <ChartDaily labels={labelDaily} data={saleDaily}
+                    cartTotal={saleReport} ChartJS={ChartJS}/>
                     
+
                 </div>
                 {/*<div className='charts'>
                   <ChartSale labels={labelSale} data={saleReport} ChartJS={ChartJS}/>

@@ -35,7 +35,7 @@ function CartPart(props){
                     <td style={{textAlign:"center"}}>{normalPrice(faktor.price)}</td>
                     <td>{faktor.description}</td>
                     <td>{<FaktorReturn itemId={faktor} setFaktorList={props.setFaktorList}
-                        user={props.user} token={props.token}/>}</td>
+                        user={props.user} token={props.token} itemCount={faktor.count}/>}</td>
                 </tr>
                 )):
                 <tr><td colSpan={2}>سبد خرید خالی است</td></tr>}

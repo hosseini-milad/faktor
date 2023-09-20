@@ -140,9 +140,13 @@ body{
 .acceptBtn{
     background-color: green;
     border-color: green;
+    color:#fff;
+    transition: .3s all;
 }
 .acceptBtn:hover{
     color: green;
+    background-color: #fff;
+    transition: .3s all;
 }
 
 
@@ -567,6 +571,61 @@ body{
     width: 60% !important;
     overflow: initial !important;
 }
+.counterHolder{
+    display: flex;
+    align-items: center;
+}
+.counter{
+    font-size: 20px;
+    border:1px solid silver;
+    border-radius: 15px;
+    min-width: 30px;
+    text-align: center;
+    height: 30px;
+    cursor: pointer;
+    margin:auto 5px;
+}
+.counterInput{
+    text-align: center;
+    padding: 14px 4px !important;
+    min-width: 40px;
+}
+.disableBtn{
+    background-color: #E7E7E8;
+}
+
+/*POPUP*/
+
+.alertHolder{
+    position: fixed;
+    background-color: #002A5490;
+    color:#111;
+    top:0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 900;
+}
+.alertPlace{
+    height: 250px;
+    margin: calc(50vh - 125px) auto;
+    background-color: #fff !important;
+    padding: 20px 5%;
+    width: 30%;
+    border-radius: 20px;
+    box-shadow: 3px 3px 5px #222;
+}
+.alertBtn{
+    margin: 20px auto;
+}
+.alertBtn input{
+    width:45%;
+    margin: auto 2%;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+
 
 @media only screen and (max-width:1200px){
     .table-fiin table {
@@ -582,9 +641,18 @@ body{
         display: block;
     }
     
+    .tarazHolder{
+        display: grid;
+    }
 }
 @media only screen and (max-width: 768px) {
     .account-head:hover ul {
         display: block;
+    }
+    .chartHolder{
+        display: grid;
+    }
+    .charts{
+        width: 90%;
     }
 }

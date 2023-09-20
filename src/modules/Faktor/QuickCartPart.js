@@ -3,20 +3,22 @@ import WaitingBtn from "../../components/Button/waitingBtn"
 import SumTable from "../../components/SumTable"
 import env, { normalPrice, normalPriceCount } from "../../env"
 import FaktorNewItem from "./FaktorNewItem"
+import Counter from "../../components/Counter";
 
 function QuickCartPart(props){
     const user = props.user
     const [error,setError] = useState({message:'',color:"brown"})
     const token = props.token
-    const setCount=(itemId,count)=>{
+    const setCount=(count,itemId)=>{
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,
             "x-access-token": token&&token.token,
             "userId":token&&token.userId},
-            body:JSON.stringify({userId:token&&token.userId,
+            body:JSON.stringify({userId:user?user._id:(token&&token.userId),
                     cartItem:{id:itemId,count:count}})
           }
+        //console.log(postOptions)
         fetch(env.siteApi + "/product/edit-cart",postOptions)
         .then(res => res.json())
         .then(
@@ -96,11 +98,8 @@ function QuickCartPart(props){
                         <strong>{faktor.title}</strong>
                         <small>{faktor.sku}</small></td>
                     <td><div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
-                        <input type="text" name="count" id="count" 
-                            onChange={(e)=>setCount(faktor.id,e.target.value)}
-                            className="formInputSimple"
-                            value={faktor.count||''}
-                            placeholder="تعداد"/>
+                        <Counter count={faktor.count||''} 
+                                setCount={setCount} itemId={faktor.id}/>
                         </div></td>
                     <td>{normalPrice(faktor.price)}</td>
                     <td>{normalPriceCount(faktor.price,faktor.count)}</td>
