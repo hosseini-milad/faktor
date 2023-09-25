@@ -574,6 +574,10 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
     }
 })
 const SepidarFunc=async(data,faktorNo)=>{
+    const notNullCartItem = []
+    for(var i=0;i<data.cartItems.length;i++)
+        data.cartItems[i].count?
+        notNullCartItem.push(data.cartItems[i]):''
     var query ={
         "GUID": "124ab075-fc79-417f-b8cf-2a"+faktorNo,
         "CustomerRef": toInt(data.userId),
@@ -582,7 +586,7 @@ const SepidarFunc=async(data,faktorNo)=>{
         "Duty":0.0000,
         "Discount": 0.0000,
         "Items": 
-          data.cartItems.map((item,i)=>(
+        notNullCartItem.map((item,i)=>(
             {
             "ItemRef": toInt(item.id),
             "TracingRef": null,
