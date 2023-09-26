@@ -321,6 +321,13 @@ body{
     padding: 5px !important;
     text-align: center;
 }
+.faktorList{
+    border-bottom: 2px solid gray;
+}
+.seprator{
+    height: 0;
+    padding: 0;
+}
 
 /* RTL */
 .ms-auto {

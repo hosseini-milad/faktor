@@ -3,6 +3,7 @@ import { normalDate, normalPrice, normalPriceCount } from "../../env"
 
 function CartAccordion(props){
     const [tab,setTab] = useState(0)
+    const i = props.index
     return(
         <div className="accordions">
             {props.faktorList&&props.faktorList.map((faktor,i)=>(
