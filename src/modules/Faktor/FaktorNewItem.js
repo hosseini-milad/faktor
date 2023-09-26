@@ -3,6 +3,7 @@ import Breadcrumb from "../../components/BreadCrumb"
 import ListFilters from "../ListFilters"
 import env, { normalPrice } from "../../env"
 import Cookies from 'universal-cookie';
+import Counter from "../../components/Counter";
 const cookies = new Cookies();
 
 const FaktorNewItem = (props)=>{
@@ -83,7 +84,7 @@ const FaktorNewItem = (props)=>{
     return(
         <tr>
             <td width="5%"></td>
-            <td width="30%" style={{position:"relative", minWidth:"220px"}}>
+            <td width="30%" style={{position:"relative", minWidth:"180px"}}>
                 <div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
                     <input type="text" name="search" id="search" 
                         //onKeyPress={(e)=>(e.key === 'Enter')?addItem(e.target.value):''}
@@ -111,12 +112,8 @@ const FaktorNewItem = (props)=>{
                 </div>:<></>}
                 </td>
             <td width="10%" style={{minWidth:"100px"}}>
-                <div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
-                    <input type="text" name="count" id="count" 
-                        onChange={(e)=>setCount(e.target.value)}
-                        value={count} style={{textAlign:"center"}}
-                        placeholder="تعداد"/>
-                </div></td>
+            <div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
+                <Counter count={count} setCount={setCount}/></div></td>
             <td width="10%">
                 {item?normalPrice(item.priceData.find(item=>item.saleType===props.payValue).price):''}<br/>
                 <small className="errorSmall" style={{color:error.color}}>

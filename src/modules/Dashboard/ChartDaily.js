@@ -1,7 +1,9 @@
 import { Bar } from 'react-chartjs-2';
+import { normalPrice, normalPriceCount } from '../../env';
 function ChartDaily(props){
     const labels = props.labels
     const saleReport = props.data
+    const cartTotal = props.cartTotal
     const data = {
         labels,
         datasets: [
@@ -42,12 +44,28 @@ function ChartDaily(props){
           },
           title: {
             display: true,
-            text: 'Chart Description',
+            text: 'جزئیات فروش روزانه',
           },
         },
       };
-    return(
+    return(<>
         <Bar data={data} options={options}/>
+        <div className='chartDesc'>
+          <br/>
+          <ul>
+            <li><small>جمع فروش روزانه: </small>
+            <strong>{normalPrice(cartTotal.cartPrice)} </strong>
+            </li>
+            <br/>
+            <li><small>جمع فروش با احتساب مالیات: </small>
+            <strong>{normalPriceCount(cartTotal.cartPrice,"1.09")} </strong>
+            </li>
+            <li><small>تعداد فروش روزانه: </small>
+            <strong>{cartTotal.cartCount} </strong>
+            </li>
+          </ul>
+        </div>
+        </>
     )
 }
 export default ChartDaily

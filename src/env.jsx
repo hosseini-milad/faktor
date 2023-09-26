@@ -90,3 +90,8 @@ export function defferPrice(priceText,minus){
       (rawPrice-rawMinus).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace( /^\D+/g, ''))
   )
 }
+export function defferCount(count1,count2){
+  var defer = parseInt(count1)-parseInt(count2)
+  
+  return defer>-1?defer:-1
+}

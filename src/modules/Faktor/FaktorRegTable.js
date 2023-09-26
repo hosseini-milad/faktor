@@ -33,12 +33,18 @@ function FaktorRegTable(props){
     },[user])
     //console.log(props.faktorList)
     return(<>
-        <QuickCartPart setFaktorList={props.setFaktorList} 
-            faktorList={props.faktorList} user={user} payValue={props.payValue}
-            token={token}/>
-        <CartPart setFaktorList={props.setFaktorList} 
-            faktorList={props.faktorList} user={user} 
-            token={token}/>
+        
+            <div className="table-fiin">
+                <QuickCartPart setFaktorList={props.setFaktorList} 
+                faktorList={props.faktorList} user={user} payValue={props.payValue}
+                token={token}/>
+            </div>
+        
+            <div className="table-fiin">
+                <CartPart setFaktorList={props.setFaktorList} 
+                faktorList={props.faktorList} user={user} 
+                token={token}/>
+            </div>
         </>
         
     )

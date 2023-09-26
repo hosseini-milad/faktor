@@ -71,7 +71,7 @@ function ChartItem(props){
               },
               title: {
                 display: true,
-                text: 'Chart Description',
+                text: 'پرفروش ترین محصولات',
               },
             },
           };

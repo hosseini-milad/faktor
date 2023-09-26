@@ -1,51 +1,27 @@
 import { useEffect, useState } from "react"
 import Breadcrumb from "../../components/BreadCrumb"
 import ListFilters from "../ListFilters"
-import env, { normalPrice } from "../../env"
+import env, { defferCount, normalPrice } from "../../env"
+import Popup from "../../components/popup"
 
 const FaktorReturn = (props)=>{
-    const [item,setItem] = useState()
+    const item = props.itemId
     const [filterItems,setFilterItems] = useState()
     const [error,setError] = useState({message:'',color:"brown"})
     const [showPop,setShowPop] = useState(0)
     const [count,setCount] = useState("1")
     
-    const [description,setDescription] = useState('')
-    const [search,setSearch] = useState('')
+    const [alertShow,setAlertShow] = useState({show: false, action:0})
+    //console.log(props.itemCount)
     const token=props.token
-    useEffect(()=>{
-        if(search.length<3){
-            setShowPop(0)
-            return}
-        //console.log(search)
-        const postOptions={
-            method:'post',
-            headers: { 'Content-Type': 'application/json' ,
-            "x-access-token": token&&token.token,
-            "userId":token&&token.userId},
-            body:JSON.stringify({search:search})
-          }
-        fetch(env.siteApi + "/product/find-products",postOptions)
-        .then(res => res.json())
-        .then(
-            (result) => {
-                //console.log(result)
-                if(result.products)
-                    setShowPop(1)
-                if(result.error){
-                    setError({message:result.error,color:"brown"})
-                    
-                }
-                else{
-                    setFilterItems(result.products)
-                }
-                
-            },
-            (error) => {
-                console.log(error)
-            })
-    },[search])
+    
     const returnItem=()=>{
+        setAlertShow(pState => {
+            return { ...pState, show: true}
+          })
+    }
+    useEffect(()=>{
+        if(alertShow.action){
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,
@@ -53,8 +29,7 @@ const FaktorReturn = (props)=>{
             "userId":token&&token.userId},
             body:JSON.stringify({userId:props.user?props.user._id:(token&&token.userId),
                 date:Date.now,cartID:props.itemId.id,count:count?count:1})
-          }
-          console.log(postOptions)
+            }
         fetch(env.siteApi + "/product/return-cart",postOptions)
         .then(res => res.json())
         .then(
@@ -66,9 +41,8 @@ const FaktorReturn = (props)=>{
                         color:"brown"}),3000)
                 }
                 else{
+                    setAlertShow({show: false, action:0})
                     props.setFaktorList(result)
-                    setSearch('')
-                    setItem('')
                     setCount("1")
                     setError({message:result.message,color:"green"})
                     setTimeout(()=>setError({message:'',
@@ -78,8 +52,9 @@ const FaktorReturn = (props)=>{
             (error) => {
                 console.log(error)
             })
-    
-    }
+        }
+        
+    },[alertShow])
     return(<>
         <div className="form-fiin form-field-fiin" 
             style={{marginBottom: "0",display:"flex"}}>
@@ -89,6 +64,11 @@ const FaktorReturn = (props)=>{
                 placeholder="تعداد"/>
         <input type="button" value="برگشت از فروش" 
         onClick={returnItem}/>
+        {alertShow.show?<Popup title={"برگشت از فروش"} 
+            text={item.title+"("+item.sku+")"}
+            text2={"تعداد: "+count}
+            error={defferCount(props.itemCount,count)===-1?"تعداد مطابقت ندارد":''}
+            setAlertShow={setAlertShow}/>:<></>}
         </div>
     </>
     )
