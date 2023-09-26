@@ -16,7 +16,7 @@ const schedule = require('node-schedule');
 const bankAccounts = require('../models/product/bankAccounts');
 const updateLog = require('../models/product/updateLog');
 const { ONLINE_URL} = process.env;
-
+ 
 router.get('/main', async (req,res)=>{
     try{
         const sliders = await slider.find()
