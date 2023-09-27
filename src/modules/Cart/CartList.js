@@ -8,7 +8,7 @@ import CartPay from "./CartPay";
 const cookies = new Cookies();
 
 const CartList = (props)=>{
-    const [users,setUsers] = useState()
+    const [cartID,setCartID] = useState([])
     const [filter,setFilter] = useState()
     const [error,setError] = useState({message:'',color:"brown"})
     const [doFilter,setDoFilter] = useState(1)
@@ -59,10 +59,12 @@ const CartList = (props)=>{
             </div>  
             
         </div>
-        {faktorList?<><CartAccordion faktorList={faktorList} />
+        {faktorList?<><CartAccordion faktorList={faktorList} 
+            cartID={cartID} setCartID={setCartID}/>
         <small className="errorSmall" style={{color:error.color}}>
             {error.message}</small>
-        <CartPay faktorList={faktorTotal} token={token}/></>:<></>}
+        <CartPay faktorList={faktorTotal} token={token}
+        cartID={cartID} /></>:<></>}
     </div>
     )
 }

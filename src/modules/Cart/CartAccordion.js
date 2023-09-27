@@ -4,10 +4,29 @@ import { normalDate, normalPrice, normalPriceCount } from "../../env"
 function CartAccordion(props){
     const [tab,setTab] = useState(0)
     const i = props.index
+    const createArray=(addRemove,item)=>{
+        if(addRemove){
+            props.setCartID(existingItems => {
+            return [
+              ...existingItems.slice(0, props.cartID.length),
+              item,
+              ...existingItems.slice(props.cartID.length + 1),
+            ]
+          })
+        }
+        else
+        props.setCartID(
+            props.cartID.filter(function (geeks) {
+                return geeks != item;
+            })
+        )
+    }
     return(
         <div className="accordions">
             {props.faktorList&&props.faktorList.map((faktor,i)=>(
                 <div className="accordion-item" key={i}>
+                    <input type="checkbox" className="checkBoxCart" 
+                        onChange={(e)=>createArray(e.target.checked,faktor._id)}/>
                     <div className={tab===i+1?"accordion-title active-title":"accordion-title"}
                          data-tab="item1" onClick={()=>tab===i+1?setTab(0):setTab(i+1)}>
                         <div className="row row-cols-lg-6 row-cols-md-3 row-cols-sm-2 row-cols-1 align-items-center">

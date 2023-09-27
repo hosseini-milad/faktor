@@ -1,10 +1,10 @@
 const env={
-    //siteApi:'http://localhost:4090/api',
-    siteApi:'https://faktoradmin.dkmehr.com/api',
+    siteApi:'http://localhost:4090/api',
+    //siteApi:'https://faktoradmin.dkmehr.com/api',
     //siteApi:'https://saleadmin.sharifoilco.com/api',
 
-    //siteApiUrl:'http://localhost:4090',
-    siteApiUrl:'https://faktoradmin.dkmehr.com',
+    siteApiUrl:'http://localhost:4090',
+    //siteApiUrl:'https://faktoradmin.dkmehr.com',
     //siteApiUrl:'https://saleadmin.sharifoilco.com',
 
     columnOrder:['lead','informations','fiin','property','seguros',
@@ -73,7 +73,7 @@ export function normalPrice(priceText){
 export function normalPriceCount(priceText,count){
   if(!priceText||priceText === null||priceText === undefined) return("")
   var rawCount = parseFloat(count.toString())
-  var rawPrice = Math.round(parseInt(priceText.toString().replace(/\D/g,''))*rawCount)
+  var rawPrice = Math.round(parseInt(priceText.toString().replace(/\D/g,''))*rawCount/1000)*1000
   rawPrice = parseInt(rawPrice)
   return(
     (rawPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace( /^\D+/g, ''))

@@ -328,6 +328,11 @@ body{
 .faktorList{
     border-bottom: 2px solid gray;
 }
+.checkBoxCart{
+    position: absolute;
+    right: 10px;
+    top: 25px;
+}
 .seprator{
     height: 0;
     padding: 0;

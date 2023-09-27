@@ -620,14 +620,16 @@ span {
 
 .accordion-item {
     background-color: #f9f9f9;
-    border: 1px solid #ddd;
     margin-bottom: 10px;
-    border-radius: 0 6px 6px 0!important;
     overflow: hidden;
+    position: relative;
 }
 
 .accordion-item .accordion-title {
+    border-radius: 0 6px 6px 0!important;
+    border: 1px solid #ddd;
     cursor: pointer;
+    margin-right: 40px;
     padding: 20px;
     transition: all 0.4s;
     position: relative;
