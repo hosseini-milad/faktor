@@ -65,7 +65,7 @@ function CartPay(props){
                 totalSum+= parseInt(payList[i].value.replace( /,/g, ''))
         }
         setTotalSum(totalSum)
-    },[payList,props.cartID])
+    },[payList])
     return(
         <>
         <h4>روش پرداخت</h4>
