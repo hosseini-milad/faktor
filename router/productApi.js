@@ -32,7 +32,7 @@ router.post('/products', async (req,res)=>{
 })
 router.post('/find-products', async (req,res)=>{
     const search = req.body.search
-    try{ 
+    try{  
         const searchProducts = await productSchema.
         aggregate([{$match:
             {$or:[
@@ -159,6 +159,7 @@ router.post('/cart', async (req,res)=>{
     }
 })
 const findCartFunction=async(userId)=>{
+    
     try{
         const cartData = await cart.find({userId:userId}).sort({"initDate":-1})
     const qCartData = await qCart.findOne({userId:userId})
@@ -169,7 +170,7 @@ const findCartFunction=async(userId)=>{
     if(qCartData) qCartDetail =findCartSum(qCartData.cartItems)
     return({cart:cartData,cartDetail:cartDetail,
         quickCart:qCartData,qCartDetail:qCartDetail})
-    }
+        }
     catch{
         return({cart:[],cartDetail:[],
             quickCart:'',qCartDetail:''})
@@ -181,15 +182,18 @@ const findCartSum=(cartItems)=>{
     var cartCount=0;
     var cartDescription = ''
     for (var i=0;i<cartItems.length;i++){
-        cartSum+= parseInt(cartItems[i].price.toString().replace( /^\D+/g, ''))*
-        parseInt(cartItems[i].count.toString().replace( /^\D+/g, ''))
-        cartCount+=parseInt(cartItems[i].count.toString().replace( /^\D+/g, ''))
-        cartDescription += cartItems.description
+        if(cartItems[i].price) 
+            cartSum+= parseInt(cartItems[i].price.toString().replace( /^\D+/g, ''))*
+            parseInt(cartItems[i].count.toString().replace( /^\D+/g, ''))
+        if(cartItems[i].count)
+            cartCount+=parseInt(cartItems[i].count.toString().replace( /^\D+/g, ''))
+            cartDescription += cartItems.description
     }
     return({totalPrice:cartSum,totalCount:cartCount})
 }
 router.post('/cartlist', async (req,res)=>{
     const userId =req.body.userId?req.body.userId:req.headers['userid'];
+    const cartID=req.body.cartID
     try{
         const cartList = await cart.aggregate
         ([
@@ -216,6 +220,8 @@ router.post('/cartlist', async (req,res)=>{
     {$limit:10}])
     var cartTotal={cartPrice:0,cartCount:0}
         for(var i = 0;i<cartList.length;i++){
+            console.log(cartID.find(item=>item===cartList[i]._id))
+            //if(cartID&&cartList[i]._id)
             if(cartList[i].cartItems&&cartList[i].cartItems.length){
                 var cartResult = findCartSum(cartList[i].cartItems)
                 cartList[i].countData=cartResult
@@ -396,21 +402,20 @@ router.post('/remove-cart',jsonParser, async (req,res)=>{
 })
 
 router.post('/return-cart',jsonParser, async (req,res)=>{
+    const userId=req.body.userId?req.body.userId:req.headers['userid']
     const data={
-        userId:req.body.userId?req.body.userId:req.headers['userid'],
-
         date:req.body.date,
         progressDate:Date.now()
     }
     try{
         var status = "";
-        const cartData = await cart.find({userId:data.userId})
-        const cartItems = removeCartCount(cartData,req.body.cartID,req.body.count)
+        const cartData = await cart.findOne({_id:req.body.cartID})
+        const cartItems = removeCartCount(cartData,req.body.itemId,req.body.count)
         data.cartItems =(cartItems)
-        //console.log(req.body.cartItem)
+        
         cartLog.create({...data,ItemID:req.body.cartID,action:"return"})
             await cart.updateOne(
-                {userId:data.userId},{$set:data})
+                {_id:req.body.cartID},{$set:data})
             status = "Return "
         const cartDetails = await findCartFunction(userId)
         res.json(cartDetails)
