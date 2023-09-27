@@ -224,8 +224,6 @@ router.post('/cartlist', async (req,res)=>{
     {$limit:10}])
     var cartTotal={cartPrice:0,cartCount:0}
         for(var i = 0;i<cartList.length;i++){
-            console.log(cartID.find(item=>item===cartList[i]._id))
-            //if(cartID&&cartList[i]._id)
             if(cartList[i].cartItems&&cartList[i].cartItems.length){
                 var cartResult = findCartSum(cartList[i].cartItems)
                 cartList[i].countData=cartResult
@@ -235,8 +233,11 @@ router.post('/cartlist', async (req,res)=>{
             }
         }
         for(var i=0;i<cartList.length;i++){
+            const found =(cartID&&cartID.find(item=>item===cartList[i]._id.toString()))
+            if(found||!cartID.length){
             cartTotal.cartPrice+=cartList[i].countData.totalPrice;
             cartTotal.cartCount+=cartList[i].countData.totalCount;
+            }
         }
         res.json({cart:cartList,
             cartTotal:cartTotal})
