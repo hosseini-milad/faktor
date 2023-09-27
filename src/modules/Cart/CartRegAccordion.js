@@ -39,7 +39,7 @@ function CartRegAccordion(props){
                     <div className="col">
                         <div className="list-item">
                             <span style={{fontSize:"12px",marginLeft:"10px"}}> توضیحات: </span>
-                            {faktor.description}
+                            {cartDetail.cartDescription}
                         </div>
                     </div>
                     {/*<div className="col">
@@ -54,7 +54,7 @@ function CartRegAccordion(props){
             <div className="accordion-content" id="item1" 
                 style={{display:tab===i+1?"block":"none"}}>
                 {faktor.cartItems&&faktor.cartItems.map((faktorItem,i)=>(
-                    <div className="row row-cols-xl-5 row-cols-lg-5 row-cols-md-3 row-cols-sm-2  row-cols-1" key={i}>
+                    <div className="row row-cols-xl-6 row-cols-lg-6 row-cols-md-3 row-cols-sm-2  row-cols-1" key={i}>
                         
                         <div className="col">
                             <div className="list-item">
@@ -80,6 +80,11 @@ function CartRegAccordion(props){
                         <div className="col">
                             <div className="list-item">
                                 <span>قیمت:</span> {normalPriceCount(faktorItem.price,faktorItem.count)}
+                            </div>
+                        </div>
+                        <div className="col">
+                            <div className="list-item">
+                                <span>توضیحات:</span> {faktorItem.description}
                             </div>
                         </div>
                     </div>
