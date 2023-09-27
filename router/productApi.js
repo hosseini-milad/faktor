@@ -51,16 +51,19 @@ router.post('/find-products', async (req,res)=>{
             localField: "ItemID", 
             foreignField: "ItemID", 
             as : "countData"
-        }},{$limit:3}])
+        }}])
         var searchProductResult=[]
         const cartList = await cart.find()
+        var index = 0
         for(var i=0;i<searchProducts.length;i++){
             var count = (searchProducts[i].countData.find(item=>item.Stock==='13'))
             var cartCount = findCartCount(searchProducts[i].sku,cartList)
             if(count)count.quantity = parseInt(count.quantity)-parseInt(cartCount)
             if(count&&count.quantity){
+                index++
                 searchProductResult.push({...searchProducts[i],
                     count:count})
+                if(index===4)break
             }
         }
         res.json({products:searchProductResult})
@@ -164,6 +167,7 @@ const findCartFunction=async(userId)=>{
     const qCartData = await qCart.findOne({userId:userId})
     var cartDetail = []
     var qCartDetail = ''
+    var description = ''
     for(var c=0;c<cartData.length;c++)
         cartDetail.push(findCartSum(cartData[c].cartItems))
     if(qCartData) qCartDetail =findCartSum(qCartData.cartItems)
@@ -184,9 +188,9 @@ const findCartSum=(cartItems)=>{
         cartSum+= parseInt(cartItems[i].price.toString().replace( /^\D+/g, ''))*
         parseInt(cartItems[i].count.toString().replace( /^\D+/g, ''))
         cartCount+=parseInt(cartItems[i].count.toString().replace( /^\D+/g, ''))
-        cartDescription += cartItems.description
+        cartDescription += cartItems[i].description?cartItems[i].description:''
     }
-    return({totalPrice:cartSum,totalCount:cartCount})
+    return({totalPrice:cartSum,totalCount:cartCount,cartDescription:cartDescription})
 }
 router.post('/cartlist', async (req,res)=>{
     const userId =req.body.userId?req.body.userId:req.headers['userid'];
