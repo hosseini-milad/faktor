@@ -73,7 +73,7 @@ export function normalPrice(priceText){
 export function normalPriceCount(priceText,count){
   if(!priceText||priceText === null||priceText === undefined) return("")
   var rawCount = parseFloat(count.toString())
-  var rawPrice = Math.round(parseInt(priceText.toString().replace(/\D/g,''))*rawCount)
+  var rawPrice = Math.round(parseInt(priceText.toString().replace(/\D/g,''))*rawCount/1000)*1000
   rawPrice = parseInt(rawPrice)
   return(
     (rawPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace( /^\D+/g, ''))

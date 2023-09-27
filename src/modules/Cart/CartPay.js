@@ -17,10 +17,11 @@ function CartPay(props){
             headers: { 'Content-Type': 'application/json' ,
             "x-access-token": token&&token.token,
             "userId":token&&token.userId},
-            body:JSON.stringify({receiptInfo:payList})
+            body:JSON.stringify({receiptInfo:payList,
+            cartID:props.cartID})
           }
-          //console.log(postOptions)
-        fetch(env.siteApi + "/product/update-faktor",postOptions)
+          console.log(postOptions)
+        0&&fetch(env.siteApi + "/product/update-faktor",postOptions)
         .then(res => res.json())
         .then(
             (result) => {

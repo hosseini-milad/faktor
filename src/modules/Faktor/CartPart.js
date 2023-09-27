@@ -6,14 +6,14 @@ import CartPartItem from "./CartPartItem"
 import CartRegAccordion from "../Cart/CartRegAccordion"
 
 function CartPart(props){
-    console.log(props.faktorList)
+    //console.log(props.faktorList)
     return(<>
             {(props.faktorList&&props.faktorList.cart&&props.faktorList.cart.length)?
                     props.faktorList.cart.map((cart,i)=>(
                         <div className="accordions" key={i}>
-                                <CartRegAccordion faktor={cart} index={i}
-                                    cartDetail={props.faktorList.cartDetail[i]}/>
-                            </div>
+                            <CartRegAccordion faktor={cart} index={i} setFaktorList={props.setFaktorList}
+                                cartDetail={props.faktorList.cartDetail[i]}/>
+                        </div>
                         )):<></>}
                 <table><tbody>
                 {props.faktorList&&props.faktorList.totalCount?
