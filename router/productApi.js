@@ -54,10 +54,11 @@ router.post('/find-products', async (req,res)=>{
         }}])
         var searchProductResult=[]
         const cartList = await cart.find()
+        const qCartList = await qCart.find()
         var index = 0
         for(var i=0;i<searchProducts.length;i++){
             var count = (searchProducts[i].countData.find(item=>item.Stock==='13'))
-            var cartCount = findCartCount(searchProducts[i].sku,cartList)
+            var cartCount = findCartCount(searchProducts[i].sku,cartList.concat(qCartList))
             if(count)count.quantity = parseInt(count.quantity)-parseInt(cartCount)
             if(count&&count.quantity){
                 index++
@@ -76,7 +77,6 @@ const findCartCount=(item,cart)=>{
     var cartCount =0
     for(var i=0;i<cart.length;i++){
         var cartItem =cart[i].cartItems 
-        //console.log(cartItem)
         for(var c=0;c<cartItem.length;c++){
             if(cartItem[c].sku === item){
                 cartCount=parseInt(cartCount)+parseInt(cartItem[c].count)
@@ -193,7 +193,8 @@ const findCartSum=(cartItems)=>{
             cartCount+=parseInt(cartItems[i].count.toString().replace( /^\D+/g, ''))
             cartDescription += cartItems[i].description?cartItems[i].description:''
     }
-    return({totalPrice:cartSum,totalCount:cartCount,cartDescription:cartDescription})
+    return({totalPrice:cartSum,
+        totalCount:cartCount,cartDescription:cartDescription})
 }
 router.post('/cartlist', async (req,res)=>{
     const userId =req.body.userId?req.body.userId:req.headers['userid'];
@@ -257,14 +258,13 @@ router.post('/update-cart',jsonParser, async (req,res)=>{
     }
     try{
         var status = "";
-        const cartData = await cart.find({userId:userId})
+        //const cartData = await cart.find({userId:userId})
         const qCartData = await quickCart.findOne({userId:userId})
         const availItems = await checkAvailable(req.body.cartItem)
         if(!availItems){
             res.status(400).json({error:"موجودی کافی نیست"}) 
             return
         }
-
         const cartItems = createCart(qCartData?qCartData.cartItems:[],req.body.cartItem)
         data.cartItems =(cartItems)
         if(!qCartData){
@@ -294,15 +294,19 @@ router.post('/edit-cart',jsonParser, async (req,res)=>{
     }
     try{
         var status = "";
-        const cartData = await cart.find({userId:data.userId})
+        //const cartData = await cart.find({userId:data.userId})
         const qCartData = await quickCart.findOne({userId:data.userId})
+        const availItems = await checkAvailable(req.body.cartItem)
+        if(!availItems){
+            res.status(400).json({error:"موجودی کافی نیست"}) 
+            return
+        }
         const cartItems = editCart(qCartData,req.body.cartItem)
         data.cartItems =(cartItems)
-            await quickCart.updateOne(
-                {userId:data.userId},{$set:data})
-            status = "update cart"
-            const cartDetails = await findCartFunction(userId)
-            res.json(cartDetails)
+        await quickCart.updateOne({userId:data.userId},{$set:data})
+        status = "update cart"
+        const cartDetails = await findCartFunction(data.userId)
+        res.json(cartDetails)
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -310,11 +314,11 @@ router.post('/edit-cart',jsonParser, async (req,res)=>{
 })
 const checkAvailable= async(items)=>{
     const existItem = await productcounts.findOne({ItemID:items.id,Stock:"13"})
-    if(compareCount(existItem.quantity,items.count))
+    //if(compareCount(existItem.quantity,items.count))
     return(compareCount(existItem.quantity,items.count))
 }
 const createCart=(cartData,cartItem)=>{
-var cartItemTemp=cartData?cartData:[]
+    var cartItemTemp=cartData?cartData:[]
     var repeat = 0
     for(var i=0;i<cartItemTemp.length;i++){
         if(cartItemTemp[i].id===cartItem.id){
@@ -523,9 +527,11 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         date:req.body.date,
         progressDate:Date.now()
     }
+    const cartID=req.body.cartID
     try{
         const cartList = await cart.aggregate
-        ([
+        ([{ $addFields: { "cartID": { "$toString": "$_id" }}},
+        cartID.length?{$match:{cartID:{$in:cartID}}}:{$match:{}},
             { $addFields: { "userId": { "$toObjectId": "$userId" }}},
         {$lookup:{
             from : "customers", 
@@ -540,7 +546,9 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
             as : "adminData"
         }}])
         
-        const faktorDetail = totalCart(cartList)
+        const faktorSeprate = totalCart(cartList)
+        const faktorDetail = await IntegrateCarts(faktorSeprate)
+        
         var sepidarQuery=[]
         var addFaktorResult=[]
         var faktorNo=0
@@ -563,8 +571,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
                         totalCount:cartDetail.totalCount,
                         InvoiceNumber:addFaktorResult[i].Number,
                         InvoiceID:addFaktorResult[i].InvoiceID})
-                await cart.deleteMany({userId:
-                    faktorDetail[i].userTotal&&faktorDetail[i].userTotal.toString().split('|')})
+                await cart.deleteMany({_id:{$in:cartID}})
                 
             }
         }
@@ -588,6 +595,30 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
+const IntegrateCarts = async(carts)=>{
+    var cartList=carts
+    for(var i =0 ;i<cartList.length;i++){
+        cartList[i].cartItems= setCart(cartList[i].cartItems)
+        
+    }
+    return(cartList)
+}
+const setCart=(cartItems)=>{
+    var tempCart=[]
+    for(var i=0;i<cartItems.length;i++){
+        repeat = 0
+        for(var j=0;j<tempCart.length;j++){
+            if(cartItems[i].id===tempCart[j].id){
+                tempCart[j].count=parseInt(tempCart[j].count)+
+                                    parseInt(cartItems[i].count)
+                repeat=1
+                break
+            }
+        }
+        !repeat&&tempCart.push({...cartItems[i]})
+    }
+    return(tempCart)
+}
 const SepidarFunc=async(data,faktorNo)=>{
     const notNullCartItem = []
     for(var i=0;i<data.cartItems.length;i++)
@@ -640,7 +671,6 @@ const RecieptFunc=async(data,FaktorInfo,faktorNo)=>{
 }
 const updateCount = async(items)=>{
     for(var i=0;i<items.length;i++){
-        console.log(items[i].count,toInt(items[i].count,"1",-1))
         await productCount.updateOne({ItemID:items[i].id,Stock:"13"},
             {$inc:{quantity:toInt(items[i].count,"1",-1)}})
     }
@@ -671,12 +701,18 @@ const normalPriceCount=(priceText,count,tax)=>{
     var rawCount = parseFloat(count.toString())
     var rawTax = parseFloat(tax.toString())
     var rawPrice = Math.round(parseInt(priceText.toString().replace( /,/g, '')
-        .replace(/\D/g,''))*rawCount*rawTax)
-    rawPrice = parseInt(rawPrice)
+        .replace(/\D/g,''))*rawCount*rawTax/1000)
+    rawPrice = parseInt(rawPrice)*1000
     return(
       (rawPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",").replace( /^\D+/g, ''))
     )
   }
+const roundNumber = (number)=>{
+    var rawNumber = parseInt(number.toString().replace( /,/g, '')
+    .replace(/\D/g,''))
+    return(parseInt(Math.round(rawNumber/1000))*1000)
+
+}
 const minusInt=(quantity,minus)=>{
     if(!quantity)return(0)
     
