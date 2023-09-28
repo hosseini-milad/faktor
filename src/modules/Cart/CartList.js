@@ -25,7 +25,8 @@ const CartList = (props)=>{
             headers: { 'Content-Type': 'application/json' ,
             "x-access-token": token&&token.token,
             "userId":token&&token.userId},
-            body:JSON.stringify({userId:token&&token.userId})
+            body:JSON.stringify({userId:token&&token.userId,
+                cartID:cartID})
           }
         fetch(env.siteApi + "/product/cartlist",postOptions)
         .then(res => res.json())
@@ -38,7 +39,7 @@ const CartList = (props)=>{
             (error) => {
                 console.log(error)
             })
-    },[])
+    },[cartID])
     useEffect(()=>{
         if(!doFilter)return
         setPageNumber(0)

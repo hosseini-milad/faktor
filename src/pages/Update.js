@@ -121,6 +121,15 @@ function Update(){
                                         <input type="button" value="در حال بروزرسانی..."/>}
                                 </div>
                             </div>
+                            <div className="col-md-6">
+                            <div className="form-field-fiin">
+                                <label htmlFor="Nome-Comercial">آخرین بروزرسانی: 
+                                    {waiting&&findDate(updateLog,"sepidar-users")}</label>
+                                {waiting?<input type="button" value="بروزرسانی کاربران"
+                                        onClick={()=>updateFunc("sepidar-users")}/>:
+                                        <input type="button" value="در حال بروزرسانی..."/>}
+                                </div>
+                            </div>
                         </div>
                         <small className="errorSmall" style={{color:error.color}}>
                             {error.message}</small>

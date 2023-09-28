@@ -54,14 +54,14 @@ function ChartDaily(props){
           <br/>
           <ul>
             <li><small>جمع فروش روزانه: </small>
-            <strong>{normalPrice(cartTotal.cartPrice)} </strong>
+            <strong>{normalPrice(cartTotal&&cartTotal.cartPrice)} </strong>
             </li>
             <br/>
             <li><small>جمع فروش با احتساب مالیات: </small>
-            <strong>{normalPriceCount(cartTotal.cartPrice,"1.09")} </strong>
+            <strong>{normalPriceCount(cartTotal&&cartTotal.cartPrice,"1.09")} </strong>
             </li>
             <li><small>تعداد فروش روزانه: </small>
-            <strong>{cartTotal.cartCount} </strong>
+            <strong>{cartTotal&&cartTotal.cartCount} </strong>
             </li>
           </ul>
         </div>
