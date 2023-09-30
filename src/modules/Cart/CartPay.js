@@ -4,7 +4,7 @@ import env, {  defferPrice, normalPrice, normalPriceCount } from "../../env"
 
 function CartPay(props){
     const payListData = props.faktorList
-    const totalPrice = payListData&&parseInt(Math.round(parseInt(payListData.cartPrice)*1.09))
+    const totalPrice = payListData&&normalPriceCount(payListData.cartPrice,"1.09")
     const token = props.token
     const [error,setError] = useState({message:'',color:"brown"})
     const [bankList,setBankList] = useState()
@@ -21,7 +21,7 @@ function CartPay(props){
             cartID:props.cartID})
           }
           console.log(postOptions)
-        0&&fetch(env.siteApi + "/product/update-faktor",postOptions)
+        fetch(env.siteApi + "/product/update-faktor",postOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -64,7 +64,7 @@ function CartPay(props){
             if(payList[i]&&payList[i].value)
                 totalSum+= parseInt(payList[i].value.replace( /,/g, ''))
         }
-        setTotalSum(totalSum)
+        setTotalSum(normalPrice(totalSum))
     },[payList])
     return(
         <>
@@ -112,7 +112,7 @@ function CartPay(props){
                 <small>مجموع سفارش: {normalPrice(payListData&&payListData.cartPrice)}</small>
                 <small>سفارش با مالیات: {normalPrice(totalPrice)}</small>
                 <small>جمع پرداختی: {normalPrice(totalSum)}</small>
-                <h3>مانده تراز: {defferPrice(totalPrice,totalSum)}</h3>
+                <h3>مانده تراز: {defferPrice(totalPrice,totalSum?totalSum:0)}</h3>
             </div>
         </div>
         <div className="footer-form-fiin rev">

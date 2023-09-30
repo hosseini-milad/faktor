@@ -23,8 +23,12 @@ function QuickCartPart(props){
         .then(res => res.json())
         .then(
             (result) => {
-                if(result)
-                    props.setFaktorList(result) 
+                if(result.error){
+                    setError({message:result.error,color:"brown"})
+                    setTimeout(()=>setError({message:'',
+                        color:"brown"}),3000)
+                }
+                else props.setFaktorList(result) 
             },
             (error) => {
                 console.log(error)

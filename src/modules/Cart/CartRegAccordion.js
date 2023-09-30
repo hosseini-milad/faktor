@@ -40,7 +40,7 @@ function CartRegAccordion(props){
                     <div className="col">
                         <div className="list-item">
                             <span style={{fontSize:"12px",marginLeft:"10px"}}> توضیحات: </span>
-                            {faktor.description}
+                            {cartDetail.cartDescription}
                         </div>
                     </div>
                     {/*<div className="col">
@@ -93,6 +93,11 @@ function CartRegAccordion(props){
                             <div className="list-item">
                                 <FaktorReturn itemId={faktorItem} faktor={faktor}
                                     setFaktorList={props.setFaktorList}/>
+                            </div>
+                        </div>
+                        <div className="col">
+                            <div className="list-item">
+                                <span>توضیحات:</span> {faktorItem.description}
                             </div>
                         </div>
                     </div>

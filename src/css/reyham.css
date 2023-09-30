@@ -77,6 +77,8 @@ body{
 }
 .btn-fiin{
     min-width: 180px;
+    width: 205px;
+    text-align: right;
 }
 .btn-email {
     background: var(--main-dark);
