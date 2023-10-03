@@ -73,10 +73,11 @@ router.get('/sepidar-product', async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
-router.get('/sepidar-users', async (req,res)=>{
+router.get('/sepidar-customer', async (req,res)=>{
     const url=req.body.url
     try{
         const sepidarResult = await sepidarFetch("data","/api/Customers")
+        
         await customers.deleteMany({})
         var successItem=[];
         var failure = 0;

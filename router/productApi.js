@@ -357,7 +357,9 @@ const editCart=(cartData,cartItem)=>{
 var cartItemTemp=cartData.cartItems
     for(var i=0;i<cartItemTemp.length;i++){
         if(cartItemTemp[i].id===cartItem.id){
-            cartItemTemp[i].count = cartItem.count
+            cartItemTemp[i].count = cartItem.count;
+            if(cartItem.price)
+                cartItemTemp[i].price = cartItem.price
             return(cartItemTemp)
         }
     }
