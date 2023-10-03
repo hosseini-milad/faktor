@@ -187,10 +187,10 @@ const findCartSum=(cartItems)=>{
     var cartDescription = ''
     for (var i=0;i<cartItems.length;i++){
         if(cartItems[i].price) 
-            cartSum+= parseInt(cartItems[i].price.toString().replace( /^\D+/g, ''))*
-            parseInt(cartItems[i].count.toString().replace( /^\D+/g, ''))
+            cartSum+= parseInt(cartItems[i].price.toString().replace( /,/g, '').replace( /^\D+/g, ''))*
+            parseInt(cartItems[i].count.toString().replace( /,/g, '').replace( /^\D+/g, ''))
         if(cartItems[i].count)
-            cartCount+=parseInt(cartItems[i].count.toString().replace( /^\D+/g, ''))
+            cartCount+=parseInt(cartItems[i].count.toString().replace( /,/g, '').replace( /^\D+/g, ''))
             cartDescription += cartItems[i].description?cartItems[i].description:''
     }
     return({totalPrice:cartSum,
