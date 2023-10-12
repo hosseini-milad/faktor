@@ -30,6 +30,9 @@ html{
 body{
     font-family: Vazir;
 }
+input , label{
+    font-family: Vazir !important;
+}
 .reyhamForm{
     width: 70%;
 }
@@ -75,9 +78,14 @@ body{
     margin-top: 35px;
 
 }
+.priceInput{
+    width: 100px;
+}
 .btn-fiin{
     min-width: 180px;
     width: 205px;
+}
+.btn-waiting{
     text-align: right;
 }
 .btn-email {
@@ -296,6 +304,7 @@ body{
 .removeBtn{
     font-weight: bold;
     cursor: pointer;
+    margin:auto 0 0 10px
 }
 .removeBtn:hover{
     color:brown;
@@ -317,7 +326,6 @@ body{
     position: absolute;
     bottom: 5px;
     left: 10px;
-    border: 1px solid blue;
     border-radius: 10px;
     padding: 3px 10px 0;
     background-color: #fff;
@@ -347,6 +355,11 @@ body{
 }
 .flex-lg-row {
     flex-direction: row-reverse !important;
+}
+.customerHolder{
+    position: relative;
+    min-width: 220px;
+    margin-left: 100px;
 }
 
 /* Hesabfa Print */
@@ -669,4 +682,76 @@ body{
     .charts{
         width: 90%;
     }
+    .resultTable{
+        font-size: 14px !important;
+    }
+    .mobileHolder{
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+    }
+    .mobile70{
+        width: 65%;
+        padding: 10px 2.5%;
+    }
+    .mobile30{
+        width: 35%;
+        padding: 10px 2.5%;
+    }
+    .priceRow{
+        border-right: 5px solid transparent;
+        padding-right: 5px;
+        cursor: pointer;
+    }
+    .priceRow:hover{
+        background-color: var(--blue);
+        transition: .3s all;
+        color: #fff;
+    }
+    .alertPlace{
+        width: 90%;
+    }
+    .customerHolder{
+        margin-left: 20px;
+        margin-bottom: 20px;
+    }
+    .row-cols-1 > *{
+        width: 47%;
+    }
+    .ms-auto {
+        margin-right: 0 !important;
+        margin-left: auto !important;
+    }
+    .return input{
+        padding: 5px 10px;
+    }
+}
+
+
+/*Mui*/
+.MuiAutocomplete-popper div{
+    font-family: vazir !important;
+}
+
+.increment, .decrement{
+    font-size: 25px !important;
+}
+hr{
+    margin: 1rem 0 !important;
+    width: 100% !important;
+}
+.fullWidth{
+    width: 100%;
+}
+.borderLess{
+    border: none;
+}
+.countPlaceMobile{
+    position: absolute;
+    bottom: 0px;
+    left: 20px;
+}
+.countInput{
+    width: 30px;
+    text-align: center;
 }

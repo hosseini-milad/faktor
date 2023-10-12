@@ -633,7 +633,6 @@ span {
     padding: 20px;
     transition: all 0.4s;
     position: relative;
-    padding-left: 136px;
 }
 
 .accordion-item .accordion-title::before {
@@ -734,7 +733,7 @@ span {
 }
 
 .accordion-item .accordion-content .list-item span {
-    width: 100%;
+    width: auto;
 }
 
 /* Password */
@@ -1018,7 +1017,7 @@ span {
     }
 
     .list-item span {
-        width: 100%;
+        margin-left: 10px;
     }
 
     .show-more {

@@ -116,7 +116,7 @@ function CartPay(props){
             </div>
         </div>
         <div className="footer-form-fiin rev">
-            {totalPrice===totalSum?<WaitingBtn class="btn-fiin" title={"ثبت سپیدار"} 
+            {totalPrice===totalSum?<WaitingBtn class="btn-fiin btn-waiting" title={"ثبت سپیدار"} 
                         waiting={'ثبت سپیدار.'}
                         function={sepidarFaktor} name="submit" error={error}/>:
             <input type="button" value="ثبت سپیدار" 

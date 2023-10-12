@@ -82,7 +82,6 @@ function CartAccordion(props){
                                 
                                 <div className="col">
                                     <div className="list-item">
-                                        <span> </span>
                                         <h6>{faktorItem.title}</h6>
                                     </div>
                                 </div>
@@ -106,6 +105,7 @@ function CartAccordion(props){
                                         <span>قیمت:</span> {normalPriceCount(faktorItem.price,faktorItem.count)}
                                     </div>
                                 </div>
+                                <hr/>
                             </div>
                         ))}
                         

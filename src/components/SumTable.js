@@ -5,6 +5,10 @@ function SumTable(props){
         <table className="resultTable">
             <tbody>
                 <tr>
+                    <td>تعداد کل: </td>
+                    <td><small>{props.totalCount}</small></td>
+                </tr>
+                <tr>
                     <td>جمع سفارش: </td>
                     <td><small>{normalPrice(props.totalPrice)} ریال</small></td>
                 </tr>

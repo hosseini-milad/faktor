@@ -4,7 +4,9 @@ import env, { normalPrice } from "../../env";
 import QuickCartPart from "./QuickCartPart";
 import CartPart from "./CartPart";
 import FaktorReturn from "./FaktorReturn";
+import QuickCartMobile from "./FaktorMobile/QuickCartMobile";
 const cookies = new Cookies();
+const wWidth = window.innerWidth;
 
 function FaktorRegTable(props){
     const user=props.users
@@ -33,18 +35,25 @@ function FaktorRegTable(props){
     },[user])
     //console.log(props.faktorList)
     return(<>
-        
-            <div className="table-fiin">
-                <QuickCartPart setFaktorList={props.setFaktorList} 
+        {wWidth>700?
+        <div className="table-fiin">
+            <QuickCartPart setFaktorList={props.setFaktorList} 
                 faktorList={props.faktorList} user={user} payValue={props.payValue}
                 token={token}/>
+        </div>:
+        <div className="row justify-content-center">
+            <div className="col-lg-8">
+                <QuickCartMobile setFaktorList={props.setFaktorList} 
+                    faktorList={props.faktorList} user={user} payValue={props.payValue}
+                    token={token}/>
             </div>
+        </div>}
         
-            <div className="table-fiin">
-                <CartPart setFaktorList={props.setFaktorList} 
-                faktorList={props.faktorList} user={user} 
-                token={token}/>
-            </div>
+        <div className="table-fiin">
+            <CartPart setFaktorList={props.setFaktorList} 
+            faktorList={props.faktorList} user={user} 
+            token={token}/>
+        </div>
         </>
         
     )

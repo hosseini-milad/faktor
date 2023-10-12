@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react"
 import Breadcrumb from "../../components/BreadCrumb"
 import ListFilters from "../ListFilters"
-import env, { normalPrice } from "../../env"
+import env, { normalPrice, normalPriceCount } from "../../env"
 import Cookies from 'universal-cookie';
 import Counter from "../../components/Counter";
 const cookies = new Cookies();
 
 const FaktorNewItem = (props)=>{
     const [item,setItem] = useState()
+    const [itemPrice,setItemPrice] = useState()
     const [filterItems,setFilterItems] = useState()
     const [error,setError] = useState({message:'',color:"brown"})
     const [showPop,setShowPop] = useState(0)
@@ -73,6 +74,7 @@ const FaktorNewItem = (props)=>{
                     props.setFaktorList(result)
                     setSearch('')
                     setItem('')
+                    setItemPrice('')
                     setCount("1")
                 }
             },
@@ -84,12 +86,13 @@ const FaktorNewItem = (props)=>{
     return(
         <tr>
             <td width="5%"></td>
-            <td width="30%" style={{position:"relative", minWidth:"180px"}}>
+            <td width="25%" style={{position:"relative", minWidth:"180px"}}>
                 <div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
                     <input type="text" name="search" id="search" 
                         //onKeyPress={(e)=>(e.key === 'Enter')?addItem(e.target.value):''}
-                        onChange={(e)=>{setSearch(e.target.value)
-                            setItem('')}}
+                        onChange={(e)=>{setSearch(e.target.value);
+                            setItem('');
+                            setItemPrice('');}}
                         value={item?item.title:search}
                         placeholder="جستجو"/>
                 </div>
@@ -97,7 +100,8 @@ const FaktorNewItem = (props)=>{
                     <div className="pop-form-holder">
                         {filterItems&&filterItems.map((item,i)=>(
                         <div className="pop-form-item" key={i}
-                        onClick={()=>(setItem(item),setShowPop(0))}>
+                        onClick={()=>(setItem(item),setShowPop(0),
+                        setItemPrice(item.priceData.find(item=>item.saleType===props.payValue).price))}>
                             <span className="titleShow">
                                 <small>{item.sku+" - "}</small>
                                 {item.title}</span>
@@ -115,16 +119,24 @@ const FaktorNewItem = (props)=>{
             <div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
                 <Counter count={count} setCount={setCount}/></div></td>
             <td width="10%">
-                {item?normalPrice(item.priceData.find(item=>item.saleType===props.payValue).price):''}<br/>
+                {item?normalPriceCount(itemPrice,"1"):''}<br/>
                 <small className="errorSmall" style={{color:error.color}}>
                     {error.message}</small></td>
-            <td></td>
-            <td width="20%"><div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
+            
+            <td width="10%">
+                {item?normalPriceCount(itemPrice,"0.09",count):''}<br/>
+                <small className="errorSmall" style={{color:error.color}}>
+                    {error.message}</small></td>
+                    <td width="10%">
+                {item?normalPriceCount(itemPrice,"1.09",count):''}<br/>
+                <small className="errorSmall" style={{color:error.color}}>
+                    {error.message}</small></td>
+            {/*<td width="20%"><div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
                     <input type="text" name="description" id="description" 
                         onChange={(e)=>setDescription(e.target.value)}
                         value={description}
                         placeholder="توضیحات"/>
-                </div></td>
+                            </div></td>*/}
             <td width="10%">
                 <input type="button" value="افزودن" 
                 onClick={addItem}/>

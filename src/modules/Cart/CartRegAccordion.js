@@ -27,7 +27,7 @@ function CartRegAccordion(props){
                     </div>
                     <div className="col">
                         <div className="list-item">
-                            <span>مبلغ با احتساب مالیات: </span>
+                            <span>جمع کل: </span>
                             {normalPriceCount(cartDetail.totalPrice,"1.09")}
                         </div>
                     </div>
@@ -59,7 +59,6 @@ function CartRegAccordion(props){
                         
                         <div className="col">
                             <div className="list-item">
-                                <span> </span>
                                 <h6>{faktorItem.title}</h6>
                             </div>
                         </div>
@@ -85,12 +84,12 @@ function CartRegAccordion(props){
                 </div>*/}
                         <div className="col">
                             <div className="list-item">
-                                <span>قیمت با احتساب مالیات:</span> 
+                                <span>قیمت:</span> 
                                 {normalPriceCount(normalPriceCount(faktorItem.price,faktorItem.count),"1.09")}
                             </div>
                         </div>
                         <div className="col">
-                            <div className="list-item">
+                            <div className="list-item return">
                                 <FaktorReturn itemId={faktorItem} faktor={faktor}
                                     setFaktorList={props.setFaktorList}/>
                             </div>

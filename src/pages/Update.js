@@ -124,9 +124,9 @@ function Update(){
                             <div className="col-md-6">
                             <div className="form-field-fiin">
                                 <label htmlFor="Nome-Comercial">آخرین بروزرسانی: 
-                                    {waiting&&findDate(updateLog,"sepidar-users")}</label>
+                                    {waiting&&findDate(updateLog,"sepidar-customer")}</label>
                                 {waiting?<input type="button" value="بروزرسانی کاربران"
-                                        onClick={()=>updateFunc("sepidar-users")}/>:
+                                        onClick={()=>updateFunc("sepidar-customer")}/>:
                                         <input type="button" value="در حال بروزرسانی..."/>}
                                 </div>
                             </div>

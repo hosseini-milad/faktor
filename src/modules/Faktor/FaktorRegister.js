@@ -74,7 +74,7 @@ const FaktorRegister = (props)=>{
             </div>  
             
             <div className="footer-form-fiin rev">
-                <div width="30%" style={{position:"relative", minWidth:"220px", marginLeft:"100px"}}>
+                <div width="30%" className="customerHolder">
                     
                     <div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
                         <input type="text" name="search" id="search" 
@@ -82,7 +82,7 @@ const FaktorRegister = (props)=>{
                             onChange={(e)=>{setSearch(e.target.value)
                                 setUsers('')}}
                             value={users?users.username:search}
-                            placeholder="مشتری"/>
+                            placeholder="نام مشتری"/>
                     </div>
                     {showPop?<div className="pop-form">
                         <div className="pop-form-holder">

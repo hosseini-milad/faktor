@@ -1,12 +1,14 @@
 import { useState } from "react"
-import WaitingBtn from "../../components/Button/waitingBtn"
-import SumTable from "../../components/SumTable"
-import env, { normalPrice, normalPriceCount } from "../../env"
-import FaktorNewItem from "./FaktorNewItem"
-import Counter from "../../components/Counter";
+import WaitingBtn from "../../../components/Button/waitingBtn"
+import SumTable from "../../../components/SumTable"
+import env, { normalPrice, normalPriceCount } from "../../../env"
+import FaktorNewItem from "../FaktorNewItem"
+import Counter from "../../../components/Counter";
+import NewItemMobile from "./NewItemMobile"
 
-function QuickCartPart(props){
+function QuickCartMobile(props){
     const user = props.user
+    const [regElement,setRegElement] = useState('')
     const [error,setError] = useState({message:'',color:"brown"})
     const token = props.token
     const setCount=(count,itemId,price)=>{
@@ -78,59 +80,68 @@ function QuickCartPart(props){
                 console.log(error)
             })
     }
+    
     return(<>
-        <table style={{overflow: "auto"}}>
-            <thead>
-                <tr>
-                    <th width="3%">ردیف</th>
-                    <th width="25%">شرح</th>
-                    <th width="10%">تعداد</th>
-                    <th width="10%">فی</th>
-                    
-                    {/*<th width="10%">تخفیف</th>*/}
-                    <th width="10%">مالیات</th>
-                    <th width="15%">جمع کل</th>
-
-                    {/*<th width="10%">توضیحات</th>*/}
-                    <th width="10%">عملیات</th>
-                </tr>
-            </thead>
-            <tbody>
-                <FaktorNewItem setFaktorList={props.setFaktorList} payValue={props.payValue}
-                    faktorList={props.faktorList} users={props.user}/>
+        <NewItemMobile token={token} payValue={props.payValue} 
+            setFaktorList={props.setFaktorList} users={user}/>
+        <div className="quickMobileHolder form-box-style">
                 {(props.faktorList&&props.faktorList.quickCart)?
                     props.faktorList.quickCart.cartItems.map((faktor,i)=>(
-                <tr key={i} style={{backgroundColor:"#EEEFFC"}}>
-                    <td>{i+1}</td>
-                    <td className="tdHolder">
-                        <strong>{faktor.title}</strong>
-                        <small>{faktor.sku}</small></td>
-                    <td><div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
-                        <Counter count={faktor.count||''} 
-                                setCount={setCount} itemId={faktor.id}/>
-                        </div></td>
-                    <td>
-                        <input type="text" defaultValue={normalPriceCount(faktor.price,1)}
-                        className="counterInput priceInput"
-                        onKeyDown={(e)=>
-                        e.key==="Enter"?setCount(faktor.count,faktor.id
-                            ,e.target.value):''}/></td>
-                    {/*<td>{normalPriceCount(faktor.discount,1)}</td>*/}
-                    <td>{normalPriceCount(faktor.price,"0.09",faktor.count)}</td>
-                    <td>{normalPriceCount(faktor.price,"1.09",faktor.count)}</td>
-                    {/*<td>{faktor.description}</td>*/}
-                    <td><div className="removeBtn" onClick={()=>removeItem(faktor.id)}>حـذف</div></td>
-                </tr>
-                )):
-                <tr><td colSpan={3}></td></tr>}
+                    <div className="quickMobile" key={i}>
+                        <div className="mobileHolder">
+                            <div className="removeBtn" onClick={()=>removeItem(faktor.id)}>
+                                 × {/*<i className="icon-size fas fa-recycle"></i>*/}
+                            </div>
+                            <div className="tdHolder fullWidth">
+                                <strong>{faktor.title}</strong>
+                                <small>{faktor.sku}</small>
+                            </div>
+                        </div>
+                        <div className="mobileHolder">
+                            <div className="mobile70">
+                                <table>
+                                    <tbody>
+                                        <tr className="priceRow">
+                                            <td width={"100px"}>فی</td>
+                                            <td><input type="text" defaultValue={normalPriceCount(faktor.price,1)}
+                                            className="borderLess priceInput"
+                                            onKeyDown={(e)=>
+                                            e.keyCode==13?setCount(faktor.count,faktor.id
+                                                ,e.target.value):''}/></td>
+                                        </tr>
+                                        <tr className="priceRow">
+                                            <td>مالیات</td>
+                                            <td>{normalPriceCount(faktor.price,"0.09",faktor.count)}</td>
+                                        </tr>
+                                        <tr className="priceRow">
+                                            <td>جمع کل</td>
+                                            <td>{normalPriceCount(faktor.price,"1.09",faktor.count)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div className="mobile30">
+                                <div className="countPlaceMobile">
+                                    <small>تعداد: 
+                                        <input type="text" defaultValue={faktor.count}
+                                            onChange={(e)=>
+                                                setCount(e.target.value,faktor.id)}
+                                            className="borderLess countInput"/> عدد</small>
+                                </div>
+                            </div>
+                        </div>
+                        <hr/>
+                </div>)):<></>}
+            </div>
+            <table style={{width: "100%"}}>
+            <tbody>
                 {props.faktorList&&props.faktorList.qCartDetail?
                   <tr style={{backgroundColor:"#666A70",color:"#fff"}}>
-                    <td>#</td>
                     <td></td>
-                    <td style={{textAlign:"center"}}>{props.faktorList.qCartDetail.totalCount}</td>
                     <td></td>
                     <td colSpan={5} style={{padding:"5px 10px"}}>
-                        <SumTable totalPrice={props.faktorList.qCartDetail.totalPrice} />
+                        <SumTable totalCount={props.faktorList.qCartDetail.totalCount}
+                        totalPrice={props.faktorList.qCartDetail.totalPrice} />
                     </td>
                 {/*<td style={{padding: "22px 8px"}}>خالی کردن</td>*/}
                   </tr>:<></>}
@@ -147,7 +158,8 @@ function QuickCartPart(props){
             <small className="errorSmall" style={{color:error.color}}>
             {error.message}</small>
         </div>
+        
         </>
     )
 }
-export default QuickCartPart
+export default QuickCartMobile
