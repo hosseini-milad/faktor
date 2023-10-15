@@ -727,14 +727,24 @@ input , label{
     }
 }
 .barCodeHolder{
-  position: relative;
+    position: fixed;
+    height: calc(100vh - 20px);
+    overflow: hidden;
+    border-radius: 10px;
+    background-color: #fff;
+    border: 2px solid silver;
+    top: 10px;
+    left: 10px;
+    width: calc(100% - 20px);
 }
 .barCodeHolder p{
-    position: absolute;
-    top:0;
+    position: fixed;
+    top:15px;
     right: 0;
     width: 100%;
     text-align: center;
+    background-color: rgba(0,0,0,.5);
+    padding: 10px 0;
 }
 
 /*Mui*/

@@ -14,6 +14,7 @@ function NewItemMobile(props){
     const [count,setCount] = useState("1")
     const [item,setItem] = useState("")
     const [barCodeMode,setBarCodeMode] = useState(0)
+    console.log(item)
     const RegisterNow=()=>{
         const postOptions={
             method:'post',
@@ -54,7 +55,7 @@ function NewItemMobile(props){
             <div className="row">
                 <div className="col-md-6">
                 {barCodeMode?
-                    <BarCodeFaktor />:
+                    <BarCodeFaktor setItem={setItem} setBarCodeMode={setBarCodeMode}/>:
                     <ItemSelector item={item} setItem={setItem} 
                         token={token} setError={setError}/>}
                 </div> <input onClick={()=>setBarCodeMode(1)} value={"BarCode"} type="button"/>
