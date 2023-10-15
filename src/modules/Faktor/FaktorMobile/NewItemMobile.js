@@ -6,12 +6,14 @@ import { useEffect } from "react";
 import ItemSelector from "./ItemSelector";
 import ItemCounter from "./ItemCounter";
 import PriceSet from "./PriceSet";
+import BarCodeFaktor from "../FaktorModules/FaktorBarCode";
 
 function NewItemMobile(props){
     const token = props.token
     const [error,setError] = useState({message:'',color:"brown"})
     const [count,setCount] = useState("1")
     const [item,setItem] = useState("")
+    const [barCodeMode,setBarCodeMode] = useState(0)
     const RegisterNow=()=>{
         const postOptions={
             method:'post',
@@ -51,9 +53,12 @@ function NewItemMobile(props){
         <div className="form-box-style">
             <div className="row">
                 <div className="col-md-6">
+                {barCodeMode?
+                    <BarCodeFaktor />:
                     <ItemSelector item={item} setItem={setItem} 
-                        token={token} setError={setError}/>
-                </div><hr/>
+                        token={token} setError={setError}/>}
+                </div> <input onClick={()=>setBarCodeMode(1)} value={"BarCode"} type="button"/>
+                <hr/>
                 <div className="col-md-6">
                     {/*<div className="form-field-fiin">
                         <div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>

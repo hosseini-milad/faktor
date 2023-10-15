@@ -726,7 +726,16 @@ input , label{
         padding: 5px 10px;
     }
 }
-
+.barCodeHolder{
+  position: relative;
+}
+.barCodeHolder p{
+    position: absolute;
+    top:0;
+    right: 0;
+    width: 100%;
+    text-align: center;
+}
 
 /*Mui*/
 .MuiAutocomplete-popper div{

@@ -20,12 +20,10 @@ function CartPay(props){
             body:JSON.stringify({receiptInfo:payList,
             cartID:props.cartID})
           }
-          console.log(postOptions)
         fetch(env.siteApi + "/product/update-faktor",postOptions)
         .then(res => res.json())
         .then(
             (result) => {
-                console.log(result)
                 if(result.error){
                     setError({message:result.error,color:"brown"})
                 }

@@ -7,6 +7,7 @@ import FilterBitrix from "../filtersBitrix";
 import FaktorTable from "./FaktorRegTable";
 import FaktorRegTable from "./FaktorRegTable";
 import WaitingBtn from "../../components/Button/waitingBtn";
+import Popup from "../../components/popup";
 const cookies = new Cookies();
 
 const FaktorRegister = (props)=>{
@@ -19,6 +20,8 @@ const FaktorRegister = (props)=>{
     const [search,setSearch] = useState('')
     const [showPop,setShowPop] = useState(0)
     const [showPay,setShowPay] = useState(0)
+    const [payTemp,setPayTemp] = useState(0)
+    const [alertShow,setAlertShow] = useState({show: false, action:0})
     const [payValue, setPayValue] = useState("4");
     const token=cookies.get('faktor-login')
     const payMethods =[["نقدی","3"],["اعتباری","4"]]
@@ -63,6 +66,14 @@ const FaktorRegister = (props)=>{
         setShowPay(users?1:0)
         setPayValue("4")
     },[users])
+    useEffect(()=>{
+        if(alertShow.action===1)
+            setPayValue(payTemp)
+    },[alertShow])
+    const changePayValue =(value)=>{
+        setPayTemp(value)
+        setAlertShow({show:true,action:0})
+    }
     return(
         <div className="container">
         <Breadcrumb title={"ثبت فاکتور"}/>
@@ -103,7 +114,7 @@ const FaktorRegister = (props)=>{
                        <div key={ i } style={{display: "flex"}}>
                        <input type="radio" style={{marginLeft: "10px"}}
                              checked={ payValue===id } 
-                         onChange={ (e)=>setPayValue(e.target.value) } 
+                         onChange={ (e)=>changePayValue(e.target.value) } 
                          value={ id } /> 
                            { value }
                          </div> 
@@ -120,7 +131,9 @@ const FaktorRegister = (props)=>{
                 
                         </div>*/}
         </div>
-        
+        {alertShow.show?<Popup title="تغییر نوع فروش" 
+        text="با تغییر نوع فروش قیمت ها به روز میشود آیا مطمئن هستید"
+         setAlertShow={setAlertShow} />:<></>}
         <small className="errorSmall" style={{color:error.color}}>
             {error.message}</small>
     </div>
