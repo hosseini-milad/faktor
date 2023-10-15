@@ -77,7 +77,6 @@ router.get('/sepidar-customer', async (req,res)=>{
     const url=req.body.url
     try{
         const sepidarResult = await sepidarFetch("data","/api/Customers")
-        
         await customers.deleteMany({})
         var successItem=[];
         var failure = 0;

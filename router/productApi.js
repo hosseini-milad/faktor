@@ -171,7 +171,7 @@ const findCartFunction=async(userId)=>{
     var description = ''
     for(var c=0;c<cartData.length;c++)
         cartDetail.push(findCartSum(cartData[c].cartItems))
-    if(qCartData) qCartDetail =findCartSum(qCartData.cartItems)
+    if(qCartData) qCartDetail =findQuickCartSum(qCartData.cartItems,qCartData.payValue)
     return({cart:cartData,cartDetail:cartDetail,
         quickCart:qCartData,qCartDetail:qCartDetail})
         }
@@ -180,14 +180,38 @@ const findCartFunction=async(userId)=>{
             quickCart:'',qCartDetail:''})
     }
 }
-const findCartSum=(cartItems)=>{
+const findQuickCartSum=(cartItems,payValue)=>{
     if(!cartItems)return({totalPrice:0,totalCount:0})
     var cartSum=0;
     var cartCount=0;
     var cartDescription = ''
     for (var i=0;i<cartItems.length;i++){
+        //console.log(payValue)
+        var cartItemPrice = cartItems[i].price.find(item=>item.saleType===payValue).price
+            .replace( /,/g, '').replace( /^\D+/g, '')
+        //console.log(cartItemPrice)
         if(cartItems[i].price) 
-            cartSum+= parseInt(cartItems[i].price.toString().replace( /,/g, '').replace( /^\D+/g, ''))*
+            cartSum+= parseInt(cartItemPrice)*
+            parseInt(cartItems[i].count.toString().replace( /,/g, '').replace( /^\D+/g, ''))
+        if(cartItems[i].count)
+            cartCount+=parseInt(cartItems[i].count.toString().replace( /,/g, '').replace( /^\D+/g, ''))
+            cartDescription += cartItems[i].description?cartItems[i].description:''
+    }
+    return({totalPrice:cartSum,
+        totalCount:cartCount,cartDescription:cartDescription})
+}
+const findCartSum=(cartItems,payValue)=>{
+    if(!cartItems)return({totalPrice:0,totalCount:0})
+    var cartSum=0;
+    var cartCount=0;
+    var cartDescription = ''
+    for (var i=0;i<cartItems.length;i++){
+        //console.log(payValue)
+        var cartItemPrice = cartItems[i].price
+            .replace( /,/g, '').replace( /^\D+/g, '')
+        //console.log(cartItemPrice)
+        if(cartItems[i].price) 
+            cartSum+= parseInt(cartItemPrice)*
             parseInt(cartItems[i].count.toString().replace( /,/g, '').replace( /^\D+/g, ''))
         if(cartItems[i].count)
             cartCount+=parseInt(cartItems[i].count.toString().replace( /,/g, '').replace( /^\D+/g, ''))
@@ -254,6 +278,7 @@ router.post('/update-cart',jsonParser, async (req,res)=>{
         userId:userId,
         manageId:req.headers['userid'],
         date:req.body.date,
+        payValue:req.body.payValue,
         progressDate:Date.now()
     }
     try{
@@ -288,7 +313,7 @@ router.post('/update-cart',jsonParser, async (req,res)=>{
 router.post('/edit-cart',jsonParser, async (req,res)=>{
     const data={
         userId:req.body.userId?req.body.userId:req.headers['userid'],
-
+        payValue:req.body.payValue,
         date:req.body.date,
         progressDate:Date.now()
     }
@@ -303,6 +328,24 @@ router.post('/edit-cart',jsonParser, async (req,res)=>{
         }
         const cartItems = editCart(qCartData,req.body.cartItem)
         data.cartItems =(cartItems)
+        await quickCart.updateOne({userId:data.userId},{$set:data})
+        status = "update cart"
+        const cartDetails = await findCartFunction(data.userId)
+        res.json(cartDetails)
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
+router.post('/edit-payValue',jsonParser, async (req,res)=>{
+    const data={
+        userId:req.body.userId?req.body.userId:req.headers['userid'],
+        payValue:req.body.payValue,
+        date:req.body.date,
+        progressDate:Date.now()
+    }
+    try{
+        var status = "";
         await quickCart.updateOne({userId:data.userId},{$set:data})
         status = "update cart"
         const cartDetails = await findCartFunction(data.userId)
@@ -379,7 +422,10 @@ const totalCart=(cartArray)=>{
                 repeat=1
             break
         }
-        !repeat&&cartListTotal.push({userId:userCode,userTotal:cartArray[i].userId,
+        !repeat&&cartListTotal.push({
+            userId:userCode,
+            userTotal:cartArray[i].userId,
+            payValue:cartArray[i].payValue,
             cartItems:cartArray[i].cartItems})
     }
     return(cartListTotal)
@@ -404,8 +450,8 @@ router.post('/remove-cart',jsonParser, async (req,res)=>{
             await quickCart.updateOne(
                 {userId:data.userId},{$set:data})
             status = "update cart"
-            const cartDetails = await findCartFunction(userId)
-            res.json(cartDetails)
+        const cartDetails = await findCartFunction(userId)
+        res.json(cartDetails)
     }
     catch(error){
         res.status(500).json({message: error.message})
@@ -459,8 +505,9 @@ router.post('/quick-to-cart',jsonParser, async (req,res)=>{
         //const cartAll = await cart.find()
         
         const qCartData = await quickCart.findOne({userId:userId})
+        data.payValue=qCartData.payValue
         const quickCartItems = qCartData&&qCartData.cartItems
-        data.cartItems =(quickCartItems)
+        data.cartItems =pureCartPrice(quickCartItems,qCartData.payValue)
         cartLog.create({...data,ItemID:req.body.cartID,action:"quick to cart"})
         await cart.create(data)
             status = "create cart"
@@ -472,6 +519,13 @@ router.post('/quick-to-cart',jsonParser, async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
+const pureCartPrice=(cartItem,payValue)=>{
+    var cartItems = cartItem
+    for(var c=0;c<cartItems.length;c++){
+        cartItems[c].price = cartItem[c].price.find(item=>item.saleType===payValue).price
+    }
+    return cartItems
+}
 
 router.post('/faktor', async (req,res)=>{
     const offset =req.body.offset?parseInt(req.body.offset):0 
@@ -559,7 +613,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
             sepidarQuery[i] = await SepidarFunc(faktorDetail[i],faktorNo)
             addFaktorResult[i] = await sepidarPOST(sepidarQuery[i],"/api/invoices")
             if(!addFaktorResult[i]||addFaktorResult[0].Message){
-                res.json({error:addFaktorResult[0].Message,
+                res.status(400).json({error:addFaktorResult[0].Message?addFaktorResult[0].Message:"error occure",
                     query:sepidarQuery[i],status:"faktor"})
                 return
             }
@@ -630,7 +684,7 @@ const SepidarFunc=async(data,faktorNo)=>{
         "GUID": "124ab075-fc79-417f-b8cf-2a"+faktorNo,
         "CustomerRef": toInt(data.userId),
         "CurrencyRef":1,
-        "SaleTypeRef": 4,
+        "SaleTypeRef": toInt(data.payValue),
         "Duty":0.0000,
         "Discount": 0.0000,
         "Items": 

@@ -8,7 +8,8 @@ const sepidarFetch=async(data,action)=>{
         const result = await response.json();
         return(result)
     }
-    catch(error){
+    catch(error){ 
+        console.log(error)
         return({error:response&&response.status,
             error_description:response&&(response.status+" "+response.statusText)})
     }

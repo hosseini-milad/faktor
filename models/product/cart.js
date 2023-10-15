@@ -8,6 +8,7 @@ const CartSchema = new Schema({
     progressDate: { type: Date },
     userId:{ type: String },
     manageId:{ type: String },
+    payValue:{ type: String },
 
     totalPrice:{ type: String }
 })
