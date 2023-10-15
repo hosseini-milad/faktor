@@ -450,7 +450,7 @@ router.post('/remove-cart',jsonParser, async (req,res)=>{
             await quickCart.updateOne(
                 {userId:data.userId},{$set:data})
             status = "update cart"
-        const cartDetails = await findCartFunction(userId)
+        const cartDetails = await findCartFunction(data.userId)
         res.json(cartDetails)
     }
     catch(error){
