@@ -155,7 +155,8 @@ router.get('/sepidar-bank', async (req,res)=>{
             updateQuery: "sepidar-bank" ,
             date:Date.now()
         })
-        res.json({sepidar:sepidarBankResult.length,message:"بانک ها بروز شدند"})
+        res.json({sepidar:sepidarBankResult.length,
+            data:sepidarBankResult,message:"بانک ها بروز شدند"})
     }
     catch(error){
         res.status(500).json({message: error.message})
