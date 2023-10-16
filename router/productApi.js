@@ -190,7 +190,7 @@ const findQuickCartSum=(cartItems,payValue)=>{
         var cartItemPrice = ''
         try{cartItemPrice =cartItems[i].price.find(item=>item.saleType===payValue).price
             .replace( /,/g, '').replace( /^\D+/g, '')}
-        catch{cartItemPrice =cartItems[i].price
+        catch{cartItemPrice =cartItems[i].price&&cartItems[i].price
             .replace( /,/g, '').replace( /^\D+/g, '')}
         //console.log(cartItemPrice)
         if(cartItems[i].price) 
