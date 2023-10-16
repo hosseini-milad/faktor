@@ -187,8 +187,11 @@ const findQuickCartSum=(cartItems,payValue)=>{
     var cartDescription = ''
     for (var i=0;i<cartItems.length;i++){
         //console.log(payValue)
-        var cartItemPrice = cartItems[i].price.find(item=>item.saleType===payValue).price
-            .replace( /,/g, '').replace( /^\D+/g, '')
+        var cartItemPrice = ''
+        try{cartItemPrice =cartItems[i].price.find(item=>item.saleType===payValue).price
+            .replace( /,/g, '').replace( /^\D+/g, '')}
+        catch{cartItemPrice =cartItems[i].price
+            .replace( /,/g, '').replace( /^\D+/g, '')}
         //console.log(cartItemPrice)
         if(cartItems[i].price) 
             cartSum+= parseInt(cartItemPrice)*
