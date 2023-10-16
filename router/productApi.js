@@ -525,7 +525,11 @@ router.post('/quick-to-cart',jsonParser, async (req,res)=>{
 const pureCartPrice=(cartItem,payValue)=>{
     var cartItems = cartItem
     for(var c=0;c<cartItems.length;c++){
-        cartItems[c].price = cartItem[c].price.find(item=>item.saleType===payValue).price
+        try{
+            cartItems[c].price = cartItem[c].price.find(item=>item.saleType===payValue).price
+        }
+        catch{
+        }
     }
     return cartItems
 }
