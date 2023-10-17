@@ -138,7 +138,11 @@ router.get('/sepidar-bank', async (req,res)=>{
     const url=req.body.url
     try{
         const sepidarBankResult = await sepidarFetch("data","/api/BankAccounts")
-
+        if(sepidarBankResult.error){
+            res.json({error:"error occure",
+                data:sepidarBankResult,message:"خطا در بروزرسانی"})
+            return
+        }
         //var successItem=[];
         //var failure = 0;
         await bankAccounts.deleteMany({})
