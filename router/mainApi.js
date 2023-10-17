@@ -50,6 +50,12 @@ router.get('/sepidar-product', async (req,res)=>{
     const url=req.body.url
     try{
         const sepidarResult = await sepidarFetch("data","/api/Items")
+        
+        if(sepidarResult.error||!sepidarResult.length){
+            res.json({error:"error occure",
+                data:sepidarResult,message:"خطا در بروزرسانی"})
+            return
+        }
         await products.deleteMany({})
         var successItem=[];
         var failure = 0;
@@ -77,6 +83,12 @@ router.get('/sepidar-customer', async (req,res)=>{
     const url=req.body.url
     try{
         const sepidarResult = await sepidarFetch("data","/api/Customers")
+
+        if(sepidarResult.error||!sepidarResult.length){
+            res.json({error:"error occure",
+                data:sepidarResult,message:"خطا در بروزرسانی"})
+            return
+        }
         await customers.deleteMany({})
         var successItem=[];
         var failure = 0;
@@ -109,7 +121,11 @@ router.get('/sepidar-customer', async (req,res)=>{
 router.get('/sepidar-price', async (req,res)=>{
     try{
         const sepidarPriceResult = await sepidarFetch("data","/api/PriceNoteItems")
-
+        if(sepidarPriceResult.error||!sepidarPriceResult.length){
+            res.json({error:"error occure",
+                data:sepidarPriceResult,message:"خطا در بروزرسانی"})
+            return
+        }
         //var successItem=[];
         //var failure = 0;
         await productPrice.deleteMany({})
@@ -138,7 +154,7 @@ router.get('/sepidar-bank', async (req,res)=>{
     const url=req.body.url
     try{
         const sepidarBankResult = await sepidarFetch("data","/api/BankAccounts")
-        if(sepidarBankResult.error){
+        if(sepidarBankResult.error||!sepidarBankResult.length){
             res.json({error:"error occure",
                 data:sepidarBankResult,message:"خطا در بروزرسانی"})
             return
@@ -170,6 +186,11 @@ router.get('/sepidar-quantity', async (req,res)=>{
     try{
         const sepidarQuantityResult = await sepidarFetch("data","/api/Items/Inventories")
 
+        if(sepidarQuantityResult.error||!sepidarQuantityResult.length){
+            res.json({error:"error occure",
+                data:sepidarQuantityResult,message:"خطا در بروزرسانی"})
+            return
+        }
         //var successItem=[];
         //var failure = 0;
         await productCount.deleteMany({})
