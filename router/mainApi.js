@@ -161,10 +161,10 @@ router.get('/sepidar-bank', async (req,res)=>{
         }
         //var successItem=[];
         //var failure = 0;
-        await bankAccounts.deleteMany({})
+        0&&await bankAccounts.deleteMany({})
         for(var i = 0;i<sepidarBankResult.length;i++){
             //sepidarPriceResult[i].SaleTypeRef===5&& 
-            await bankAccounts.create({
+            0&&await bankAccounts.create({
                 BankAccountID:sepidarBankResult[i].BankAccountID,
                 DlCode:sepidarBankResult[i].DlCode,
                 DlTitle:sepidarBankResult[i].DlTitle,
@@ -176,7 +176,7 @@ router.get('/sepidar-bank', async (req,res)=>{
             date:Date.now()
         })
         res.json({sepidar:sepidarBankResult.length,
-            data:sepidarBankResult,message:"بانک ها بروز شدند"})
+            data:sepidarBankResult,message:"غیر فعال است"})//"بانک ها بروز شدند"})
     }
     catch(error){
         res.status(500).json({message: error.message})
