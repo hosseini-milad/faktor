@@ -57,7 +57,7 @@ function FaktorPriceItem(props){
             })
     }
     if(faktor.price)
-        return(
+        try{return(
         <tr style={{backgroundColor:"#EEEFFC"}}>
             <td>{props.index+1}</td>
             <td className="tdHolder">
@@ -82,7 +82,8 @@ function FaktorPriceItem(props){
             {/*<td>{faktor.description}</td>*/}
             <td><div className="removeBtn" onClick={()=>removeItem(faktor.id)}>حـذف</div></td>
         </tr>
-    )
+    )}
+    catch{return(<tr>Error Occure</tr>)}
     else
     return(<tr>Waiting</tr>)
 }

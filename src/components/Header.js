@@ -10,7 +10,7 @@ const Header = (props)=>{
     const lang = props.lang?props.lang.lang:errortrans.defaultLang;
     const logOff=()=>{
        cookies.remove('faktor-login',{ path: '/' });
-       setTimeout(()=>(document.location.reload(),500))
+       setTimeout(()=>(window.location.reload(),1000))
     }
     return(
         <header className="main-header">

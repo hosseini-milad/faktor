@@ -13,8 +13,11 @@ function NewItemMobile(props){
     const [error,setError] = useState({message:'',color:"brown"})
     const [count,setCount] = useState("1")
     const [item,setItem] = useState("")
+    const [clear,setClear] = useState("")
+    const [newShow,setNewShow] = useState(1)
     const [barCodeMode,setBarCodeMode] = useState(0)
     const RegisterNow=()=>{
+        setNewShow(0)
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,
@@ -23,13 +26,15 @@ function NewItemMobile(props){
             body:JSON.stringify({userId:props.users?props.users._id:(token&&token.userId),
                 date:Date.now,cartItem:{id:item.ItemID,sku:item.sku,
                     title:item.title,count:count?count:1,
-                    price:item.priceData.find(item=>item.saleType===props.payValue).price
-                    }})
+                    price:item.priceData
+                    },
+                    payValue:props.payValue})
           }
           fetch(env.siteApi + "/product/update-cart",postOptions)
         .then(res => res.json())
         .then(
             (result) => {
+                setNewShow(1)
                 if(result.error){
                     setError({message:result.error,color:"brown"})
                     setTimeout(()=>setError({message:'',
@@ -41,6 +46,7 @@ function NewItemMobile(props){
                         color:"brown"}),1000)
                     props.setFaktorList(result)
                     setItem('')
+                    setClear(clear+1)
                     setCount("1")
                 }
             },
@@ -52,12 +58,14 @@ function NewItemMobile(props){
     return(<>
         <div className="form-box-style">
             <div className="row">
-                <div className="col-md-6">
+                <div className="col-md-6" style={{position:"relative"}}>
                 {barCodeMode?
                     <BarCodeFaktor />:
-                    <ItemSelector item={item} setItem={setItem} 
-                        token={token} setError={setError}/>}
-                </div> <input onClick={()=>setBarCodeMode(1)} value={"BarCode"} type="button"/>
+                    newShow?<ItemSelector item={item} setItem={setItem} 
+                        token={token} setError={setError} clear={clear}/>:<></>}
+                <input className="barCodeBtn" onClick={()=>setBarCodeMode(1)} value={"BarCode"} type="button"/>
+                </div> 
+                
                 <hr/>
                 <div className="col-md-6">
                     {/*<div className="form-field-fiin">

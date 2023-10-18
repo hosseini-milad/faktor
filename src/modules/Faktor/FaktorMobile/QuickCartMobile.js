@@ -2,13 +2,13 @@ import { useState } from "react"
 import WaitingBtn from "../../../components/Button/waitingBtn"
 import SumTable from "../../../components/SumTable"
 import env, { normalPrice, normalPriceCount } from "../../../env"
-import FaktorNewItem from "../FaktorNewItem"
+import Picker from 'react-mobile-picker'
 import Counter from "../../../components/Counter";
 import NewItemMobile from "./NewItemMobile"
 
 function QuickCartMobile(props){
     const user = props.user
-    const [regElement,setRegElement] = useState('')
+    var payValue= props.payValue
     const [error,setError] = useState({message:'',color:"brown"})
     const token = props.token
     const setCount=(count,itemId,price)=>{
@@ -80,9 +80,20 @@ function QuickCartMobile(props){
                 console.log(error)
             })
     }
-    
+    const updatePrice=(count,itemId,eventPrice,totalPrice)=>{
+        const price =(eventPrice.target.previousSibling.value)
+        totalPrice.find(item=>item.saleType===payValue).price=price
+        setCount(count,itemId,totalPrice)
+    }
+    const selections = {
+        count: ['1', '2', '3', '4','5','6','7','8','9','10'],
+      }
+      
+        const [pickerValue, setPickerValue] = useState({
+          count: '1'
+        })
     return(<>
-        <NewItemMobile token={token} payValue={props.payValue} 
+        <NewItemMobile token={token} payValue={payValue} 
             setFaktorList={props.setFaktorList} users={user}/>
         <div className="quickMobileHolder form-box-style">
                 {(props.faktorList&&props.faktorList.quickCart)?
@@ -103,19 +114,19 @@ function QuickCartMobile(props){
                                     <tbody>
                                         <tr className="priceRow">
                                             <td width={"100px"}>فی</td>
-                                            <td><input type="text" defaultValue={normalPriceCount(faktor.price,1)}
-                                            className="borderLess priceInput"
-                                            onKeyDown={(e)=>
-                                            e.keyCode==13?setCount(faktor.count,faktor.id
-                                                ,e.target.value):''}/></td>
+                                            <td><input type="text" 
+                                            defaultValue={normalPriceCount(faktor.price.find(item=>item.saleType===payValue).price,1)}
+                                            className="borderLess priceInput"/>
+                                            <input type="button" value={"✓"} className="updatePriceBtn"
+                                            onClick={(e)=>updatePrice(faktor.count,faktor.id,e,faktor.price,faktor)}/></td>
                                         </tr>
                                         <tr className="priceRow">
                                             <td>مالیات</td>
-                                            <td>{normalPriceCount(faktor.price,"0.09",faktor.count)}</td>
+                                            <td>{normalPriceCount(faktor.price.find(item=>item.saleType===payValue).price,"0.09",faktor.count)}</td>
                                         </tr>
                                         <tr className="priceRow">
                                             <td>جمع کل</td>
-                                            <td>{normalPriceCount(faktor.price,"1.09",faktor.count)}</td>
+                                            <td>{normalPriceCount(faktor.price.find(item=>item.saleType===payValue).price,"1.09",faktor.count)}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -127,6 +138,17 @@ function QuickCartMobile(props){
                                             onChange={(e)=>
                                                 setCount(e.target.value,faktor.id)}
                                             className="borderLess countInput"/> عدد</small>
+                                    {/*<Picker value={pickerValue} onChange={setPickerValue}>
+                                        {Object.keys(selections).map(name => (
+                                            <Picker.Column key={name} name={name}>
+                                            {selections[name].map(option => (
+                                                <Picker.Item key={option} value={option}>
+                                                {option}
+                                                </Picker.Item>
+                                            ))}
+                                            </Picker.Column>
+                                        ))}
+                                            </Picker>*/}
                                 </div>
                             </div>
                         </div>

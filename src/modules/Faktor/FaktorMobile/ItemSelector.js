@@ -17,6 +17,7 @@ function ItemSelector(props){
     const [search,setSearch] = useState('')
 
     const searchItem=(searchPhrase)=>{
+        searchPhrase.length>2&&
         setSearch(searchPhrase)
     }
     const cacheRtl = createCache({
@@ -41,7 +42,7 @@ function ItemSelector(props){
         .then(res => res.json())
         .then(
             (result) => {
-                //console.log(result)
+                console.log(result)
                 if(result.products)
                     setLoading(0)
                 if(result.error){
@@ -49,6 +50,11 @@ function ItemSelector(props){
                     
                 }
                 else{
+                    console.log(result)
+                    var productResult =[]
+                    for(var p=0;p<result.products.length;p++)
+                        result.products[p].newTitle=result.products[p].title+" | "+
+                        result.products[p].sku+" | "+result.products[p].count.quantity
                     setFilterItems(result.products)
                 }
                 
@@ -57,14 +63,22 @@ function ItemSelector(props){
                 console.log(error)
             })
     },[search])
+    useEffect(()=>{
+        setSearch('')
+        props.setItem('')
+        setFilterItems('')
+    },[props.clear])
+    console.log(props.item)
     return(
         <CacheProvider value={cacheRtl}>
             <Autocomplete
             disablePortal
-            getOptionLabel={(option) => option.title}
+            getOptionLabel={((option) => option.newTitle)||''}
             //className={stylisRTLPlugin}
+            noOptionsText='Search...'  
             options={filterItems||[]}
             onChange={(e,value)=>props.setItem(value)}
+            
             renderInput={(params) => 
             <TextField {...params} label="شرح کالا" 
                 InputProps={{

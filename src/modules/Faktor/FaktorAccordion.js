@@ -50,7 +50,6 @@ function FaktorAccordion(props){
                                 </div>
                             </div>
                         </div>
-                        <span className="show-more">مشاهده جزئیات</span>
                     </div>
                     <div className="accordion-content" id="item1" 
                         style={{display:tab===i+1?"block":"none"}}>
