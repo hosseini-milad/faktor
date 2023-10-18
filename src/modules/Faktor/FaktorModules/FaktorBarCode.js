@@ -39,8 +39,6 @@
             if (result){
               findProduct(result.text)
             }
-            else
-              findProduct('FH1002')
           }}
         />
         </div>
