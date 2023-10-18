@@ -223,7 +223,7 @@ router.get('/sepidar-all', async (req,res)=>{
             {method: 'GET'});
         response = await fetch(ONLINE_URL+"/sepidar-quantity",
             {method: 'GET'});
-        response = await fetch(ONLINE_URL+"/sepidar-users",
+        response = await fetch(ONLINE_URL+"/sepidar-customers",
             {method: 'GET'});
         response = await fetch(ONLINE_URL+"/sepidar-bank",
             {method: 'GET'});
