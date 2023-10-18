@@ -16,6 +16,7 @@ function NewItemMobile(props){
     const [clear,setClear] = useState("")
     const [newShow,setNewShow] = useState(1)
     const [barCodeMode,setBarCodeMode] = useState(0)
+    console.log(item)
     const RegisterNow=()=>{
         setNewShow(0)
         const postOptions={
