@@ -86,12 +86,10 @@ function QuickCartMobile(props){
         setCount(count,itemId,totalPrice)
     }
     const selections = {
-        count: ['1', '2', '3', '4','5','6','7','8','9','10'],
+        count: [1, 2, 3, 4,5,6,7,8,9,10],
       }
       
-        const [pickerValue, setPickerValue] = useState({
-          count: '1'
-        })
+    const [pickerValue, setPickerValue] = useState(1)
     return(<>
         <NewItemMobile token={token} payValue={payValue} 
             setFaktorList={props.setFaktorList} users={user}/>
@@ -133,22 +131,26 @@ function QuickCartMobile(props){
                             </div>
                             <div className="mobile30">
                                 <div className="countPlaceMobile">
-                                    <small>تعداد: 
-                                        <input type="text" defaultValue={faktor.count}
+                                    <small>تعداد: </small>
+                                        {/*<input type="text" defaultValue={faktor.count}
                                             onChange={(e)=>
                                                 setCount(e.target.value,faktor.id)}
-                                            className="borderLess countInput"/> عدد</small>
-                                    {/*<Picker value={pickerValue} onChange={setPickerValue}>
-                                        {Object.keys(selections).map(name => (
-                                            <Picker.Column key={name} name={name}>
-                                            {selections[name].map(option => (
-                                                <Picker.Item key={option} value={option}>
-                                                {option}
-                                                </Picker.Item>
-                                            ))}
+                                            className="borderLess countInput"/> عدد*/}
+                                    <div className="pickerHolder">
+                                        <Picker className="picker" value={{count:faktor.count}} 
+                                        onChange={(e)=>(setPickerValue(e),
+                                            setCount(e.count,faktor.id))}>
+                                            {Object.keys(selections).map(name => (
+                                                <Picker.Column key={name} name={name}>
+                                                {selections[name].map(option => (
+                                                    <Picker.Item key={option} value={option}>
+                                                    {option}
+                                                    </Picker.Item>
+                                                ))}
                                             </Picker.Column>
-                                        ))}
-                                            </Picker>*/}
+                                            ))}
+                                        </Picker>
+                                    </div>
                                 </div>
                             </div>
                         </div>

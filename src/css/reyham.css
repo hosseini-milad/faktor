@@ -751,6 +751,7 @@ input , label{
     top: 10px;
     left: 10px;
     width: calc(100% - 20px);
+    z-index: 20;
 }
 .barCodeHolder p{
     position: fixed;
@@ -794,9 +795,26 @@ hr{
 .countPlaceMobile{
     position: absolute;
     bottom: 0px;
-    left: 20px;
+    left: 0px;
+    display: flex;
+    align-items: center;
 }
 .countInput{
     width: 30px;
     text-align: center;
+}
+
+/*Picker*/
+.pickerHolder{
+    height: 40px;
+    position: relative;
+    padding-top: 13px;
+    overflow: hidden;
+    width: 60px;
+    margin-right: 10px;
+}
+.picker{
+    margin-top: -100px;
+    position: absolute !important;
+    width: 60px;
 }

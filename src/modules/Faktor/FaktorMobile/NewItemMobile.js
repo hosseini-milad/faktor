@@ -16,7 +16,6 @@ function NewItemMobile(props){
     const [clear,setClear] = useState("")
     const [newShow,setNewShow] = useState(1)
     const [barCodeMode,setBarCodeMode] = useState(0)
-    console.log(item)
     const RegisterNow=()=>{
         setNewShow(0)
         const postOptions={
@@ -61,10 +60,11 @@ function NewItemMobile(props){
             <div className="row">
                 <div className="col-md-6" style={{position:"relative"}}>
                 {barCodeMode?
-                    <BarCodeFaktor />:
+                    <BarCodeFaktor setItem={setItem} setBarCodeMode={setBarCodeMode}/>:
                     newShow?<ItemSelector item={item} setItem={setItem} 
                         token={token} setError={setError} clear={clear}/>:<></>}
-                <input className="barCodeBtn" onClick={()=>setBarCodeMode(1)} value={"BarCode"} type="button"/>
+                {!barCodeMode?<input className="barCodeBtn" onClick={()=>setBarCodeMode(1)} 
+                    value={"BarCode"} type="button"/>:<></>}
                 </div> 
                 
                 <hr/>
@@ -74,7 +74,7 @@ function NewItemMobile(props){
                             <Counter count={''} setCount={setCount} />
                         </div>
                     </div>*/}
-                    <ItemCounter count={count} setCount={setCount}/>
+                    {newShow?<ItemCounter count={count} setCount={setCount}/>:<></>}
                 </div><hr/>
                 <div className="col-md-6">
                     {item?<PriceSet item={item} count={count} payValue={props.payValue}/>:<></>}

@@ -49,7 +49,7 @@ function CartAccordion(props){
                             <div className="col">
                                 <div className="list-item">
                                     <span>مبلغ: </span>
-                                    {normalPrice(faktor.countData.totalPrice)}
+                                    {normalPriceCount(faktor.countData.totalPrice,"1.09")}
                                 </div>
                             </div>
                             <div className="col">
