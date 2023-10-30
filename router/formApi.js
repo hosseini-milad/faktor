@@ -234,11 +234,23 @@ router.post('/report-sale', async (req,res)=>{
   const port = process.env.API_PORT
   try{ 
     var today = new Date();
-    const response = ''/*await fetch("http://localhost:"+port+"/api/product/cartlist",
+    const response = await fetch("http://localhost:"+port+"/api/product/cartlist",
       {method: 'POST'});
-    const cartList = await response.json();*/
-    const cartList=await cart.find()
-    console.log(cartList)
+    //const cartList = await response.json();
+
+    const cartListRaw= await cart.find()
+    var cartTotal={cartPrice:0,cartCount:0}
+        for(var i = 0;i<cartList.length;i++){
+            if(cartList[i].cartItems&&cartList[i].cartItems.length){
+                var cartResult = findCartSum(cartList[i].cartItems)
+                cartList[i].countData=cartResult
+            }
+            else{
+                cartList.splice(i,1)
+            }
+        }
+        const cartList=({cart:cartListRaw,
+      cartTotal:cartTotal})
     //var cartList = await cart.find()
     var faktorList = await faktor.find({initDate:{ $gte:today.setDate(today.getDate()-7)}})
     
