@@ -13,7 +13,6 @@ const UserMontage = require("../models/auth/customerMontage");
 const task = require('../models/main/task');
 const faktor = require('../models/product/faktor');
 const cart = require('../models/product/cart');
-const { findCartSum } = require('./productApi');
 
 router.post('/user-detail',auth,jsonParser, async (req,res)=>{
   const userId =req.body.userId?req.body.userId:req.headers['userid']
@@ -330,6 +329,26 @@ const sumCount=(count1,count2)=>{
   var c1 = parseInt(count1&&count1.toString())
   var c2 = parseInt(count2&&count2.toString())
   return(c1+c2)
+}
+const findCartSum=(cartItems,payValue)=>{
+  if(!cartItems)return({totalPrice:0,totalCount:0})
+  var cartSum=0;
+  var cartCount=0;
+  var cartDescription = ''
+  for (var i=0;i<cartItems.length;i++){
+      //console.log(payValue)
+      var cartItemPrice = cartItems[i].price
+          .replace( /,/g, '').replace( /^\D+/g, '')
+      //console.log(cartItemPrice)
+      if(cartItems[i].price) 
+          cartSum+= parseInt(cartItemPrice)*
+          parseInt(cartItems[i].count.toString().replace( /,/g, '').replace( /^\D+/g, ''))
+      if(cartItems[i].count)
+          cartCount+=parseInt(cartItems[i].count.toString().replace( /,/g, '').replace( /^\D+/g, ''))
+          cartDescription += cartItems[i].description?cartItems[i].description:''
+  }
+  return({totalPrice:cartSum,
+      totalCount:cartCount,cartDescription:cartDescription})
 }
 
 module.exports = router;
