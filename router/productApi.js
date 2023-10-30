@@ -203,7 +203,7 @@ const findQuickCartSum=(cartItems,payValue)=>{
     return({totalPrice:cartSum,
         totalCount:cartCount,cartDescription:cartDescription})
 }
-const findCartSum=(cartItems,payValue)=>{
+export const findCartSum=(cartItems,payValue)=>{
     if(!cartItems)return({totalPrice:0,totalCount:0})
     var cartSum=0;
     var cartCount=0;

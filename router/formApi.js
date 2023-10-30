@@ -13,6 +13,7 @@ const UserMontage = require("../models/auth/customerMontage");
 const task = require('../models/main/task');
 const faktor = require('../models/product/faktor');
 const cart = require('../models/product/cart');
+const { findCartSum } = require('./productApi');
 
 router.post('/user-detail',auth,jsonParser, async (req,res)=>{
   const userId =req.body.userId?req.body.userId:req.headers['userid']
