@@ -238,19 +238,38 @@ router.post('/report-sale', async (req,res)=>{
       {method: 'POST'});
     //const cartList = await response.json();
 
-    const cartList= await cart.find()
-    var cartTotal={cartPrice:0,cartCount:0}
+    const cartList= await cart.aggregate
+    ([
+    { $addFields: { "userId": { "$toObjectId": "$userId" }}},
+    { $addFields: { "manageId": { "$toObjectId": "$manageId" }}},
+    {$lookup:{
+        from : "customers", 
+        localField: "userId", 
+        foreignField: "_id", 
+        as : "userData"
+    }},
+    {$lookup:{
+        from : "users", 
+        localField: "userId", 
+        foreignField: "_id", 
+        as : "adminData"
+    }},
+    {$lookup:{
+        from : "users", 
+        localField: "manageId", 
+        foreignField: "_id", 
+        as : "managerData"
+    }}])
+    const cartDetail =[]
         for(var i = 0;i<cartList.length;i++){
             if(cartList[i].cartItems&&cartList[i].cartItems.length){
                 var cartResult = findCartSum(cartList[i].cartItems)
-                cartList[i].countData=cartResult
+                cartDetail.push(cartResult)
             }
             else{
-                cartList.splice(i,1)
+              cartDetail.push({})
             }
         }
-        const cartListOut=({cart:cartList,
-      cartTotal:cartTotal})
     //var cartList = await cart.find()
     var faktorList = await faktor.find({initDate:{ $gte:today.setDate(today.getDate()-7)}})
     
@@ -269,7 +288,8 @@ router.post('/report-sale', async (req,res)=>{
       }
     }
     //logger.warn("main done")
-    res.json({saleReport:faktorList,outputReport:outputReport,...cartListOut})
+    res.json({saleReport:faktorList,outputReport:outputReport,
+        cart:cartList,cartCount:cartDetail})
   }
   catch(error){
       res.status(500).json({message: error.message})
