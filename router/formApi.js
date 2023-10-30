@@ -234,9 +234,10 @@ router.post('/report-sale', async (req,res)=>{
   const port = process.env.API_PORT
   try{ 
     var today = new Date();
-    const response = await fetch("http://localhost:"+port+"/api/product/cartlist",
+    const response = ''/*await fetch("http://localhost:"+port+"/api/product/cartlist",
       {method: 'POST'});
-    const cartList = await response.json();
+    const cartList = await response.json();*/
+    const cartList=await cart.find()
     console.log(cartList)
     //var cartList = await cart.find()
     var faktorList = await faktor.find({initDate:{ $gte:today.setDate(today.getDate()-7)}})
