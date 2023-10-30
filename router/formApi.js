@@ -238,7 +238,7 @@ router.post('/report-sale', async (req,res)=>{
       {method: 'POST'});
     //const cartList = await response.json();
 
-    const cartListRaw= await cart.find()
+    const cartList= await cart.find()
     var cartTotal={cartPrice:0,cartCount:0}
         for(var i = 0;i<cartList.length;i++){
             if(cartList[i].cartItems&&cartList[i].cartItems.length){
@@ -249,7 +249,7 @@ router.post('/report-sale', async (req,res)=>{
                 cartList.splice(i,1)
             }
         }
-        const cartList=({cart:cartListRaw,
+        const cartListOut=({cart:cartList,
       cartTotal:cartTotal})
     //var cartList = await cart.find()
     var faktorList = await faktor.find({initDate:{ $gte:today.setDate(today.getDate()-7)}})
@@ -269,7 +269,7 @@ router.post('/report-sale', async (req,res)=>{
       }
     }
     //logger.warn("main done")
-    res.json({saleReport:faktorList,outputReport:outputReport,...cartList})
+    res.json({saleReport:faktorList,outputReport:outputReport,...cartListOut})
   }
   catch(error){
       res.status(500).json({message: error.message})
