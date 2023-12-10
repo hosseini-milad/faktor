@@ -2,14 +2,16 @@ import { Bar } from 'react-chartjs-2';
 import { normalPrice, normalPriceCount } from '../../env';
 function ChartDaily(props){
     const labels = props.labels
-    const saleReport = props.data
+    const cartReport = props.data.cart
+    const saleReport = props.data.cartCount
     const cartTotal = props.cartTotal
+    console.log(saleReport)
     const data = {
         labels,
         datasets: [
           {
             label: 'فروش روزانه',
-            data: labels.map((label,i) => saleReport&&saleReport[i].countData.totalPrice),
+            data: labels.map((label,i) => saleReport&&saleReport[i].totalPrice),
             barPercentage: 0.5,
             barThickness: 6,
             maxBarThickness: 8,
@@ -35,7 +37,7 @@ function ChartDaily(props){
           },
         ],
       };
-      
+      console.log(data)
     const options = {
         responsive: true,
         plugins: {

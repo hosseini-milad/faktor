@@ -672,7 +672,7 @@ input , label{
         display: grid;
     }
 }
-@media only screen and (max-width: 768px) {
+@media only screen and (max-width: 900px) {
     .account-head:hover ul {
         display: block;
     }
@@ -705,13 +705,17 @@ input , label{
         position: absolute;
         left:0;
         top:0px;
-        border-radius: 50%;
+        padding: 5px 10px;
+        border-radius: 10px;
         text-align: center;
-        width: 30px;
-        height: 30px;
         border:5px solid #fff;
         color:#fff;
         background-color: green;
+    }
+    .quickError{
+        position: absolute;
+        top:40px;
+        white-space: nowrap;
     }
     .priceRow{
         border-right: 5px solid transparent;
@@ -752,6 +756,13 @@ input , label{
     left: 10px;
     width: calc(100% - 20px);
     z-index: 20;
+}
+.closeBarCode{
+    font-size: 25px;
+    position: absolute;
+    top:8px;
+    cursor: pointer;
+    right:5px;
 }
 .barCodeHolder p{
     position: fixed;
@@ -795,9 +806,10 @@ hr{
 .countPlaceMobile{
     position: absolute;
     bottom: 0px;
-    left: 0px;
-    display: flex;
-    align-items: center;
+    left: -20px;
+}
+.countPlaceMobile small{
+    margin-right: 10px;
 }
 .countInput{
     width: 30px;
@@ -817,4 +829,42 @@ hr{
     margin-top: -100px;
     position: absolute !important;
     width: 60px;
+}
+.myCounter{
+    display: flex;
+    justify-content: center;
+}
+.counterIconHolder{
+    display: flex;
+}
+.counterIcon{
+    position: relative;
+    border: 1px solid silver;
+    border-radius: 6px;
+    margin:auto 10px;
+    padding: 15px 10px;
+    cursor: pointer;
+}
+.counterIcon small{
+    position: absolute;
+    font-size: 10px;
+    top:0px;
+    left:7px;
+}
+.counterInput{
+    min-width: 30px;
+}
+.customCounter .myCounter{
+    /*display: grid;*/
+
+}
+.customCounter .counterInput{
+    padding: 5px !important;
+}
+.customCounter .counterIcon{
+    
+    padding: 5px 10px;
+}
+.customCounter .reverse{
+    flex-direction: row-reverse;
 }

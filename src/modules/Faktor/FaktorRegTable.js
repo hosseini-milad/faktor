@@ -35,7 +35,7 @@ function FaktorRegTable(props){
     },[user])
     //console.log(props.faktorList)
     return(<>
-        {wWidth>700?
+        {wWidth>900?
         <div className="table-fiin">
             <QuickCartPart setFaktorList={props.setFaktorList} 
                 faktorList={props.faktorList} user={user} payValue={props.payValue}

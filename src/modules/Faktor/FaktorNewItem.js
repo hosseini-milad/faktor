@@ -84,6 +84,7 @@ const FaktorNewItem = (props)=>{
             })
     
     }
+    console.log(itemPrice)
     return(
         <tr>
             <td width="5%"></td>
@@ -122,16 +123,19 @@ const FaktorNewItem = (props)=>{
             <div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>
                 <Counter count={count} setCount={setCount}/></div></td>
             <td width="10%">
-                {item?normalPriceCount(itemPrice.find(item=>item.saleType===props.payValue).price,"1"):''}<br/>
+                {item?normalPriceCount(itemPrice&&itemPrice.length&&
+                    itemPrice.find(item=>item.saleType===props.payValue).price,"1"):''}<br/>
                 <small className="errorSmall" style={{color:error.color}}>
                     {error.message}</small></td>
             
             <td width="10%">
-                {item?normalPriceCount(itemPrice.find(item=>item.saleType===props.payValue).price,"0.09",count):''}<br/>
+                {item?normalPriceCount(itemPrice&&itemPrice.length&&
+                    itemPrice.find(item=>item.saleType===props.payValue).price,"0.09",count):''}<br/>
                 <small className="errorSmall" style={{color:error.color}}>
                     {error.message}</small></td>
                     <td width="10%">
-                {item?normalPriceCount(itemPrice.find(item=>item.saleType===props.payValue).price,"1.09",count):''}<br/>
+                {item?normalPriceCount(itemPrice&&itemPrice.length&&
+                    itemPrice.find(item=>item.saleType===props.payValue).price,"1.09",count):''}<br/>
                 <small className="errorSmall" style={{color:error.color}}>
                     {error.message}</small></td>
             {/*<td width="20%"><div className="form-fiin form-field-fiin" style={{marginBottom: "0"}}>

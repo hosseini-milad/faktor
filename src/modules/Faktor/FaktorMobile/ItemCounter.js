@@ -4,11 +4,10 @@ import { styled } from '@mui/system';
 
 function ItemCounter(props){
     return(
-        <CustomNumberInput aria-label="Quantity Input" min={1} max={99} 
+        <CustomNumberInput aria-label="Quantity Input" min={1} max={99}
         defaultValue={1}
         onChange={(e,value)=>props.setCount(value)}
         />
-
     )
 }
 const CustomNumberInput = React.forwardRef(function CustomNumberInput(props, ref) {

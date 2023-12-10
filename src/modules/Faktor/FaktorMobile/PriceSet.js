@@ -2,7 +2,7 @@ import { normalPriceCount } from "../../../env"
 
 function PriceSet(props){
     const item = props.item
-    const priceData = item.priceData&&
+    const priceData = item.priceData&&item.priceData.length&&
         item.priceData.find(item=>item.saleType===props.payValue).price
     
     return(

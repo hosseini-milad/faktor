@@ -52,9 +52,9 @@ function DashBoardHolder(){
                     var dates = result.outputReport.map(item=>new Date(item.date).toLocaleDateString('fa-IR'))
                     setSaleLabels(dates)
                     
-                    setDailyReport(result.cart)
+                    setDailyReport(result)
                     var users = result.cart.map(item=>
-                        item.userData[0]?item.userData[0].username:item.adminData[0].username)
+                        item.managerData?item.managerData[0].username:item.adminData[0].username)
                     setDailyLabels(users)
                 }
                 
@@ -63,8 +63,6 @@ function DashBoardHolder(){
                 console.log(error)
             })
         },[])
-
-    
     ChartJS.register(
         CategoryScale,
         LinearScale,

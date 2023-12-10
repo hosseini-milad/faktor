@@ -7,6 +7,7 @@ import ItemSelector from "./ItemSelector";
 import ItemCounter from "./ItemCounter";
 import PriceSet from "./PriceSet";
 import BarCodeFaktor from "../FaktorModules/FaktorBarCode";
+import CustomCounter from "../../../components/CustomCounter";
 
 function NewItemMobile(props){
     const token = props.token
@@ -18,6 +19,8 @@ function NewItemMobile(props){
     const [barCodeMode,setBarCodeMode] = useState(0)
     const RegisterNow=()=>{
         setNewShow(0)
+        if(!item.priceData||!item.priceData.length)
+            return
         const postOptions={
             method:'post',
             headers: { 'Content-Type': 'application/json' ,
@@ -30,7 +33,8 @@ function NewItemMobile(props){
                     },
                     payValue:props.payValue})
           }
-          fetch(env.siteApi + "/product/update-cart",postOptions)
+          //console.log(item.priceData)
+        fetch(env.siteApi + "/product/update-cart",postOptions)
         .then(res => res.json())
         .then(
             (result) => {
@@ -74,7 +78,7 @@ function NewItemMobile(props){
                             <Counter count={''} setCount={setCount} />
                         </div>
                     </div>*/}
-                    {newShow?<ItemCounter count={count} setCount={setCount}/>:<></>}
+                    {newShow?<CustomCounter count={count} setCount={setCount} double={1}/>:<></>}{/*<ItemCounter count={count} setCount={setCount}/>:<></>}*/}
                 </div><hr/>
                 <div className="col-md-6">
                     {item?<PriceSet item={item} count={count} payValue={props.payValue}/>:<></>}

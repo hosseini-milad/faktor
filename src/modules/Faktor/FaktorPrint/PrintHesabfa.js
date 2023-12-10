@@ -80,8 +80,8 @@ function PrintHesabfa(props){
                   orderInfo.InvoiceItems.map((items,i)=>(
                 <tr key={i}>
                   <td className="centerCell">{i+1}</td>
-                  <td>{items.Description&&items.Description.includes('|')&&
-                    items.Description.split('|')[0]}</td>
+                  <td>{items.Description&&items.Description.includes('|')?
+                    items.Description.split('|')[0]:items.Description}</td>
                   <td>{items.Description&&items.Description.includes('|')&&
                     items.Description.split('|')[1]}</td>
                   <td className="centerCell">{items.Quantity}</td>
