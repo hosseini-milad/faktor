@@ -250,8 +250,7 @@ router.post('/cartlist', async (req,res)=>{
             localField: "manageId", 
             foreignField: "_id", 
             as : "managerData"
-        }},
-    {$limit:10}])
+        }}])
     var cartTotal={cartPrice:0,cartCount:0}
         for(var i = 0;i<cartList.length;i++){
             if(cartList[i].cartItems&&cartList[i].cartItems.length){
