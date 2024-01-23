@@ -55,12 +55,12 @@ router.post('/find-products',auth, async (req,res)=>{
             as : "countData"
         }}])
         var searchProductResult=[]
-        const cartList = await cart.find()
-        const qCartList = await qCart.find()
+        const cartList = await cart.find(stockId?{stockId:stockId}:{})
+        const qCartList = await qCart.find(stockId?{stockId:stockId}:{})
         var index = 0
         for(var i=0;i<searchProducts.length;i++){
             var count = (searchProducts[i].countData.find(item=>item.Stock==stockId))
-            var cartCount = findCartCount(searchProducts[i].sku,cartList.concat(qCartList))
+            var cartCount = findCartCount(searchProducts[i].sku,cartList.concat(qCartList),stockId)
             if(count)count.quantity = parseInt(count.quantity)-parseInt(cartCount)
             if(count&&count.quantity){
                 index++
@@ -232,7 +232,7 @@ router.post('/cartlist', async (req,res)=>{
     const cartID=req.body.cartID
     try{
         const cartList = await cart.aggregate
-        ([
+        ([{$match:{manageId:userId}},
         { $addFields: { "userId": { "$toObjectId": "$userId" }}},
         { $addFields: { "manageId": { "$toObjectId": "$manageId" }}},
         {$lookup:{
@@ -288,19 +288,22 @@ router.post('/update-cart',jsonParser, async (req,res)=>{
         progressDate:Date.now()
     }
     try{
+        const userData = await users.findOne({_id:req.headers['userid']})
+        const stockId = userData.StockId?userData.StockId:"13"
         var status = "";
         //const cartData = await cart.find({userId:userId})
         const qCartData = await quickCart.findOne({userId:userId})
-        const availItems = await checkAvailable(req.body.cartItem)
+        const availItems = await checkAvailable(req.body.cartItem,stockId)
         if(!availItems){
             res.status(400).json({error:"موجودی کافی نیست"}) 
             return
         }
-        const cartItems = createCart(qCartData?qCartData.cartItems:[],req.body.cartItem)
+        const cartItems = createCart(qCartData?qCartData.cartItems:[],
+            req.body.cartItem)
         data.cartItems =(cartItems)
         if(!qCartData){
             cartLog.create({...data,ItemID:req.body.cartItem,action:"create"})
-            await quickCart.create(data)
+            await quickCart.create({...data,stockId:stockId})
             status = "new Cart"
         }
         else{
@@ -361,8 +364,8 @@ router.post('/edit-payValue',jsonParser, async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
-const checkAvailable= async(items)=>{
-    const existItem = await productcounts.findOne({ItemID:items.id,Stock:"13"})
+const checkAvailable= async(items,stockId)=>{
+    const existItem = await productcounts.findOne({ItemID:items.id,Stock:stockId})
     //if(compareCount(existItem.quantity,items.count))
     return(compareCount(existItem.quantity,items.count))
 }
@@ -432,6 +435,7 @@ const totalCart=(cartArray)=>{
             userId:userCode,
             userTotal:cartArray[i].userId,
             payValue:cartArray[i].payValue,
+            stockId:cartArray[i].stockId,
             cartItems:cartArray[i].cartItems})
     }
     return(cartListTotal)
@@ -514,6 +518,7 @@ router.post('/quick-to-cart',jsonParser, async (req,res)=>{
         data.payValue=qCartData.payValue
         const quickCartItems = qCartData&&qCartData.cartItems
         data.cartItems =pureCartPrice(quickCartItems,qCartData.payValue)
+        data.stockId = qCartData.stockId
         cartLog.create({...data,ItemID:req.body.cartID,action:"quick to cart"})
         await cart.create(data)
             status = "create cart"
@@ -541,9 +546,16 @@ router.post('/faktor', async (req,res)=>{
     const offset =req.body.offset?parseInt(req.body.offset):0 
     const userId =req.body.userId?req.body.userId:req.headers['userid'];
     try{
-        const faktorTotalCount = await FaktorSchema.find().count()
+        const userDetail = await users.findOne({_id:req.headers['userid']})
+        if(!userDetail){
+            res.status(500).json({error: "access deny"})
+            return
+        }
+        const access = userDetail.access
+        const faktorTotalCount = await FaktorSchema.find(
+            access==="manager"?{manageId:userId}:{}).count()
         const faktorList = await FaktorSchema.aggregate
-        ([
+        ([ {$match:access==="manager"?{manageId:userId}:{}},
         {$lookup:{
             from : "customers", 
             localField: "customerID", 
@@ -596,7 +608,8 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
     const cartID=req.body.cartID
     try{
         const cartList = await cart.aggregate
-        ([{ $addFields: { "cartID": { "$toString": "$_id" }}},
+        ([{$match:{manageId:data.userId}},
+            { $addFields: { "cartID": { "$toString": "$_id" }}},
         cartID.length?{$match:{cartID:{$in:cartID}}}:{$match:{}},
             { $addFields: { "userId": { "$toObjectId": "$userId" }}},
         {$lookup:{
@@ -622,7 +635,6 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
             faktorNo= await createfaktorNo("F","02","21")
             sepidarQuery[i] = await SepidarFunc(faktorDetail[i],faktorNo)
             addFaktorResult[i] = await sepidarPOST(sepidarQuery[i],"/api/invoices")
-            console.log(addFaktorResult[i])
             if(!addFaktorResult[i]||addFaktorResult[0].Message||!addFaktorResult[i].Number){
                 res.status(400).json({error:addFaktorResult[0].Message?addFaktorResult[0].Message:"error occure",
                     query:sepidarQuery[i],status:"faktor"})
@@ -704,7 +716,7 @@ const SepidarFunc=async(data,faktorNo)=>{
             "ItemRef": toInt(item.id),
             "TracingRef": null,
             "Description":item.title+"|"+item.sku,
-            "StockRef":13,
+            "StockRef":data.stockId,
             "Quantity": toInt(item.count),
             "Fee": toInt(item.price),
             "Price": normalPriceCount(item.price,item.count,1),
