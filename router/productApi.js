@@ -59,7 +59,7 @@ router.post('/find-products',auth, async (req,res)=>{
         const qCartList = await qCart.find()
         var index = 0
         for(var i=0;i<searchProducts.length;i++){
-            var count = (searchProducts[i].countData.find(item=>item.Stock===stockId))
+            var count = (searchProducts[i].countData.find(item=>item.Stock==stockId))
             var cartCount = findCartCount(searchProducts[i].sku,cartList.concat(qCartList))
             if(count)count.quantity = parseInt(count.quantity)-parseInt(cartCount)
             if(count&&count.quantity){
