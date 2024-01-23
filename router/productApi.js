@@ -30,9 +30,11 @@ router.post('/products', async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
-router.post('/find-products', async (req,res)=>{
+router.post('/find-products',auth, async (req,res)=>{
     const search = req.body.search
     try{  
+        const userData = await users.findOne({_id:req.headers['userid']})
+        const stockId = userData.StockId?userData.StockId:"13"
         const searchProducts = await productSchema.
         aggregate([{$match:
             {$or:[
@@ -57,7 +59,7 @@ router.post('/find-products', async (req,res)=>{
         const qCartList = await qCart.find()
         var index = 0
         for(var i=0;i<searchProducts.length;i++){
-            var count = (searchProducts[i].countData.find(item=>item.Stock==='13'))
+            var count = (searchProducts[i].countData.find(item=>item.Stock===stockId))
             var cartCount = findCartCount(searchProducts[i].sku,cartList.concat(qCartList))
             if(count)count.quantity = parseInt(count.quantity)-parseInt(cartCount)
             if(count&&count.quantity){

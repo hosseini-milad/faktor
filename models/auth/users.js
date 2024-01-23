@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema({
   active:{ type: String },
   status:{ type: String },
   Code:{ type: String },
+  StockId:{ type: String },
 
   nameCompany:{ type: String },
   firma:{ type: String },
