@@ -650,7 +650,8 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
                         totalCount:cartDetail.totalCount,
                         InvoiceNumber:addFaktorResult[i].Number,
                         InvoiceID:addFaktorResult[i].InvoiceID})
-                await cart.deleteMany({_id:{$in:cartID}})
+                await cart.deleteMany({_id:{$in:cartID},
+                    manageId:data.userId})
                 
             }
         }
