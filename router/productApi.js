@@ -610,7 +610,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         const cartList = await cart.aggregate
         ([{$match:{manageId:data.userId}},
             { $addFields: { "cartID": { "$toString": "$_id" }}},
-        cartID.length?{$match:{cartID:{$in:cartID}}}:{$match:{}},
+            (cartID&&cartID.length)?{$match:{cartID:{$in:cartID}}}:{$match:{}},
             { $addFields: { "userId": { "$toObjectId": "$userId" }}},
         {$lookup:{
             from : "customers", 
@@ -650,12 +650,12 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
                         totalCount:cartDetail.totalCount,
                         InvoiceNumber:addFaktorResult[i].Number,
                         InvoiceID:addFaktorResult[i].InvoiceID})
-                await cart.deleteMany({_id:{$in:cartID},
-                    manageId:data.userId})
+                    (cartID&&cartID.length)?await cart.deleteMany({_id:{$in:cartID}}):
+                    await cart.deleteMany({manageId:data.userId})
                 
             }
         }
-        const recieptQuery = await RecieptFunc(req.body.receiptInfo,addFaktorResult[0],faktorNo)
+        const recieptQuery = 1//await RecieptFunc(req.body.receiptInfo,addFaktorResult[0],faktorNo)
         const recieptResult = 1//await sepidarPOST(recieptQuery,"/api/Receipts/BasedOnInvoice")
         //const SepidarFaktor = await SepidarFunc(faktorDetail)
         if(!recieptQuery||recieptResult.Message){
