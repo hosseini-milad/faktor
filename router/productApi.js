@@ -553,7 +553,7 @@ router.post('/faktor', async (req,res)=>{
         }
         const access = userDetail.access
         const faktorTotalCount = await FaktorSchema.find(
-            access==="manager"?{manageId:userId}:{}).count()
+            access==="manager"?{}:{manageId:userId}).count()
         const faktorList = await FaktorSchema.aggregate
         ([ {$match:access==="manager"?{manageId:userId}:{}},
         {$lookup:{
@@ -579,19 +579,12 @@ router.post('/faktor', async (req,res)=>{
 router.post('/faktor-find', async (req,res)=>{
     const faktorId =req.body.faktorId;
     try{
-        const faktorData = await //FaktorSchema.findOne({faktorNo:faktorId})
-        FaktorSchema.aggregate
-        ([{$match:{faktorNo:faktorId},
-        },
-        {$lookup:{
-            from : "customers", 
-            localField: "customerID", 
-            foreignField: "CustomerID", 
-            as : "userData"
-        }}])
+        const faktorData = await FaktorSchema.findOne({InvoiceID:faktorId})
+        
         //logger.warn("main done")
-
-        const OnlineFaktor = await sepidarFetch("data","/api/invoices/"+faktorId)
+        var userId=faktorData&&faktorData.manageId
+        console.log(userId)
+        const OnlineFaktor = await sepidarFetch("data","/api/invoices/"+faktorId,userId)
         res.json({faktor:OnlineFaktor})
     }
     catch(error){
@@ -634,7 +627,8 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         for(var i=0;i<faktorDetail.length;i++){
             faktorNo= await createfaktorNo("F","02","21")
             sepidarQuery[i] = await SepidarFunc(faktorDetail[i],faktorNo)
-            addFaktorResult[i] = await sepidarPOST(sepidarQuery[i],"/api/invoices")
+            addFaktorResult[i] = await sepidarPOST(sepidarQuery[i],"/api/invoices",req.headers['userid'])
+            console.log(addFaktorResult[i])
             if(!addFaktorResult[i]||addFaktorResult[0].Message||!addFaktorResult[i].Number){
                 res.status(400).json({error:addFaktorResult[0].Message?addFaktorResult[0].Message:"error occure",
                     query:sepidarQuery[i],status:"faktor"})
@@ -642,7 +636,6 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
             }
             else{
                 const cartDetail =findCartSum(faktorDetail[i].cartItems)
-                console.log(cartID)
                 await FaktorSchema.create(
                     {...data,faktorItems:faktorDetail[i].cartItems,
                         customerID:faktorDetail[i].userId,
@@ -657,7 +650,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         
         (cartID&&cartID.length)?await cart.deleteMany({_id:{$in:cartID}}):
         await cart.deleteMany({manageId:data.userId})
-        
+
         const recieptQuery = 1//await RecieptFunc(req.body.receiptInfo,addFaktorResult[0],faktorNo)
         const recieptResult = 1//await sepidarPOST(recieptQuery,"/api/Receipts/BasedOnInvoice")
         //const SepidarFaktor = await SepidarFunc(faktorDetail)
