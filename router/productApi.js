@@ -35,6 +35,8 @@ router.post('/find-products',auth, async (req,res)=>{
     try{  
         const userData = await users.findOne({_id:req.headers['userid']})
         const stockId = userData.StockId?userData.StockId:"13"
+        var filter =''
+        if(userData.group === "bazaryab") filter = "fs"
         const searchProducts = await productSchema.
         aggregate([{$match:
             {$or:[
@@ -42,6 +44,8 @@ router.post('/find-products',auth, async (req,res)=>{
                 {title:{$regex: search, $options : 'i'}}
             ]}
         },
+        filter?{$match:{sku:{$regex: "fs", $options : 'i'}}}:
+            {$match:{sku:{$exists:true}}},
         {$lookup:{
             from : "productprices", 
             localField: "ItemID", 
