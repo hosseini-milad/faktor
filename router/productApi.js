@@ -435,7 +435,7 @@ const totalCart=(cartArray)=>{
             userId:userCode,
             userTotal:cartArray[i].userId,
             payValue:cartArray[i].payValue,
-            stockId:cartArray[i].stockId,
+            stockId:cartArray[i].stockId?cartArray[i].stockId:"13",
             cartItems:cartArray[i].cartItems})
     }
     return(cartListTotal)
