@@ -553,9 +553,9 @@ router.post('/faktor', async (req,res)=>{
         }
         const access = userDetail.access
         const faktorTotalCount = await FaktorSchema.find(
-            access==="manager"?{}:{manageId:req.headers['userid']}).count()
+            access==="manager"?{}:{manageId:userId}).count()
         const faktorList = await FaktorSchema.aggregate
-        ([ {$match:access==="manager"?{manageId:userId}:{}},
+        ([ {$match:access==="manager"?{}:{manageId:userId}},
         {$lookup:{
             from : "customers", 
             localField: "customerID", 
