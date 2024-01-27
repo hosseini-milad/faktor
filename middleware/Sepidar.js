@@ -6,9 +6,9 @@ const { SEPIDAR_URL,SEPIDAR_HEADER,
 const sepidarFetch=async(data,action,user)=>{
     var header = SEPIDAR_HEADER
     const userDetail = await users.findOne({_id:user})
-    if(userDetail.group === "bazaryab")
+    if(userDetail&&userDetail.group === "bazaryab")
         header = SEPIDAR_HEADER_Bazaryab
-    else if(userDetail.StockId==="6")
+    else if(userDetail&&userDetail.StockId==="6")
         header = SEPIDAR_HEADER_HESARAK
     var response = ''; 
     try{    response = await fetch(SEPIDAR_URL+action,
