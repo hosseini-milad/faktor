@@ -52,7 +52,7 @@ router.post('/login',jsonParser, async (req,res)=>{
           const token = jwt.sign(
             { user_id: user._id, username },
             process.env.TOKEN_KEY,
-            {expiresIn: "2h",}
+            {expiresIn: "72h",}
           );
           user.token = token;
           res.status(200).json(user);
