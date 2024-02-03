@@ -310,23 +310,12 @@ router.post('/cart-fetch', async (req,res)=>{
             as : "managerData"
         }}])
         var cartTotal={cartPrice:0,cartCount:0}
+        var cartPrice = 0
         for(var i = 0;i<cartList.length;i++){
-            if(cartList[i].cartItems&&cartList[i].cartItems.length){
-                var cartResult = findCartSum(cartList[i].cartItems)
-                cartList[i].countData=cartResult
-            }
-            else{
-                cartList.splice(i,1)
-            }
+            cartPrice +=parseInt(cartList[i].price)*cartList[i].count
         }
-        for(var i=0;i<cartList.length;i++){
-            const found =(cartID&&cartID.find(item=>item===cartList[i]._id.toString()))
-            if(found||!cartID.length){
-            cartTotal.cartPrice+=cartList[i].countData.totalPrice;
-            cartTotal.cartCount+=cartList[i].countData.totalCount;
-            }
-        }
-        res.json({cart:cartList,cartTotal:cartTotal})
+        
+        res.json({cart:cartList,cartPrice:cartPrice})
     }
     catch(error){
         res.status(500).json({message: error.message})
