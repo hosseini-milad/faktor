@@ -374,11 +374,12 @@ router.post('/edit-cart',jsonParser, async (req,res)=>{
         date:req.body.date,
         progressDate:Date.now()
     }
-    try{
+    
         var status = "";
         //const cartData = await cart.find({userId:data.userId})
         const qCartData = await quickCart.findOne({userId:data.userId})
         const availItems = await checkAvailable(req.body.cartItem)
+        
         if(!availItems){
             res.status(400).json({error:"موجودی کافی نیست"}) 
             return
@@ -389,7 +390,7 @@ router.post('/edit-cart',jsonParser, async (req,res)=>{
         status = "update cart"
         const cartDetails = await findCartFunction(data.userId)
         res.json(cartDetails)
-    }
+    try{}
     catch(error){
         res.status(500).json({message: error.message})
     }
@@ -413,9 +414,10 @@ router.post('/edit-payValue',jsonParser, async (req,res)=>{
     }
 })
 const checkAvailable= async(items,stockId)=>{
+    if(!stockId) stockId="13"
     const existItem = await productcounts.findOne({ItemID:items.id,Stock:stockId})
     //if(compareCount(existItem.quantity,items.count))
-    return(compareCount(existItem.quantity,items.count))
+    return(compareCount(existItem&&existItem.quantity,items.count))
 }
 const createCart=(cartData,cartItem)=>{
     var cartItemTemp=cartData?cartData:[]
@@ -648,6 +650,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
     }
     const cartID=req.body.cartID
     try{
+        return
         const cartList = await cart.aggregate
         ([{$match:{manageId:data.userId}},
             { $addFields: { "cartID": { "$toString": "$_id" }}},
@@ -665,7 +668,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
             foreignField: "_id", 
             as : "adminData"
         }}])
-        
+        return
         const faktorSeprate = totalCart(cartList)
         const faktorDetail = await IntegrateCarts(faktorSeprate)
         
@@ -821,6 +824,7 @@ const toInt=(strNum,count,align)=>{
     (count?parseFloat(count):1)))
 }
 const normalPriceCount=(priceText,count,tax)=>{
+    console.log(priceText,count,tax)
     if(!priceText||priceText === null||priceText === undefined) return("")
     var rawCount = parseFloat(count.toString())
     var rawTax = parseFloat(tax.toString())
