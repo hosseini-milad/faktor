@@ -672,7 +672,6 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
             foreignField: "_id", 
             as : "adminData"
         }}])
-        return
         const faktorSeprate = totalCart(cartList)
         const faktorDetail = await IntegrateCarts(faktorSeprate)
         
