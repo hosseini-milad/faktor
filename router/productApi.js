@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const jsonParser = bodyParser.json();
 const router = express.Router()
+var ObjectID = require('mongodb').ObjectID;
 const auth = require("../middleware/auth");
 const logger = require('../middleware/logger');
 const productSchema = require('../models/product/products');
@@ -287,7 +288,7 @@ router.post('/cart-fetch', async (req,res)=>{
     try{
         const cartList = await cart.aggregate
         ([{$match:{manageId:userId}},
-          {$match:{_id:cartID}},
+          {$match:{_id:ObjectID(cartID)}},
         { $addFields: { "userId": { "$toObjectId": "$userId" }}},
         { $addFields: { "manageId": { "$toObjectId": "$manageId" }}},
         {$lookup:{
