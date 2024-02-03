@@ -313,7 +313,7 @@ router.post('/cart-fetch', async (req,res)=>{
         var cartPrice = 0
         var cartItems = (cartList&&cartList[0].cartItems)?
             cartList[0].cartItems:[]
-        for(var i = 0;i<cartItems&&cartItems.length;i++){
+        for(var i = 0;i<cartItems.length;i++){
             cartPrice +=parseInt(cartItems[i].price)*
                 cartItems[i].count
         }
