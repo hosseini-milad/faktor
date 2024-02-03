@@ -318,7 +318,7 @@ router.post('/cart-fetch', async (req,res)=>{
                 cartItems[i].count
         }
         
-        res.json({cart:cartList,cartPrice:cartPrice})
+        res.json({cart:cartList,cartPrice:cartPrice,cartItems:cartItems})
     }
     catch(error){
         res.status(500).json({message: error.message})
