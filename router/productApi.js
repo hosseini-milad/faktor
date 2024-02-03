@@ -309,7 +309,7 @@ router.post('/cart-fetch', async (req,res)=>{
             foreignField: "_id", 
             as : "managerData"
         }}])
-        var cartTotal={cartPrice:0,cartCount:0}
+        var orderData={cartPrice:0,cartCount:0}
         var cartPrice = 0
         var cartItems = (cartList&&cartList[0].cartItems)?
             cartList[0].cartItems:[]
@@ -317,8 +317,9 @@ router.post('/cart-fetch', async (req,res)=>{
             cartPrice +=parseInt(cartItems[i].price)*
                 cartItems[i].count
         }
+        orderData.cartPrice=cartPrice
         
-        res.json({cart:cartList,cartPrice:cartPrice,cartItems:cartItems})
+        res.json({cart:cartList,orderData:orderData})
     }
     catch(error){
         res.status(500).json({message: error.message})
