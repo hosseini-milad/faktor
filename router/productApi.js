@@ -65,12 +65,17 @@ router.post('/find-products',auth, async (req,res)=>{
         var index = 0
         for(var i=0;i<searchProducts.length;i++){
             var count = (searchProducts[i].countData.find(item=>item.Stock==stockId))
+            var desc = ''
             var cartCount = findCartCount(searchProducts[i].sku,cartList.concat(qCartList),stockId)
             if(count)count.quantity = parseInt(count.quantity)-parseInt(cartCount)
             if(count&&count.quantity){
                 index++
+                desc=searchProducts[i].title+
+                "("+searchProducts[i].sku+")"+
+                "___"+count.quantity
+            
                 searchProductResult.push({...searchProducts[i],
-                    count:count})
+                    count:count,description:desc})
                 if(index===4)break
             }
         }
