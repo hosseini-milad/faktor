@@ -194,14 +194,28 @@ router.get('/sepidar-quantity', async (req,res)=>{
         //var successItem=[];
         //var failure = 0;
         await productCount.deleteMany({})
-        for(var i = 0;i<sepidarQuantityResult.length;i++){
-            sepidarQuantityResult[i].UnitRef!==3&&
+        for(var i = 0;i<100/*sepidarQuantityResult.length*/;i++){
+            if(sepidarQuantityResult[i].UnitRef!==3)
             await productCount.create({
                 quantity:sepidarQuantityResult[i].Qunatity,
                 UnitRef:sepidarQuantityResult[i].UnitRef,
                 Stock:sepidarQuantityResult[i].StockeRef,
                 ItemID:sepidarQuantityResult[i].ItemRef,
             date:new Date()})
+            else{
+                var perBox = 1
+                var singleItem = await sepidarQuantityResult.find
+                    (item=>(item.ItemRef===sepidarQuantityResult[i].ItemRef&&
+                        item.UnitRef==1))
+                perBox = sepidarQuantityResult[i].Qunatity&&
+                (singleItem&&singleItem.Qunatity)/
+                    sepidarQuantityResult[i].Qunatity
+                var intBox =0
+                try{intBox=(parseInt(Math.round(perBox)))} catch{}
+                const report =await products.updateOne({
+                    ItemID:sepidarQuantityResult[i].ItemRef,
+                },{$set:{perBox:intBox}})
+            }
                 
         }
         
