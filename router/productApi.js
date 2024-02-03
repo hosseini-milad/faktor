@@ -655,7 +655,6 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
     }
     const cartID=req.body.cartID
     try{
-        return
         const cartList = await cart.aggregate
         ([{$match:{manageId:data.userId}},
             { $addFields: { "cartID": { "$toString": "$_id" }}},
