@@ -207,8 +207,8 @@ router.get('/sepidar-quantity', async (req,res)=>{
                 var singleItem = await sepidarQuantityResult.find
                     (item=>(item.ItemRef===sepidarQuantityResult[i].ItemRef&&
                         item.UnitRef==1))
-                perBox = sepidarQuantityResult[i].Qunatity&&
-                (singleItem&&singleItem.Qunatity)/
+                if(sepidarQuantityResult[i].Qunatity)
+                perBox =(singleItem&&singleItem.Qunatity)/
                     sepidarQuantityResult[i].Qunatity
                 var intBox =0
                 try{intBox=(parseInt(Math.round(perBox)))} catch{}
