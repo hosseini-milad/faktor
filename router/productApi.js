@@ -281,6 +281,40 @@ router.post('/cartlist', async (req,res)=>{
         res.status(500).json({message: error.message})
     }
 })
+router.post('/cart-fetch', async (req,res)=>{
+    const userId =req.body.userId?req.body.userId:req.headers['userid'];
+    const cartID=req.body.cartID
+    try{
+        const cartList = await cart.aggregate
+        ([{$match:{manageId:userId}},
+          {$match:{_id:cartID}},
+        { $addFields: { "userId": { "$toObjectId": "$userId" }}},
+        { $addFields: { "manageId": { "$toObjectId": "$manageId" }}},
+        {$lookup:{
+            from : "customers", 
+            localField: "userId", 
+            foreignField: "_id", 
+            as : "userData"
+        }},
+        {$lookup:{
+            from : "users", 
+            localField: "userId", 
+            foreignField: "_id", 
+            as : "adminData"
+        }},
+        {$lookup:{
+            from : "users", 
+            localField: "manageId", 
+            foreignField: "_id", 
+            as : "managerData"
+        }}])
+    
+        res.json({cart:cartList})
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
 
 router.post('/update-cart',jsonParser, async (req,res)=>{
     const userId=req.body.userId?req.body.userId:req.headers['userid']
