@@ -76,7 +76,7 @@ router.post('/find-products',auth, async (req,res)=>{
             
                 searchProductResult.push({...searchProducts[i],
                     count:count,description:desc})
-                if(index===4)break
+                if(index===15)break
             }
         }
         res.json({products:searchProductResult})
