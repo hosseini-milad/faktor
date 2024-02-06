@@ -641,13 +641,14 @@ router.post('/faktor-find', async (req,res)=>{
         var userId=faktorData&&faktorData.manageId
         
         const OnlineFaktor = await sepidarFetch("data","/api/invoices/"+faktorId,userId)
-        var faktorItems =[]
+        const userDetail = await sepidarFetch("data","/api/Customers/"+OnlineFaktor.CustomerRef,userId)
+        
         for(var i=0;i<OnlineFaktor.InvoiceItems.length;i++){
             var faktorItem = OnlineFaktor.InvoiceItems[i]
             var itemDetail = await products.findOne({ItemID:faktorItem.ItemRef})
             OnlineFaktor.InvoiceItems[i].itemDetail = itemDetail
         }
-        res.json({faktor:OnlineFaktor})
+        res.json({faktor:OnlineFaktor,userDetail:userDetail})
     }
     catch(error){
         res.status(500).json({message: error.message})
