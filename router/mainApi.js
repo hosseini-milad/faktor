@@ -203,14 +203,14 @@ router.get('/sepidar-quantity', async (req,res)=>{
                 ItemID:sepidarQuantityResult[i].ItemRef,
             date:new Date()})
             else{
-                if(sepidarQuantityResult[i].StockeRef!==13)continue
+                if(sepidarQuantityResult[i].StockeRef!==5)continue
                 var perBox = 1
                 var singleItem = await sepidarQuantityResult.find
                     (item=>(item.ItemRef===sepidarQuantityResult[i].ItemRef&&
-                        item.UnitRef==1&&item.StockeRef==13))
+                        item.UnitRef==1&&item.StockeRef==5))
                 if(sepidarQuantityResult[i].Qunatity)
-                perBox =(singleItem&&singleItem.Qunatity)/
-                    sepidarQuantityResult[i].Qunatity
+                    perBox =(singleItem&&singleItem.Qunatity)/
+                        sepidarQuantityResult[i].Qunatity
                 
                 var intBox =0
                 try{intBox=(parseInt(Math.round(perBox)))} catch{}
