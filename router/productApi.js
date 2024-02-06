@@ -19,6 +19,7 @@ const users = require('../models/auth/users');
 const quickCart = require('../models/product/quickCart');
 const bankAccounts = require('../models/product/bankAccounts');
 const sepidarFetch = require('../middleware/Sepidar');
+const products = require('../models/product/products');
 
 router.post('/products', async (req,res)=>{
     try{
@@ -638,8 +639,14 @@ router.post('/faktor-find', async (req,res)=>{
         
         //logger.warn("main done")
         var userId=faktorData&&faktorData.manageId
-        console.log(userId)
+        
         const OnlineFaktor = await sepidarFetch("data","/api/invoices/"+faktorId,userId)
+        var faktorItems =[]
+        for(var i=0;i<OnlineFaktor.InvoiceItems.length;i++){
+            var faktorItem = OnlineFaktor.InvoiceItems[i]
+            var itemDetail = await products.findOne({ItemID:faktorItem.ItemRef})
+            OnlineFaktor.InvoiceItems[i].itemDetail = itemDetail
+        }
         res.json({faktor:OnlineFaktor})
     }
     catch(error){
