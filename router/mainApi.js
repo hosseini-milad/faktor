@@ -214,7 +214,7 @@ router.get('/sepidar-quantity', async (req,res)=>{
                 
                 var intBox =0
                 try{intBox=(parseInt(Math.round(perBox)))} catch{}
-                if(perBox!==1)await products.updateOne({
+                if(perBox!==1&&intBox!==0)await products.updateOne({
                     ItemID:sepidarQuantityResult[i].ItemRef,
                 },{$set:{perBox:intBox}})
             }
