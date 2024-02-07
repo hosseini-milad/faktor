@@ -650,7 +650,7 @@ router.post('/faktor-find', async (req,res)=>{
             var faktorItem = OnlineFaktor.InvoiceItems[i]
             var itemDetail = await products.findOne({ItemID:faktorItem.ItemRef})
             OnlineFaktor.InvoiceItems[i].itemDetail = itemDetail
-            itemRefs.push(faktorItem.ItemRef)
+            itemRefs.push(faktorItem)
         }
         res.json({faktor:OnlineFaktor,userDetail:userDetail,itemRefs:itemRefs})
     }
