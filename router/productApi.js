@@ -645,12 +645,12 @@ router.post('/faktor-find', async (req,res)=>{
         const invoice = OnlineFaktor.InvoiceItems
         if(!invoice)
             res.status(400).json({error: OnlineFaktor.Message})
-        var itemRefs=[]
+        var itemRefs=OnlineFaktor.InvoiceItems
         for(var i=0;i<invoice&&invoice.length;i++){
             var faktorItem = OnlineFaktor.InvoiceItems[i]
             var itemDetail = await products.findOne({ItemID:faktorItem.ItemRef})
             OnlineFaktor.InvoiceItems[i].itemDetail = itemDetail
-            itemRefs.push(faktorItem)
+            //itemRefs.push(faktorItem)
         }
         res.json({faktor:OnlineFaktor,userDetail:userDetail,itemRefs:itemRefs})
     }
