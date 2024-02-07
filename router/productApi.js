@@ -651,7 +651,7 @@ router.post('/faktor-find', async (req,res)=>{
         res.json({faktor:OnlineFaktor,userDetail:userDetail})
     }
     catch(error){
-        res.status(500).json({message: error.message})
+        res.status(500).json({error: error.message})
     }
 })
 router.post('/update-faktor',jsonParser, async (req,res)=>{
