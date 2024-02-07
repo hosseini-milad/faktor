@@ -103,9 +103,9 @@ router.get('/sepidar-customer', async (req,res)=>{
                 access:"customer",
                 Code:sepidarResult[i].Code,
                 CustomerID:sepidarResult[i].CustomerID,
-                Address:sepidarResult[i].Addresses?
+                Address:(sepidarResult[i].Addresses&&sepidarResult[i].Addresses[0])?
                     sepidarResult[i].Addresses[0].Address:'',
-                PostalCode:sepidarResult[i].Addresses?
+                PostalCode:(sepidarResult[i].Addresses&&sepidarResult[i].Addresses[0])?
                 sepidarResult[i].Addresses[0].ZipCode:'',
                 date:new Date()})
                 if(createResult)
