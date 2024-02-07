@@ -23,6 +23,8 @@ const customerSchema = new mongoose.Schema({
   status:{ type: String },
   Code:{ type: String },
   CustomerID:{ type: String },
+  Address:{ type: String },
+  PostalCode:{ type: String },
 
   nameCompany:{ type: String },
   firma:{ type: String },

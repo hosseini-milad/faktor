@@ -83,7 +83,7 @@ router.get('/sepidar-customer', async (req,res)=>{
     const url=req.body.url
     try{
         const sepidarResult = await sepidarFetch("data","/api/Customers")
-
+ 
         if(sepidarResult.error||!sepidarResult.length){
             res.json({error:"error occure",
                 data:sepidarResult,message:"خطا در بروزرسانی"})
@@ -103,6 +103,10 @@ router.get('/sepidar-customer', async (req,res)=>{
                 access:"customer",
                 Code:sepidarResult[i].Code,
                 CustomerID:sepidarResult[i].CustomerID,
+                Address:sepidarResult[i].Addresses?
+                    sepidarResult[i].Addresses[0].Address:'',
+                PostalCode:sepidarResult[i].Addresses?
+                sepidarResult[i].Addresses[0].ZipCode:'',
                 date:new Date()})
                 if(createResult)
                 successItem.push(createResult)
