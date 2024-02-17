@@ -114,14 +114,7 @@ router.post('/register',auth,jsonParser, async (req,res)=>{
         agent:req.body.agent?req.body.agent:req.headers["userid"],
         nif: req.body.nif,
 
-        nameCompany:req.body.nameCompany,
-        firma:req.body.firma,
-        morada:req.body.morada,
-        nifCompany:req.body.nifCompany,
-        phoneCompany:req.body.phoneCompany,
-        emailCompany:req.body.emailCompany,
-        IBANCompany:req.body.IBANCompany,
-        active:"false",
+        active:"true",
         date: Date.now()
       }
       if (!(data.cName && data.sName&&data.phone&&data.email)) {
@@ -134,26 +127,10 @@ router.post('/register',auth,jsonParser, async (req,res)=>{
         {username: data.username },{email:data.email}]});
       if(!user){
         data.password = data.password&&await bcrypt.hash(data.password, 10);
-        const bitrixData = {}//await sendBitrix(data,"crm.contact.add.json")
-        //console.log(bitrixData)
-        if(bitrixData.error){
-          res.status(400).json({error:bitrixData.error_description})
-          return
-        }
-        //const bitrixDealConst=await bitrixDeal(bitrixData.result,"crm.deal.add.json",data)
-
-        //console.log(bitrixDealConst)
-        const newOtp=createOTP(data.cName)
+        
         const user = //bitrixData.result&&
-          await User.create({...data,bitrixCode:bitrixData.result,
-          otp:newOtp});
+          await User.create(data);
 
-        const createTask =await task.create({userId:user._id,
-          state:"lead",date:Date.now()})
-        //await User.updateOne({email: data.email },{$set:{otp:newOtp}})
-        const sendMailResult = await sendMailRegBrevo(data.email,'',
-            data.access==="customer"?newOtp:req.body.password,newOtp)
-        //console.log(sendMailResult)
         res.status(201).json({user:user,message:"User Created"})
         return;
       }
@@ -230,7 +207,7 @@ router.post('/list-search',auth,jsonParser, async (req,res)=>{
         return
       }
       const user = await User.aggregate([
-        { $match : data.access?{access:data.access}:{}},
+        {$match:userOwner.access==="manager"?{}:{agent:req.headers["userid"]}},
         { $match : data.search?{$or:[
             {cName:{$regex: data.search}},
             {sName:{$regex: data.search}},
@@ -238,17 +215,7 @@ router.post('/list-search',auth,jsonParser, async (req,res)=>{
             {email:{$regex: data.search}},
             {phone:{$regex: data.search}}
           ]}:{}},
-        
-          { $match : (userOwner&&(userOwner.access==="agent"||userOwner.access==="agency"))?
-          {agent: {$regex:userOwner._id.toString()}}:{}},
-        
-        { $addFields: { "agent": { "$toObjectId": "$agent" }}},
-        {$lookup:{
-            from : "users", 
-            localField: "agent", 
-            foreignField: "_id", 
-            as : "agentDetail"
-        }},{$sort:{date:-1}}
+        {$sort:{date:-1}}
     ])
     var pageUser=[];
     for(var i=data.offset;i<data.offset+parseInt(pageSize);i++)
