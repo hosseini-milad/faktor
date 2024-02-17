@@ -117,6 +117,7 @@ router.post('/register',auth,jsonParser, async (req,res)=>{
         active:"true",
         date: Date.now()
       }
+      const agentUser = await User.findOne({_id:ObjectID(data.agent)})
       if (!(data.cName && data.sName&&data.phone&&data.email)) {
         res.status(400).json(
           {error:"All input is required"});
@@ -127,7 +128,7 @@ router.post('/register',auth,jsonParser, async (req,res)=>{
         {username: data.username },{email:data.email}]});
       if(!user){
         data.password = data.password&&await bcrypt.hash(data.password, 10);
-        
+        data.CustomerID = agentUser&&agentUser.CustomerID
         const user = //bitrixData.result&&
           await User.create(data);
 
