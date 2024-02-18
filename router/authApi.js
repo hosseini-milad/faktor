@@ -107,6 +107,7 @@ router.post('/register',auth,jsonParser, async (req,res)=>{
         cName: req.body.cName,
         sName: req.body.sName,
         phone: req.body.phone,
+        mobile: req.body.mobile,
         meliCode:req.body.meliCode,
         postalCode:req.body.postalCode,
         address: req.body.address,
@@ -119,6 +120,7 @@ router.post('/register',auth,jsonParser, async (req,res)=>{
         nif: req.body.nif,
         imageUrl1:req.body.imageUrl1,
         imageUrl2:req.body.imageUrl2,
+        kasbUrl:req.body.kasbUrl,
 
         active:"true",
         official:req.body.official,

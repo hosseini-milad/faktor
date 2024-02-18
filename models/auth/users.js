@@ -4,7 +4,8 @@ const userSchema = new mongoose.Schema({
   username: { type: String, unique: true },
   cName: { type: String, required : true},
   sName:{ type: String, required : true},
-  phone: { type: String , required : true},
+  mobile: { type: String , required : true},
+  phone: { type: String},
   password: { type: String },
   address:{type: String },
   email: { type: String , unique: true},
@@ -20,6 +21,8 @@ const userSchema = new mongoose.Schema({
   nif: { type: String },
   imageUrl1:{ type: String },
   imageUrl2:{ type: String },
+  kasbUrl:{ type: String },
+  
   meliCode:{ type: String },
   postalCode:{ type: String },
   agent:{ type: String },
@@ -28,14 +31,6 @@ const userSchema = new mongoose.Schema({
   status:{ type: String },
   Code:{ type: String },
   StockId:{ type: String },
-
-  nameCompany:{ type: String },
-  firma:{ type: String },
-  morada:{ type: String },
-  nifCompany:{ type: String },
-  phoneCompany:{ type: String },
-  emailCompany:{ type: String },
-  IBANCompany:{ type: String },
 
   date:{type:Date}
 });
