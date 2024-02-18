@@ -4,33 +4,56 @@ require("./middleware/database").connect();
 var expressWinston = require('express-winston');
 var winston = require('winston'); // for transports.Console
 var app = module.exports = express();
-
+const mime = require('mime');
+const fs = require('fs');
 const cors = require("cors");
 app.use(cors());
  
 const mainApi = require('./router/mainApi')
 require('winston-daily-rotate-file');
-var emitter = require('events').EventEmitter;
-var eventsEmitter = new emitter();
+
 const { API_PORT } = process.env;
 const port = API_PORT;
 
-eventsEmitter.on('tqi9z2oj5x1gu3iuqtv1d9pyc1gtfkef', () => {
-  
-  console.log('Test Event Successful!');
-
-});
 app.get('/hook-lead', (req, res) => {    //Subscribing to an event
   console.log("req")
   eventsEmitter.emit('tqi9z2oj5x1gu3iuqtv1d9pyc1gtfkef');});
 
 const bodyParser = require('body-parser');
+const jsonParser = bodyParser.json();
 //app.use(express.methodOverride());
 // Let's make our express `Router` first.
 var router = express.Router();
 router.use(bodyParser.urlencoded({
   extended: true
 }))
+app.use(bodyParser.json({limit: '50mb'}));
+app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
+app.post('/api/image',jsonParser, async(req, res, next)=>{
+    
+  // to declare some path to store your converted image
+  var matches = req.body.base64image.match(/^data:([A-Za-z-+/]+);base64,(.+)$/),
+  response = {};
+  if (matches.length !== 3) {
+  return new Error('Invalid input string');
+  }
+   
+  response.type = matches[1];
+  response.data = new Buffer(matches[2], 'base64');
+  let decodedImg = response;
+  let imageBuffer = decodedImg.data;
+  let type = decodedImg.type;
+  let extension = mime.extension(type);
+  let fileName = `Sharif-${Date.now().toString()+"-"+req.body.imgName}`;
+  //console.log(fileName)
+  try {
+  fs.writeFileSync("./uploads/client/" + fileName, imageBuffer, 'utf8');
+  return res.send({"status":"success",url:"uploads/client/"+fileName});
+  } catch (e) {
+      res.send({"status":"failed",error:e});
+  }
+})
+app.use('/uploads', express.static('uploads'));
 router.use(bodyParser.json())
 router.get('/error', function(req, res, next) {
   // here we cause an error in the pipeline so we see express-winston in action.

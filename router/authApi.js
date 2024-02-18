@@ -107,25 +107,31 @@ router.post('/register',auth,jsonParser, async (req,res)=>{
         cName: req.body.cName,
         sName: req.body.sName,
         phone: req.body.phone,
+        meliCode:req.body.meliCode,
+        postalCode:req.body.postalCode,
+        address: req.body.address,
+
         password: req.body.password,
-        email: req.body.email,
+        email: req.body.username+"@sharifoilco.com",
         access: req.body.access,
         group: req.body.group,
         agent:req.body.agent?req.body.agent:req.headers["userid"],
         nif: req.body.nif,
+        imageUrl1:req.body.imageUrl1,
+        imageUrl2:req.body.imageUrl2,
 
         active:"true",
+        official:req.body.official,
         date: Date.now()
       }
       const agentUser = await User.findOne({_id:ObjectID(data.agent)})
-      if (!(data.cName && data.sName&&data.phone&&data.email)) {
+      if (!(data.cName && data.nif&&data.phone&&data.address&&data.imageUrl1)) {
         res.status(400).json(
           {error:"All input is required"});
         return;
       } 
       // Validate if user exist in our database
-      const user = await User.findOne({$or:[
-        {username: data.username },{email:data.email}]});
+      const user = await User.findOne({username: data.username });
       if(!user){
         data.password = data.password&&await bcrypt.hash(data.password, 10);
         data.CustomerID = agentUser&&agentUser.CustomerID
@@ -367,15 +373,13 @@ router.post('/change-user',auth,jsonParser, async (req,res)=>{
         sName:req.body.sName,
         phone:req.body.phone,
         email:req.body.email,
+        meliCode:req.body.meliCode,
+        address:req.body.address,
+        postalCode:req.body.postalCode,
+        official:req.body.official,
+
         nif:req.body.nif,
 
-        nameCompany:req.body.nameCompany,
-        firma:req.body.firma,
-        morada:req.body.morada,
-        nifCompany:req.body.nifCompany,
-        phoneCompany:req.body.phoneCompany,
-        emailCompany:req.body.emailCompany,
-        IBANCompany:req.body.IBANCompany,
   
         active:req.body.active,
         date: Date.now()
