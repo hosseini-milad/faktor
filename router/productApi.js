@@ -693,6 +693,8 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         for(var i=0;i<faktorDetail.length;i++){
             faktorNo= await createfaktorNo("F","02","21")
             sepidarQuery[i] = await SepidarFunc(faktorDetail[i],faktorNo)
+            console.log(faktorSeprate)
+            return
             addFaktorResult[i] = await sepidarPOST(sepidarQuery[i],"/api/invoices",req.headers['userid'])
             console.log(addFaktorResult[i])
             if(!addFaktorResult[i]||addFaktorResult[0].Message||!addFaktorResult[i].Number){
@@ -766,6 +768,7 @@ const SepidarFunc=async(data,faktorNo)=>{
     for(var i=0;i<data.cartItems.length;i++)
         data.cartItems[i].count?
         notNullCartItem.push(data.cartItems[i]):''
+
     var query ={
         "GUID": "124ab075-fc79-417f-b8cf-2a"+faktorNo,
         "CustomerRef": toInt(data.userId),
@@ -877,8 +880,9 @@ router.post('/customer-find', async (req,res)=>{
             ]}
         },
         {$limit:6}])
-        if(!searchCustomer.length){
-            searchCustomer = await customerSchema.
+        //if(!searchCustomer.length){
+        
+        const searchUser = await customerSchema.
             aggregate([{$match:
                 {$or:[
                     {username:{$regex: search, $options : 'i'}},
@@ -886,10 +890,10 @@ router.post('/customer-find', async (req,res)=>{
                 ]}
             },
             {$limit:6}])
-        }
+        //}
             
         //logger.warn("main done")
-        res.json({customers:searchCustomer})
+        res.json({customers:{...searchCustomer,...searchUser}})
     }
     catch(error){
         res.status(500).json({message: error.message})
