@@ -244,12 +244,11 @@ router.post('/cartlist', async (req,res)=>{
     try{
         const cartList = await cart.aggregate
         ([{$match:{manageId:userId}},
-        { $addFields: { "userId": { "$toObjectId": "$userId" }}},
         { $addFields: { "manageId": { "$toObjectId": "$manageId" }}},
         {$lookup:{
             from : "customers", 
             localField: "userId", 
-            foreignField: "_id", 
+            foreignField: "Code", 
             as : "userData"
         }},
         {$lookup:{
@@ -295,12 +294,11 @@ router.post('/cart-fetch', async (req,res)=>{
         const cartList = await cart.aggregate
         ([{$match:{manageId:userId}},
           {$match:{_id:ObjectID(cartID)}},
-        { $addFields: { "userId": { "$toObjectId": "$userId" }}},
         { $addFields: { "manageId": { "$toObjectId": "$manageId" }}},
         {$lookup:{
             from : "customers", 
             localField: "userId", 
-            foreignField: "_id", 
+            foreignField: "Code", 
             as : "userData"
         }},
         {$lookup:{
@@ -475,12 +473,12 @@ var cartItemTemp=cartData.cartItems
 const totalCart=(cartArray)=>{
     var cartListTotal =[]
     for(var i =0;i<cartArray.length;i++){
-        const userCode = cartArray[i].adminData[0]?
-            cartArray[i].adminData[0].CustomerID:
-            cartArray[i].userData[0].CustomerID
-        const userAddress = cartArray[i].adminData[0]?
-            cartArray[i].adminData[0].AddressID:
-            cartArray[i].userData[0].AddressID
+        const userCode = cartArray[i].userData[0]?
+            cartArray[i].userData[0].CustomerID:
+            cartArray[i].adminData[0].CustomerID
+        const userAddress = cartArray[i].userData[0]?
+            cartArray[i].userData[0].AddressID:
+            cartArray[i].adminData[0].AddressID
         var repeat=0
         for(var j=0;j<cartListTotal.length;j++)
             if(userCode&&(userCode===cartListTotal[j].userId)){
@@ -675,16 +673,17 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         ([{$match:{manageId:data.userId}},
             { $addFields: { "cartID": { "$toString": "$_id" }}},
             (cartID&&cartID.length)?{$match:{cartID:{$in:cartID}}}:{$match:{}},
-            { $addFields: { "userId": { "$toObjectId": "$userId" }}},
+            { $addFields: { "manageId": { "$toObjectId": "$manageId" }}},
+            
         {$lookup:{
             from : "customers", 
             localField: "userId", 
-            foreignField: "_id", 
+            foreignField: "Code", 
             as : "userData"
         }},
         {$lookup:{
             from : "users", 
-            localField: "userId", 
+            localField: "manageId", 
             foreignField: "_id", 
             as : "adminData"
         }}])
