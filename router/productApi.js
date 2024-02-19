@@ -478,6 +478,9 @@ const totalCart=(cartArray)=>{
         const userCode = cartArray[i].adminData[0]?
             cartArray[i].adminData[0].CustomerID:
             cartArray[i].userData[0].CustomerID
+        const userAddress = cartArray[i].adminData[0]?
+            cartArray[i].adminData[0].AddressID:
+            cartArray[i].userData[0].AddressID
         var repeat=0
         for(var j=0;j<cartListTotal.length;j++)
             if(userCode&&(userCode===cartListTotal[j].userId)){
@@ -489,6 +492,7 @@ const totalCart=(cartArray)=>{
         }
         !repeat&&cartListTotal.push({
             userId:userCode,
+            userAddress:userAddress,
             userTotal:cartArray[i].userId,
             payValue:cartArray[i].payValue,
             stockId:cartArray[i].stockId?cartArray[i].stockId:"13",
@@ -693,7 +697,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         for(var i=0;i<faktorDetail.length;i++){
             faktorNo= await createfaktorNo("F","02","21")
             sepidarQuery[i] = await SepidarFunc(faktorDetail[i],faktorNo)
-            
+           
             addFaktorResult[i] = await sepidarPOST(sepidarQuery[i],"/api/invoices",req.headers['userid'])
             //console.log(addFaktorResult[i])
             if(!addFaktorResult[i]||addFaktorResult[0].Message||!addFaktorResult[i].Number){
@@ -767,10 +771,11 @@ const SepidarFunc=async(data,faktorNo)=>{
     for(var i=0;i<data.cartItems.length;i++)
         data.cartItems[i].count?
         notNullCartItem.push(data.cartItems[i]):''
-
+    //console.log(data)
     var query ={
         "GUID": "124ab075-fc79-417f-b8cf-2a"+faktorNo,
         "CustomerRef": toInt(data.userId),
+        "AddressRef": toInt(data.userAddress),
         "CurrencyRef":1,
         "SaleTypeRef": data.payValue?toInt(data.payValue):4,
         "Duty":0.0000,
@@ -841,7 +846,6 @@ const toInt=(strNum,count,align)=>{
     (count?parseFloat(count):1)))
 }
 const normalPriceCount=(priceText,count,tax)=>{
-    console.log(priceText,count,tax)
     if(!priceText||priceText === null||priceText === undefined) return("")
     var rawCount = parseFloat(count.toString())
     var rawTax = parseFloat(tax.toString())
