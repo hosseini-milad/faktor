@@ -891,9 +891,9 @@ router.post('/customer-find', async (req,res)=>{
             },
             {$limit:6}])
         //}
-            
+        const allUser = searchCustomer.concat(searchUser)  
         //logger.warn("main done")
-        res.json({customers:{...searchCustomer,...searchUser}})
+        res.json({customers:allUser})
     }
     catch(error){
         res.status(500).json({message: error.message})
