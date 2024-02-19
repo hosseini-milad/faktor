@@ -31,6 +31,7 @@ const userSchema = new mongoose.Schema({
   status:{ type: String },
   Code:{ type: String },
   StockId:{ type: String },
+  CustomerID:{ type: String },
 
   date:{type:Date}
 });

@@ -134,6 +134,7 @@ router.post('/register',auth,jsonParser, async (req,res)=>{
       } 
       // Validate if user exist in our database
       const user = await User.findOne({username: data.username });
+      
       if(!user){
         data.password = data.password&&await bcrypt.hash(data.password, 10);
         data.CustomerID = agentUser&&agentUser.CustomerID
