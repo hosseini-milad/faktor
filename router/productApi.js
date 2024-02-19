@@ -693,10 +693,9 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         for(var i=0;i<faktorDetail.length;i++){
             faktorNo= await createfaktorNo("F","02","21")
             sepidarQuery[i] = await SepidarFunc(faktorDetail[i],faktorNo)
-            console.log(faktorSeprate)
-            return
+            
             addFaktorResult[i] = await sepidarPOST(sepidarQuery[i],"/api/invoices",req.headers['userid'])
-            console.log(addFaktorResult[i])
+            //console.log(addFaktorResult[i])
             if(!addFaktorResult[i]||addFaktorResult[0].Message||!addFaktorResult[i].Number){
                 res.status(400).json({error:addFaktorResult[0].Message?addFaktorResult[0].Message:"error occure",
                     query:sepidarQuery[i],status:"faktor"})
