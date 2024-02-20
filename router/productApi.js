@@ -246,7 +246,7 @@ router.post('/cartlist', async (req,res)=>{
         const cartList = await cart.aggregate
         ([{$match:{manageId:userId}},
         { $addFields: { "manageId": { "$toObjectId": "$manageId" }}},
-        { $addFields: userId>999999?{ "userId": { "$toObjectId": "$userId" }}:{}},
+        
         {$lookup:{
             from : "customers", 
             localField: "userId", 
@@ -273,6 +273,11 @@ router.post('/cartlist', async (req,res)=>{
             }
             else{
                 cartList.splice(i,1)
+            }
+            if(!cartList[i].userData||!cartList[i].userData.length){
+                //console.log(cartList[i].userData)
+                var userData =await users.find({_id:ObjectID(cartList[i].userId)}).limit(1)
+                cartList[i].userData=userData
             }
         }
         for(var i=0;i<cartList.length;i++){
