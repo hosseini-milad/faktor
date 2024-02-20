@@ -573,10 +573,10 @@ router.post('/quick-to-cart',jsonParser, async (req,res)=>{
         //const cartAll = await cart.find()
         
         const qCartData = await quickCart.findOne({userId:userId})
-        data.payValue=qCartData.payValue
+        data.payValue=qCartData&&qCartData.payValue
         const quickCartItems = qCartData&&qCartData.cartItems
         data.cartItems =pureCartPrice(quickCartItems,qCartData.payValue)
-        data.stockId = qCartData.stockId
+        data.stockId = qCartData&&qCartData.stockId
         cartLog.create({...data,ItemID:req.body.cartID,action:"quick to cart"})
         await cart.create(data)
             status = "create cart"
