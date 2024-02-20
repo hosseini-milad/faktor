@@ -276,10 +276,8 @@ router.post('/cartlist', async (req,res)=>{
         for(var i=0;i<cartList.length;i++){
             const found =(cartID&&cartID.find(item=>item===cartList[i]._id.toString()))
             if(found||!cartID.length){
-            cartTotal.cartPrice+=cartList[i].countData?
-            cartList[i].countData.totalPrice:0;
-            cartTotal.cartCount+=cartList[i].countData?
-            cartList[i].countData.totalCount:0;
+            cartTotal.cartPrice+=cartList[i].countData.totalPrice;
+            cartTotal.cartCount+=cartList[i].countData.totalCount;
             }
         }
         res.json({cart:cartList,
