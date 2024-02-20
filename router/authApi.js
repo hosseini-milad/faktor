@@ -371,7 +371,7 @@ router.post('/forget-password-set',jsonParser, async (req,res)=>{
 router.post('/change-user',auth,jsonParser, async (req,res)=>{
   try {
       const data = {
-        username: req.body.username,
+        username: req.body.cName + " " + req.body.sName,
         cName: req.body.cName,
         sName:req.body.sName,
         phone:req.body.phone,
