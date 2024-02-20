@@ -127,7 +127,7 @@ router.post('/register',auth,jsonParser, async (req,res)=>{
         date: Date.now()
       }
       const agentUser = await User.findOne({_id:ObjectID(data.agent)})
-      if (!(data.cName && data.nif&&data.phone&&data.address&&data.imageUrl1)) {
+      if (!(data.cName && data.nif&&data.mobile&&data.address&&data.imageUrl1)) {
         res.status(400).json(
           {error:"All input is required"});
         return;
