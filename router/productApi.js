@@ -228,12 +228,13 @@ const findCartSum=(cartItems,payValue)=>{
         var cartItemPrice = cartItems[i].price
             .replace( /,/g, '').replace( /^\D+/g, '')
         //console.log(cartItemPrice)
-        if(cartItems[i].price) 
+        try{if(cartItems[i].price) 
             cartSum+= parseInt(cartItemPrice)*
             parseInt(cartItems[i].count.toString().replace( /,/g, '').replace( /^\D+/g, ''))
         if(cartItems[i].count)
             cartCount+=parseInt(cartItems[i].count.toString().replace( /,/g, '').replace( /^\D+/g, ''))
             cartDescription += cartItems[i].description?cartItems[i].description:''
+        }catch{}
     }
     return({totalPrice:cartSum,
         totalCount:cartCount,cartDescription:cartDescription})
@@ -245,6 +246,7 @@ router.post('/cartlist', async (req,res)=>{
         const cartList = await cart.aggregate
         ([{$match:{manageId:userId}},
         { $addFields: { "manageId": { "$toObjectId": "$manageId" }}},
+        { $addFields: userId>999999?{ "userId": { "$toObjectId": "$userId" }}:{}},
         {$lookup:{
             from : "customers", 
             localField: "userId", 
@@ -380,6 +382,7 @@ router.post('/edit-cart',jsonParser, async (req,res)=>{
         date:req.body.date,
         progressDate:Date.now()
     }
+        console.log('not error')
     
         var status = "";
         //const cartData = await cart.find({userId:data.userId})
