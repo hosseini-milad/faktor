@@ -776,7 +776,7 @@ const SepidarFunc=async(data,faktorNo)=>{
     var query ={
         "GUID": "124ab075-fc79-417f-b8cf-2a"+faktorNo,
         "CustomerRef": toInt(data.userId),
-        "AddressRef": toInt(data.userAddress),
+        "AddressRef": toInt(data.userAddress)?toInt(data.userAddress):'',
         "CurrencyRef":1,
         "SaleTypeRef": data.payValue?toInt(data.payValue):4,
         "Duty":0.0000,
