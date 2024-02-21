@@ -681,6 +681,49 @@ router.post('/faktor-find', async (req,res)=>{
         res.status(500).json({error: error.message})
     }
 })
+
+router.post('/faktor-fetch', async (req,res)=>{
+    const userId =req.body.userId?req.body.userId:req.headers['userid'];
+    const faktorID=req.body.faktorID
+    try{
+        const faktorList = await FaktorSchema.aggregate
+        ([
+          {$match:{_id:ObjectID(faktorID)}},
+        { $addFields: { "manageId": { "$toObjectId": "$manageId" }}},
+        {$lookup:{
+            from : "customers", 
+            localField: "customerID", 
+            foreignField: "CustomerID", 
+            as : "userData"
+        }},
+        {$lookup:{
+            from : "users", 
+            localField: "userId", 
+            foreignField: "_id", 
+            as : "adminData"
+        }},
+        {$lookup:{
+            from : "users", 
+            localField: "manageId", 
+            foreignField: "_id", 
+            as : "managerData"
+        }}])
+        var orderData={cartPrice:0,cartCount:0}
+        var cartPrice = 0
+        var cartItems = (faktorList&&faktorList[0].faktorItems)?
+            faktorList[0].faktorItems:[]
+        for(var i = 0;i<cartItems.length;i++){
+            cartPrice +=parseInt(cartItems[i].price)*
+                cartItems[i].count
+        }
+        orderData.cartPrice=cartPrice
+        
+        res.json({faktor:faktorList,orderData:orderData})
+    }
+    catch(error){
+        res.status(500).json({message: error.message})
+    }
+})
 router.post('/update-faktor',jsonParser, async (req,res)=>{
     const data={
         userId:req.body.userId?req.body.userId:req.headers['userid'],
