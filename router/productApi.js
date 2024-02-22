@@ -392,17 +392,17 @@ router.post('/update-cart',jsonParser, async (req,res)=>{
     }
 })
 router.post('/edit-cart',jsonParser, async (req,res)=>{
+    const userId =req.body.userId?req.body.userId:req.headers['userid']
     const data={
-        userId:req.body.userId?req.body.userId:req.headers['userid'],
+        
         payValue:req.body.payValue,
         date:req.body.date,
         progressDate:Date.now()
     }
-        console.log('not error')
     
         var status = "";
         //const cartData = await cart.find({userId:data.userId})
-        const qCartData = await quickCart.findOne({userId:data.userId})
+        const qCartData = await quickCart.findOne({userId:userId})
         const availItems = await checkAvailable(req.body.cartItem)
         
         if(!availItems){
@@ -411,9 +411,9 @@ router.post('/edit-cart',jsonParser, async (req,res)=>{
         }
         const cartItems = editCart(qCartData,req.body.cartItem)
         data.cartItems =(cartItems)
-        await quickCart.updateOne({userId:data.userId},{$set:data})
+        await quickCart.updateOne({userId:userId},{$set:data})
         status = "update cart"
-        const cartDetails = await findCartFunction(data.userId)
+        const cartDetails = await findCartFunction(userId)
         res.json(cartDetails)
     try{}
     catch(error){
