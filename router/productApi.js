@@ -726,8 +726,9 @@ router.post('/faktor-fetch', async (req,res)=>{
     }
 })
 router.post('/update-faktor',jsonParser, async (req,res)=>{
+    const userId =req.body.userId?req.body.userId:req.headers['userid']
     const data={
-        //userId:req.body.userId?req.body.userId:req.headers['userid'],
+        //
         manageId:req.headers['userid'],
         date:req.body.date,
         progressDate:Date.now() 
@@ -735,7 +736,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
     const cartID=req.body.cartID
     try{
         const cartList = await cart.aggregate
-        ([{$match:{manageId:data.manageId}},
+        ([{$match:{manageId:userId}},
             { $addFields: { "cartID": { "$toString": "$_id" }}},
             (cartID&&cartID.length)?{$match:{cartID:{$in:cartID}}}:{$match:{}},
             { $addFields: { "manageId": { "$toObjectId": "$manageId" }}},
