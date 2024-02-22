@@ -710,7 +710,9 @@ router.post('/faktor-fetch', async (req,res)=>{
             as : "managerData"
         }}])
         var faktorData = faktorList&&faktorList[0]
+        var faktorDetail = ''
         if(faktorData){
+            faktorDetail = (faktorData.userId +" "+ faktorData.manageId)
             if(faktorData.userId !== faktorData.manageId){
             var userShow = await users.findOne({_id:ObjectID(faktorData.userId)})
             faktorList[0].userData[0] = userShow
@@ -726,7 +728,7 @@ router.post('/faktor-fetch', async (req,res)=>{
         }
         orderData.cartPrice=cartPrice
         
-        res.json({faktor:faktorList,orderData:orderData})
+        res.json({faktor:faktorList,orderData:orderData,faktorDetail:faktorDetail})
     }
     catch(error){
         res.status(500).json({message: error.message})
