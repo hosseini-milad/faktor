@@ -46,7 +46,7 @@ router.post('/find-products',auth, async (req,res)=>{
                 {title:{$regex: search, $options : 'i'}}
             ]}
         },
-        filter?{$match:{sku:{$in:[/fs/i,/cr/i]}}}:
+        filter?{$match:{sku:{$in:[/fs/i,/cr/i,/pr/i]}}}:
             {$match:{sku:{$exists:true}}},
         {$lookup:{
             from : "productprices", 
