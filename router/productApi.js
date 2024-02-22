@@ -709,6 +709,12 @@ router.post('/faktor-fetch', async (req,res)=>{
             foreignField: "_id", 
             as : "managerData"
         }}])
+        var faktorData = faktorList&&faktorList[0]
+        if(faktorData){
+            if(faktorData.userId !== faktorData.manageId)
+            var userShow = await users.findOne({_id:ObjectID(faktorData.userId)})
+            faktorData[0].userData[0] = userShow
+        }
         var orderData={cartPrice:0,cartCount:0}
         var cartPrice = 0
         var cartItems = (faktorList&&faktorList[0].faktorItems)?
