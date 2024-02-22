@@ -713,7 +713,7 @@ router.post('/faktor-fetch', async (req,res)=>{
         if(faktorData){
             if(faktorData.userId !== faktorData.manageId)
             var userShow = await users.findOne({_id:ObjectID(faktorData.userId)})
-            faktorData[0].userData[0] = userShow
+            faktorList[0].userData[0] = userShow
         }
         var orderData={cartPrice:0,cartCount:0}
         var cartPrice = 0
