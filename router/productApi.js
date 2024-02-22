@@ -795,7 +795,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
         }
         
         (cartID&&cartID.length)?await cart.deleteMany({_id:{$in:cartID}}):
-        await cart.deleteMany({manageId:data.userId})
+        await cart.deleteMany({manageId:userId})
 
         const recieptQuery = 1//await RecieptFunc(req.body.receiptInfo,addFaktorResult[0],faktorNo)
         const recieptResult = 1//await sepidarPOST(recieptQuery,"/api/Receipts/BasedOnInvoice")
