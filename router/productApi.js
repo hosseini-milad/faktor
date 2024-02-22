@@ -773,7 +773,7 @@ router.post('/update-faktor',jsonParser, async (req,res)=>{
                 const cartDetail =findCartSum(faktorDetail[i].cartItems)
                 await FaktorSchema.create(
                     {...data,faktorItems:faktorDetail[i].cartItems,
-                        userId:cartDetail.userTemp,
+                        userId:faktorDetail[i].userTemp,
                         customerID:faktorDetail[i].userId,
                         faktorNo:faktorNo,
                         totalPrice:cartDetail.totalPrice,
