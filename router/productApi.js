@@ -20,6 +20,7 @@ const quickCart = require('../models/product/quickCart');
 const bankAccounts = require('../models/product/bankAccounts');
 const sepidarFetch = require('../middleware/Sepidar');
 const products = require('../models/product/products');
+const {TAX} = process.env
 
 router.post('/products', async (req,res)=>{
     try{
@@ -866,7 +867,7 @@ const SepidarFunc=async(data,faktorNo)=>{
             "Fee": toInt(item.price),
             "Price": normalPriceCount(item.price,item.count,1),
             "Discount": 0.0000,
-            "Tax": normalPriceCount(item.price,item.count,"0.09"),
+            "Tax": normalPriceCount(item.price,item.count,TAX),
             "Duty": 0.0000,
             "Addition": 0.0000
           }))
